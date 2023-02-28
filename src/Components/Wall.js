@@ -14,8 +14,7 @@ class Wall extends React.Component{
 	generateWallData(nRows, nCols){
 		let tempRows = [];
 		for (var i = 0; i < nRows; i++) {
-			tempRows[i] = {ID: uuid(), Data: new Array(calcRowLen(nCols,i))};
-			tempRows[i].Data = this.generateRowData(nCols, i);
+			tempRows[i] = {ID: uuid(), Data: this.generateRowData(nCols, i)};
 		}
 		return (tempRows);
 	}
@@ -29,22 +28,17 @@ class Wall extends React.Component{
 	}
 
 	render(){
-		let rowTemp = [];
 		return(
-				this.state.wallData.map((row) => {
-					rowTemp = row.Data;
-					return(
-						<div key = {row.ID}>
-						{rowTemp.map((hold) => {
-							return(
-								<Hold key = {hold.ID} />
-								)
+			this.state.wallData.map((row) => {
+				return(
+					<div key = {row.ID}>
+						{row.Data.map((hold) => {
+							return <Hold key = {hold.ID} />
 						})}
-						</div>
-					)	
-				})
-
-			)
+					</div>
+				)	
+			})
+		)
 	}
 }
 

@@ -1,0 +1,15 @@
+MVP
+Show board
+	-Create a 6 by 7 row of holds
+	-render all the holds
+	
+	Give each hold a color
+	create a suffle command
+	Make each hold a random color
+
+Cards
+	Generate Random order of cards
+
+
+Move Limbs according to the rules on the board
+
