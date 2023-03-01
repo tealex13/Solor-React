@@ -3,8 +3,9 @@ Show board
 	-Create a 6 by 7 row of holds
 	-render all the holds
 	-reverse the render order
+	-Give each hold a color
 	
-	Give each hold a color
+	Map an array of colors to each hold
 	create a suffle command
 	Make each hold a random color
 

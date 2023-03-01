@@ -22,7 +22,7 @@ class Wall extends React.Component{
 	generateRowData(nCols, rowIndex){
 		let tempRow = []
 		for (var j = 0; j < calcRowLen(nCols,rowIndex) - 1; j++) {
-			tempRow[j] = {ID: uuid(), color: "red"};
+			tempRow[j] = {ID: uuid(), data: {color: "red"}};
 		}
 		return tempRow;
 	}
@@ -33,7 +33,7 @@ class Wall extends React.Component{
 				return(
 					<div key = {row.ID}>
 						{row.Data.reverse().map((hold) => {
-							return <Hold key = {hold.ID} />
+							return <Hold holdData = {hold.data} key = {hold.ID} />
 						})}
 					</div>
 				)	

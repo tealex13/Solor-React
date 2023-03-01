@@ -9,7 +9,7 @@ export default class Hold extends React.Component{
 		return(
 			<button 
 				style={{
-					background: "white",
+					background: this.props.holdData.color,
 					width: 100,
 					height: 100,
 					margin: 10}}
@@ -18,3 +18,4 @@ export default class Hold extends React.Component{
 		)
 	}
 }
+
