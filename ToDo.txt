@@ -2,6 +2,7 @@ MVP
 Show board
 	-Create a 6 by 7 row of holds
 	-render all the holds
+	-reverse the render order
 	
 	Give each hold a color
 	create a suffle command

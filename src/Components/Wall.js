@@ -29,10 +29,10 @@ class Wall extends React.Component{
 
 	render(){
 		return(
-			this.state.wallData.map((row) => {
+			this.state.wallData.reverse().map((row) => {
 				return(
 					<div key = {row.ID}>
-						{row.Data.map((hold) => {
+						{row.Data.reverse().map((hold) => {
 							return <Hold key = {hold.ID} />
 						})}
 					</div>
