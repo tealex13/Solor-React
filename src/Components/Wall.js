@@ -1,5 +1,6 @@
 import React from 'react';
 import {calcRowLen,calculateTotalHolds,mapFromBoard, mapLastInRowFromBoard} from "../Helper Functions/board calculator";
+import {shuffleArray} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
 
@@ -35,6 +36,7 @@ class Wall extends React.Component{
 		for (var i = 0; i < iterNum; i++) {
 			tempColors = tempColors.concat(colorsArray);
 		}
+		shuffleArray(tempColors,this.props.boardSeed);
 		return tempColors;
 	}
 
@@ -55,11 +57,14 @@ class Wall extends React.Component{
 
 
 
-const colorsArray = ["white","blue","green","purple","black","red"];
+const colorsArray = ["white","orange","green","purple","black","red"];
 
 Wall.defaultProps = {
 	nRows: 10,
-	nCols: 4
+	nCols: 6,
+	boardSeed: 1234,
+	cardSeed: 4321
+
 
 };
 export default Wall;

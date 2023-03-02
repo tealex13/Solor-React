@@ -4,12 +4,12 @@ Show board
 	-render all the holds
 	-reverse the render order
 	-Give each hold a color
-	
-	Map an array of colors to each hold
-	create a suffle command
-	Make each hold a random color
+	-Map an array of colors to each hold
+	-create a suffle command
+	-Make each hold a random color
 
 Cards
+	
 	Generate Random order of cards
 
 
