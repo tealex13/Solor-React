@@ -9,11 +9,13 @@ Show board
 	-Make each hold a random color
 
 Cards
-	display cards
-	generate (draw pile) of card data
+	-create card component
+	-display cards
+	-generate (draw pile) of card data
 	suffle the card data
 	display color on cards
 	display the first two cards in the array
+	display number of a cards dynamically
 	
 Controls
 	draw button
