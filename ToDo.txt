@@ -9,8 +9,16 @@ Show board
 	-Make each hold a random color
 
 Cards
+	display cards
+	generate (draw pile) of card data
+	suffle the card data
+	display color on cards
+	display the first two cards in the array
 	
-	Generate Random order of cards
+Controls
+	draw button
+	New game button
+	
 
 
 Move Limbs according to the rules on the board

@@ -4,8 +4,7 @@ import {shuffleArray} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
 
-
-class Wall extends React.Component{
+class Game extends React.Component{
 	constructor(props){
 		super(props);
 		const wallData = this.generateWallData(this.props.nRows, this.props.nCols);
@@ -59,7 +58,7 @@ class Wall extends React.Component{
 
 const colorsArray = ["white","orange","green","purple","black","red"];
 
-Wall.defaultProps = {
+Game.defaultProps = {
 	nRows: 10,
 	nCols: 6,
 	boardSeed: 1234,
@@ -67,4 +66,4 @@ Wall.defaultProps = {
 
 
 };
-export default Wall;
+export default Game;
