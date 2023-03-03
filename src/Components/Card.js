@@ -11,24 +11,19 @@ export default class Card extends React.Component{
 			<span className = "Card" style = {
 				{background: "white",
 				margin: 10}}>
-				<div>
-				<button 
-					style={{
-						background: this.props.data.firstColor,
-						width: 100,
-						height: 100,
-						margin: 10}}
-				/>
-			</div>
-			<div>
-				<button 
-					style={{
-						background: this.props.data.secondColor,
-						width: 100,
-						height: 100,
-						margin: 10}}
-				/>
-				</div>
+				{this.props.data.colors.map((color, index) => {
+					return(
+						<div key = {index}>
+							<button 
+								style={{
+									background: color,
+									width: 100,
+									height: 100,
+									margin: 10}}
+							/>
+						</div>
+						)
+				})}
 			</span>
 
 		)

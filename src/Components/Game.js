@@ -4,6 +4,7 @@ import {shuffleArray} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
 import Card from "./Card.js";
+import './Game.css';
 
 class Game extends React.Component{
 	constructor(props){
@@ -39,7 +40,7 @@ class Game extends React.Component{
 	generateDrawPile(){
 		const drawPile = colorsArray.map((firstColor,index) => {
 			return (colorsArray.slice(index, colorsArray.length).map(secondColor => {
-				return ({ID: uuid(), data: {firstColor: firstColor, secondColor: secondColor}})
+				return ({ID: uuid(), data: {colors: [firstColor, secondColor]}})
 			}))
 		}).flat();
 		return drawPile;
@@ -71,7 +72,7 @@ class Game extends React.Component{
 					)	
 				})}
 				</div>
-				<div>
+				<div className ="cardDisplay">
 					{cardDisplay.map((card) => {
 						return(<Card key = {card.ID} data = {card.data}/>
 							)
