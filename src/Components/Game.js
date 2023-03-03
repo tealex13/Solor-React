@@ -10,7 +10,6 @@ class Game extends React.Component{
 		super(props);
 		const drawPile = this.generateDrawPile();
 		shuffleArray(drawPile, this.props.cardSeed);
-		// this.state = {drawIndex: 0, drawPile: shuffleArray(this.generateDrawPile(), this.props.cardSeed)};
 		this.state = {drawIndex: 0, drawPile: drawPile};
 	}
 

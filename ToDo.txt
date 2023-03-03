@@ -12,16 +12,15 @@ Cards
 	-create card component
 	-display cards
 	-generate (draw pile) of card data
-	suffle the card data
-	display color on cards
-	display the first two cards in the array
-	display number of a cards dynamically
+	-suffle the card data
+	-display the first two cards in the array
+	-display number of a cards dynamically
+	-display color on cards
 	
 Controls
-	draw button
-	New game button
-	
+	display draw button
+	change the draw index when the draw button is pressed
 
-
-Move Limbs according to the rules on the board
+Limbs
+	Move Limbs according to the rules on the board
 
