@@ -11,7 +11,11 @@ class Game extends React.Component{
 		super(props);
 		const drawPile = this.generateDrawPile();
 		shuffleArray(drawPile, this.props.cardSeed);
-		this.state = {drawIndex: 0, drawPile: drawPile};
+		this.state = {drawIndex: 0, 
+			drawPile: drawPile, 
+			displayDraw: true};
+
+		this.drawCards = this.drawCards.bind(this);
 	}
 
 	generateWallData(nRows, nCols){
@@ -33,7 +37,8 @@ class Game extends React.Component{
 	}
 
 	generateCardDisplay(nCardDraw){
-		return this.state.drawPile.slice(this.state.drawIndex,this.state.drawIndex+nCardDraw);
+		const lastCardInDisplay = (this.state.drawIndex + nCardDraw) > this.state.drawPile.length ? this.state.drawPile.length : this.state.drawIndex + nCardDraw;
+		return this.state.drawPile.slice(this.state.drawIndex,lastCardInDisplay);
 
 	}
 
@@ -54,6 +59,13 @@ class Game extends React.Component{
 		}
 		shuffleArray(tempColors,this.props.boardSeed);
 		return tempColors;
+	}
+
+	drawCards(){
+		const newDrawIndex = this.state.drawIndex + this.props.nCardDraw;
+		this.setState({drawIndex: newDrawIndex, 
+			displayDraw: newDrawIndex + this.props.nCardDraw < this.state.drawPile.length});
+
 	}
 
 	render(){
@@ -77,7 +89,11 @@ class Game extends React.Component{
 						return(<Card key = {card.ID} data = {card.data}/>
 							)
 					})
-
+					}
+					{this.state.displayDraw &&
+					<button onClick = {this.drawCards}> 
+						Draw
+					</button>
 					}
 				</div>
 				
@@ -92,7 +108,7 @@ class Game extends React.Component{
 const colorsArray = ["white","orange","green","purple","black","red"];
 
 Game.defaultProps = {
-	nRows: 3,
+	nRows: 6,
 	nCols: 6,
 	boardSeed: 1234,
 	cardSeed: 4321,

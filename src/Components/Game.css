@@ -1,3 +1,7 @@
-.CardDisplay{
-	display: inline-block;
+.CardDisplay{	
+}
+
+button{
+	width: 100 px;
+	height: 50 px;
 }
