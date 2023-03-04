@@ -13,14 +13,12 @@ export default class Card extends React.Component{
 				margin: 10}}>
 				{this.props.data.colors.map((color, index) => {
 					return(
-						<div key = {index}>
-							<button 
-								style={{
+						<div style={{
 									background: color,
 									width: 100,
 									height: 100,
 									margin: 10}}
-							/>
+							>
 						</div>
 						)
 				})}

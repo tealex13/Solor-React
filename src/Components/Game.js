@@ -84,18 +84,21 @@ class Game extends React.Component{
 					)	
 				})}
 				</div>
-				<div className ="cardDisplay">
-					{cardDisplay.map((card) => {
-						return(<Card key = {card.ID} data = {card.data}/>
-							)
-					})
-					}
+				<div className = "playerControls">
+					<div className ="cardDisplay">
+						{cardDisplay.map((card) => {
+							return(<Card key = {card.ID} data = {card.data}/>
+								)
+						})
+						}
+						
+					</div>
 					{this.state.displayDraw &&
-					<button onClick = {this.drawCards}> 
-						Draw
-					</button>
-					}
-				</div>
+						<button onClick = {this.drawCards}> 
+							Draw
+						</button>
+					}	
+				</div>	
 				
 			</>
 
