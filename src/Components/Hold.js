@@ -1,5 +1,5 @@
 import React from 'react';
-import Limb from "./Limb";
+import {Limb, limbType} from "./Limb";
 import './Hold.css'
 
 
@@ -12,8 +12,12 @@ export default class Hold extends React.Component{
 		return(
 			<div className = "hold">
 				<div className = "limbRow topRow">
-					<Limb/>
-					<Limb/>
+					<div>
+						{this.props.holdData.limbsToDisplay.find((element) => element == limbType.leftHand) && <Limb/>}
+					</div>
+					<div>
+						{this.props.holdData.limbsToDisplay.find((element) => element == limbType.rightHand) && <Limb/>}
+					</div>
 				</div>
 				<div>
 					<button className = "holdColor"
@@ -24,8 +28,12 @@ export default class Hold extends React.Component{
 					/>
 				</div>
 				<div className = "limbRow bottomRow">
-					<Limb/>
-					<Limb/>
+					<div>
+						{this.props.holdData.limbsToDisplay.find((element) => element == limbType.leftFoot) && <Limb/>}
+					</div>
+					<div>
+						{this.props.holdData.limbsToDisplay.find((element) => element == limbType.rightFoot) && <Limb/>}
+					</div>
 				</div>
 			</div>
 
@@ -34,9 +42,5 @@ export default class Hold extends React.Component{
 }
 
 Hold.defaultProps = {
-	leftHand: false,
-	rightHand: false,
-	leftFoot: false,
-	rightFoot: false,
-	weight: false
+	holdData: {limbsToDisplay: []}
 }

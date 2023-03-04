@@ -1,6 +1,14 @@
 import React from 'react';
 
-export default class Limb extends React.Component{
+export const limbType = {
+	leftHand: "leftHand",
+	rightHand: "rightHand",
+	leftFoot: "leftFoot",
+	rightFoot: "rightFoot",
+	weight: "weight"
+}
+
+export class Limb extends React.Component{
 	constructor(props){
 		super(props);
 
@@ -17,4 +25,6 @@ export default class Limb extends React.Component{
 		)
 	}
 }
+
+
 

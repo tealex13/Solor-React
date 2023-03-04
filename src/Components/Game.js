@@ -4,6 +4,7 @@ import {shuffleArray} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
 import Card from "./Card.js";
+import {Limb, limbType} from "./Limb.js";
 import './Game.css';
 
 class Game extends React.Component{
@@ -13,25 +14,32 @@ class Game extends React.Component{
 		shuffleArray(drawPile, this.props.cardSeed);
 		this.state = {drawIndex: 0, 
 			drawPile: drawPile, 
-			displayDraw: true};
+			displayDraw: true,
+			limbData: [{type: limbType.leftHand, coords: [0,0]},
+				{type: limbType.rightHand, coords: [0,0]},
+				{type: limbType.leftFoot, coords: [2,2]},
+				{type: limbType.rightFoot, coords: [0,0]},
+				{type: limbType.weight, coords: [4,4]}]
+		}
 
 		this.drawCards = this.drawCards.bind(this);
 	}
 
 	generateWallData(nRows, nCols){
 		const colors  = this.mapColorsToHolds();
-		let tempRows = [];
+		let wall = [];
 		for (var i = 0; i < nRows; i++) {
-			tempRows[i] = {ID: uuid(),
-				Data: this.generateRowData(nCols, i, colors.slice(mapFromBoard(i,0,nCols),mapLastInRowFromBoard(i,nCols)+1))};
+			wall[i] = {ID: uuid(),
+				data: this.generateRowData(nCols, i, colors.slice(mapFromBoard(i,0,nCols),mapLastInRowFromBoard(i,nCols)+1))};
 		}
-		return (tempRows);
+		this.state.limbData.map((limbData) => (wall[limbData.coords[0]].data[limbData.coords[1]].data.limbsToDisplay.push(limbData.type)));
+		return (wall);
 	}
 
 	generateRowData(nCols, rowIndex, colors){
 		let tempRow = [];
 		for (var j = 0; j < calcRowLen(nCols,rowIndex); j++) {
-			tempRow[j] = {ID: uuid(), data: {color: colors[j]}};
+			tempRow[j] = {ID: uuid(), data: {color: colors[j], limbsToDisplay: []}};
 		}
 		return tempRow;
 	}
@@ -77,7 +85,7 @@ class Game extends React.Component{
 				{wallData.reverse().map((row) => {
 					return(
 						<div key = {row.ID} className = "row">
-							{row.Data.reverse().map((hold) => {
+							{row.data.reverse().map((hold) => {
 								return <Hold holdData = {hold.data} key = {hold.ID} />
 							})}
 						</div>

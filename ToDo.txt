@@ -25,9 +25,9 @@ Controls
 
 Limbs
 	-display limbs on all the holds
-	
-	make top limbs visible over the hold
-	conditionally display limbs on holds
+	-make top limbs visible over the hold
+	-conditionally display limbs on holds
+	pass in limbs to display as properties
 	make the limbs images
 	display limbs on two rows below the holds
 	
