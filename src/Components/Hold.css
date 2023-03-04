@@ -1,0 +1,19 @@
+.hold{
+	margin: 20px;
+}
+
+.limbRow{
+	display: flex;
+	justify-content: space-between;
+	margin-top: -10px;
+	margin-bottom: -10px;
+
+}
+
+.holdColor{
+	margin-top: -10px;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: -10px;
+}
+

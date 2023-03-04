@@ -1,11 +1,15 @@
 .cardDisplay{
-	display: flex;
-	border: solid 2px white;	
+	display: flex;	
 }
 
 .playerControls{
 	display: flex;
 	align-items: center;
+}
+
+.row{
+	display: flex;
+	justify-content: center;
 }
 
 button{

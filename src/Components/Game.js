@@ -76,7 +76,7 @@ class Game extends React.Component{
 				<div>
 				{wallData.reverse().map((row) => {
 					return(
-						<div key = {row.ID}>
+						<div key = {row.ID} className = "row">
 							{row.Data.reverse().map((hold) => {
 								return <Hold holdData = {hold.data} key = {hold.ID} />
 							})}
@@ -91,7 +91,6 @@ class Game extends React.Component{
 								)
 						})
 						}
-						
 					</div>
 					{this.state.displayDraw &&
 						<button onClick = {this.drawCards}> 

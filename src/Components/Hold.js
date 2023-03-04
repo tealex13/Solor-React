@@ -1,4 +1,7 @@
 import React from 'react';
+import Limb from "./Limb";
+import './Hold.css'
+
 
 export default class Hold extends React.Component{
 	constructor(props){
@@ -7,15 +10,33 @@ export default class Hold extends React.Component{
 	}
 	render(){
 		return(
-			<button 
-				style={{
-					background: this.props.holdData.color,
-					width: 100,
-					height: 100,
-					margin: 10}}
-			/>
+			<div className = "hold">
+				<div className = "limbRow">
+					<Limb/>
+					<Limb/>
+				</div>
+				<div>
+					<button className = "holdColor"
+						style={{
+							background: this.props.holdData.color,
+							width: 100,
+							height: 100}}
+					/>
+				</div>
+				<div className = "limbRow">
+					<Limb/>
+					<Limb/>
+				</div>
+			</div>
 
 		)
 	}
 }
 
+Hold.defaultProps = {
+	leftHand: false,
+	rightHand: false,
+	leftFoot: false,
+	rightFoot: false,
+	weight: false
+}

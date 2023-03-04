@@ -8,17 +8,10 @@ export default class Card extends React.Component{
 	}
 	render(){
 		return(
-			<span className = "Card" style = {
-				{background: "white",
-				margin: 10}}>
+			<span className = "card">
 				{this.props.data.colors.map((color, index) => {
 					return(
-						<div style={{
-									background: color,
-									width: 100,
-									height: 100,
-									margin: 10}}
-							>
+						<div  style={{background: color}} className = "cardColor">
 						</div>
 						)
 				})}
@@ -27,3 +20,4 @@ export default class Card extends React.Component{
 		)
 	}
 }
+

@@ -11,8 +11,7 @@ export default class Limb extends React.Component{
 				style={{
 					background: "white",
 					width: 30,
-					height: 30,
-					margin: 10}}
+					height: 30}}
 			/>
 
 		)

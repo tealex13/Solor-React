@@ -1,11 +1,13 @@
 .card{
-	display: inline-block;
-	height: 300 px;
-	width: 200 px;
-	background: "white";
-	margin: 10
+	background-color: white;
+	margin: 5px;
+	padding: 5px;
 }
 
 .cardColor{
-	padding:5 px;
+	margin: 5px;
+	border: solid 2px black;
+	width: 100px;
+	height: 100px;
+	margin: 10px;
 }
