@@ -1,19 +1,28 @@
 .hold{
-	margin: 20px;
+	margin: 10px;
 }
 
 .limbRow{
 	display: flex;
 	justify-content: space-between;
-	margin-top: -10px;
-	margin-bottom: -10px;
+	position: relative;
+	z-index: 2;
+}
 
+.topRow{
+	top:20px; 
+    left:0px; 
+}
+
+.bottomRow{
+	top:-20px; 
+    left:0px; 
 }
 
 .holdColor{
-	margin-top: -10px;
 	margin-left: 10px;
 	margin-right: 10px;
-	margin-bottom: -10px;
+	position: relative;
+	z-index: 1;
 }
 

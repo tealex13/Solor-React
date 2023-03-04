@@ -24,5 +24,13 @@ Controls
 	-Only display as many cards in the last set
 
 Limbs
+	-display limbs on all the holds
+	
+	make top limbs visible over the hold
+	conditionally display limbs on holds
+	make the limbs images
+	display limbs on two rows below the holds
+	
+Rules
 	Move Limbs according to the rules on the board
 

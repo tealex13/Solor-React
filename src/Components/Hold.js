@@ -11,7 +11,7 @@ export default class Hold extends React.Component{
 	render(){
 		return(
 			<div className = "hold">
-				<div className = "limbRow">
+				<div className = "limbRow topRow">
 					<Limb/>
 					<Limb/>
 				</div>
@@ -23,7 +23,7 @@ export default class Hold extends React.Component{
 							height: 100}}
 					/>
 				</div>
-				<div className = "limbRow">
+				<div className = "limbRow bottomRow">
 					<Limb/>
 					<Limb/>
 				</div>
