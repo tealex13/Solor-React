@@ -4,6 +4,7 @@ import {shuffleArray} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
 import Card from "./Card.js";
+import {LimbsDisplay} from "./LimbsDisplay.js";
 import {Limb, limbType} from "./Limb.js";
 import './Game.css';
 
@@ -15,11 +16,11 @@ class Game extends React.Component{
 		this.state = {drawIndex: 0, 
 			drawPile: drawPile, 
 			displayDraw: true,
-			limbData: [{type: limbType.leftHand, coords: [0,0]},
-				{type: limbType.rightHand, coords: [0,0]},
-				{type: limbType.leftFoot, coords: [2,2]},
-				{type: limbType.rightFoot, coords: [0,0]},
-				{type: limbType.weight, coords: [4,4]}]
+			limbData: [{type: limbType.leftHand, coords: [0,0], isAtStart: false},
+				{type: limbType.rightHand, coords: [0,0], isAtStart: false},
+				{type: limbType.leftFoot, coords: [2,2], isAtStart: false},
+				{type: limbType.rightFoot, coords: [1,2], isAtStart: false},
+				{type: limbType.weight, coords: [4,4], isAtStart: true}]
 		}
 
 		this.drawCards = this.drawCards.bind(this);
@@ -32,8 +33,12 @@ class Game extends React.Component{
 			wall[i] = {ID: uuid(),
 				data: this.generateRowData(nCols, i, colors.slice(mapFromBoard(i,0,nCols),mapLastInRowFromBoard(i,nCols)+1))};
 		}
-		this.state.limbData.map((limbData) => (wall[limbData.coords[0]].data[limbData.coords[1]].data.limbsToDisplay.push(limbData.type)));
+		this.state.limbData.filter((limbData) => (!limbData.isAtStart)).map((limbData) => (wall[limbData.coords[0]].data[limbData.coords[1]].data.limbsToDisplay.push(limbData.type)));
 		return (wall);
+	}
+
+	generateLimbStart(){
+		this.state.limbData.filter((limbData) => (limbData.isAtStart));
 	}
 
 	generateRowData(nCols, rowIndex, colors){
@@ -85,8 +90,10 @@ class Game extends React.Component{
 				{wallData.reverse().map((row) => {
 					return(
 						<div key = {row.ID} className = "row">
-							{row.data.reverse().map((hold) => {
-								return <Hold holdData = {hold.data} key = {hold.ID} />
+							{row.data.map((hold) => {
+								return (<LimbsDisplay key = {hold.ID} limbsData = {hold.data}>
+									<Hold holdData = {hold.data}/>
+									</LimbsDisplay>)
 							})}
 						</div>
 					)	
