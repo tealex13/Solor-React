@@ -15,19 +15,19 @@ export function LimbsDisplay(props){
 			<div>
 				<div className = "limbRow topRow">
 					<div>
-						{props.limbsData.limbsToDisplay.find((element) => element == limbType.leftHand) && <Limb/>}
+						{props.limbData.limbsToDisplay.find((element) => element == limbType.leftHand) && <Limb/>}
 					</div>
 					<div>
-						{props.limbsData.limbsToDisplay.find((element) => element == limbType.rightHand) && <Limb/>}
+						{props.limbData.limbsToDisplay.find((element) => element == limbType.rightHand) && <Limb/>}
 					</div>
 				</div>				
-					{props.children}
+					{React.cloneElement(props.children, { children: props.limbData.limbsToDisplay.find((element) => element == limbType.weight) && <Limb/> })}
 				<div className = "limbRow bottomRow">
 					<div>
-						{props.limbsData.limbsToDisplay.find((element) => element == limbType.leftFoot) && <Limb/>}
+						{props.limbData.limbsToDisplay.find((element) => element == limbType.leftFoot) && <Limb/>}
 					</div>
 					<div>
-						{props.limbsData.limbsToDisplay.find((element) => element == limbType.rightFoot) && <Limb/>}
+						{props.limbData.limbsToDisplay.find((element) => element == limbType.rightFoot) && <Limb/>}
 					</div>
 				</div>
 			</div>

@@ -28,7 +28,7 @@ Limbs
 	-make top limbs visible over the hold
 	-conditionally display limbs on holds
 	-pass in limbs to display as properties
-	display limbs on two rows below the holds
+	-display limbs on two rows below the holds
 	make the limbs images
 	Select limb to make it active
 	move selected move to selected hold

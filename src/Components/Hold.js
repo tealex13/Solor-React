@@ -16,7 +16,9 @@ export default class Hold extends React.Component{
 						background: this.props.holdData.color,
 						width: 100,
 						height: 100}}
-				/>
+				>
+					{this.props.children}
+				</button>
 			</div>
 		)
 	}

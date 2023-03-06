@@ -84,6 +84,8 @@ class Game extends React.Component{
 	render(){
 		const wallData = this.generateWallData(this.props.nRows, this.props.nCols)
 		const cardDisplay = this.generateCardDisplay(this.props.nCardDraw);
+		const limbsAtStart = {limbsToDisplay: this.state.limbData.filter((data) => (data.isAtStart)).map((data)=>(data.type))};
+		console.log(limbsAtStart.lenght === 0);
 		return(
 			<>
 				<div>
@@ -91,13 +93,19 @@ class Game extends React.Component{
 					return(
 						<div key = {row.ID} className = "row">
 							{row.data.map((hold) => {
-								return (<LimbsDisplay key = {hold.ID} limbsData = {hold.data}>
+								return (<LimbsDisplay key = {hold.ID} limbData = {hold.data}>
 									<Hold holdData = {hold.data}/>
 									</LimbsDisplay>)
 							})}
 						</div>
 					)	
 				})}
+				</div>
+				<div>
+					{limbsAtStart.limbsToDisplay.length > 0 && (<LimbsDisplay limbData = {limbsAtStart}>
+						<Hold/>
+					</LimbsDisplay>)}
+				
 				</div>
 				<div className = "playerControls">
 					<div className ="cardDisplay">
