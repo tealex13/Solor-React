@@ -8,22 +8,28 @@ export const limbType = {
 	weight: "weight"
 }
 
-export class Limb extends React.Component{
-	constructor(props){
-		super(props);
+export function Limb() {
+	// constructor(props){
+	// 	super(props);
+	// 	// alert(this.props.type);
+	// }
 
-	}
-	render(){
-		return(
-			<button 
-				style={{
-					background: "white",
-					width: 30,
-					height: 30}}
-			/>
+	// handleClick(){
+	// 	// alert;
+	// }
 
-		)
-	}
+
+	return(
+		<button 
+
+			style={{
+				background: "white",
+				width: 30,
+				height: 30}}
+		/>
+
+	)
+
 }
 
 

@@ -3,7 +3,7 @@ import {calcRowLen,calculateTotalHolds,mapFromBoard, mapLastInRowFromBoard} from
 import {shuffleArray} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
-import Card from "./Card.js";
+import {Card} from "./Card.js";
 import {LimbsDisplay} from "./LimbsDisplay.js";
 import {Limb, limbType} from "./Limb.js";
 import './Game.css';
@@ -20,10 +20,12 @@ class Game extends React.Component{
 				{type: limbType.rightHand, coords: [0,0], isAtStart: false},
 				{type: limbType.leftFoot, coords: [2,2], isAtStart: false},
 				{type: limbType.rightFoot, coords: [1,2], isAtStart: false},
-				{type: limbType.weight, coords: [4,4], isAtStart: true}]
+				{type: limbType.weight, coords: [4,4], isAtStart: true}],
+			activeLimbs: []
 		}
 
 		this.drawCards = this.drawCards.bind(this);
+		this.setActiveLimb = this.setActiveLimb.bind(this);
 	}
 
 	generateWallData(nRows, nCols){
@@ -33,7 +35,14 @@ class Game extends React.Component{
 			wall[i] = {ID: uuid(),
 				data: this.generateRowData(nCols, i, colors.slice(mapFromBoard(i,0,nCols),mapLastInRowFromBoard(i,nCols)+1))};
 		}
-		this.state.limbData.filter((limbData) => (!limbData.isAtStart)).map((limbData) => (wall[limbData.coords[0]].data[limbData.coords[1]].data.limbsToDisplay.push(limbData.type)));
+		this.addLimbsToWall(wall);
+		return (wall);
+	}
+
+	addLimbsToWall(wall){
+		this.state.limbData
+			.filter((limbData) => (!limbData.isAtStart))
+			.map((limbData) => (wall[limbData.coords[0]].data[limbData.coords[1]].data.limbsToDisplay.push(limbData.type)));
 		return (wall);
 	}
 
@@ -81,11 +90,15 @@ class Game extends React.Component{
 
 	}
 
+	setActiveLimb(limb){
+		this.state.setState({activeLimbs : [...this.state.activeLimbb,limb]});
+		console.log("added");
+	}
+
 	render(){
 		const wallData = this.generateWallData(this.props.nRows, this.props.nCols)
 		const cardDisplay = this.generateCardDisplay(this.props.nCardDraw);
 		const limbsAtStart = {limbsToDisplay: this.state.limbData.filter((data) => (data.isAtStart)).map((data)=>(data.type))};
-		console.log(limbsAtStart.lenght === 0);
 		return(
 			<>
 				<div>
@@ -93,8 +106,8 @@ class Game extends React.Component{
 					return(
 						<div key = {row.ID} className = "row">
 							{row.data.map((hold) => {
-								return (<LimbsDisplay key = {hold.ID} limbData = {hold.data}>
-									<Hold holdData = {hold.data}/>
+								return (<LimbsDisplay key = {hold.ID} limbData = {hold.data} handleClick = {this.setActiveLimb}>
+									<Hold holdData = {hold.data} key = {hold.ID} />
 									</LimbsDisplay>)
 							})}
 						</div>
@@ -102,7 +115,7 @@ class Game extends React.Component{
 				})}
 				</div>
 				<div>
-					{limbsAtStart.limbsToDisplay.length > 0 && (<LimbsDisplay limbData = {limbsAtStart}>
+					{limbsAtStart.limbsToDisplay.length > 0 && (<LimbsDisplay limbData = {limbsAtStart} handleClick = {this.setActiveLimb}>
 						<Hold/>
 					</LimbsDisplay>)}
 				
@@ -110,8 +123,7 @@ class Game extends React.Component{
 				<div className = "playerControls">
 					<div className ="cardDisplay">
 						{cardDisplay.map((card) => {
-							return(<Card key = {card.ID} data = {card.data}/>
-								)
+							return(<Card key = {card.ID} data = {card.data}/>)
 						})
 						}
 					</div>
