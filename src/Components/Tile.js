@@ -9,8 +9,7 @@ export const limbType = {
 	weight: "weight"
 }
 
-export function LimbsDisplay(props){
-
+export function Tile(props){
 		return(
 
 			<div>

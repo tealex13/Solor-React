@@ -4,7 +4,7 @@ import {shuffleArray} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
 import {Card} from "./Card.js";
-import {LimbsDisplay} from "./LimbsDisplay.js";
+import {Tile} from "./Tile.js";
 import {Limb, limbType} from "./Limb.js";
 import './Game.css';
 
@@ -90,12 +90,16 @@ class Game extends React.Component{
 
 	}
 
-	setActiveLimb(limb){
-		this.state.setState({activeLimbs : [...this.state.activeLimbb,limb]});
-		console.log("added");
-	}
+	setActiveLimb = (limb) => {
+		this.setState({activeLimbs : [...this.state.activeLimbs,limb]});
+		console.log(limb);
+		}
+
 
 	render(){
+		const handle = this.setActiveLimb
+	
+
 		const wallData = this.generateWallData(this.props.nRows, this.props.nCols)
 		const cardDisplay = this.generateCardDisplay(this.props.nCardDraw);
 		const limbsAtStart = {limbsToDisplay: this.state.limbData.filter((data) => (data.isAtStart)).map((data)=>(data.type))};
@@ -106,18 +110,18 @@ class Game extends React.Component{
 					return(
 						<div key = {row.ID} className = "row">
 							{row.data.map((hold) => {
-								return (<LimbsDisplay key = {hold.ID} limbData = {hold.data} handleClick = {this.setActiveLimb}>
+								return (<Tile key = {hold.ID} limbData = {hold.data} handleClick = {this.setActiveLimb}>
 									<Hold holdData = {hold.data} key = {hold.ID} />
-									</LimbsDisplay>)
+									</Tile>)
 							})}
 						</div>
 					)	
 				})}
 				</div>
 				<div>
-					{limbsAtStart.limbsToDisplay.length > 0 && (<LimbsDisplay limbData = {limbsAtStart} handleClick = {this.setActiveLimb}>
+					{limbsAtStart.limbsToDisplay.length > 0 && (<Tile limbData = {limbsAtStart} handleClick = {this.setActiveLimb}>
 						<Hold/>
-					</LimbsDisplay>)}
+					</Tile>)}
 				
 				</div>
 				<div className = "playerControls">
@@ -131,7 +135,12 @@ class Game extends React.Component{
 						<button onClick = {this.drawCards}> 
 							Draw
 						</button>
+
 					}	
+					<button onClick = {this.setActiveLimb}> 
+							ClickMe
+					</button>
+					
 				</div>	
 				
 			</>

@@ -8,20 +8,24 @@ export const limbType = {
 	weight: "weight"
 }
 
-export function Limb() {
+export function Limb(props) {
+
+	//{ActiveLimbsArray setActiveLimb} = useContext("contextinitializedinparent")
+
+	//sel
 	// constructor(props){
 	// 	super(props);
 	// 	// alert(this.props.type);
 	// }
 
-	// handleClick(){
-	// 	// alert;
-	// }
+	const handleClick = () => {
+		props.handleClick(props.type);
+	};
 
 
 	return(
 		<button 
-
+			onClick = {handleClick}
 			style={{
 				background: "white",
 				width: 30,
