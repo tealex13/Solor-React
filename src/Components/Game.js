@@ -33,13 +33,9 @@ class Game extends React.Component{
 
 	generateTilesData(nRows, nCols){
 		const holdData  = this.generateHoldData();
-		let wall = [];
-		for (var i = 0; i < nRows; i++) {
-			wall[i] = {ID: uuid(),
-				data: this.generateRowData(nCols, i, holdData.slice(mapFromBoard(i,0,nCols),mapLastInRowFromBoard(i,nCols)+1))};
-		}
-		this.addLimbsToWall(wall);
-		return (wall);
+		let tiles = this.mapHoldsToTiles(nRows, nCols, holdData);	
+		this.mapLimbsToTiles(tiles);
+		return tiles;
 	}
 
 	generateHoldData(){
@@ -54,6 +50,15 @@ class Game extends React.Component{
 		return holdData;
 	}
 
+	mapHoldsToTiles(nRows, nCols, holdData){
+		let tiles = [];
+		for (var i = 0; i < nRows; i++) {
+			tiles[i] = {ID: uuid(),
+				data: this.generateRowData(nCols, i, holdData.slice(mapFromBoard(i,0,nCols),mapLastInRowFromBoard(i,nCols)+1))};
+		}
+		return tiles;
+	}
+
 	generateRowData(nCols, rowIndex, holdData){
 		let tempRow = [];
 		for (var j = 0; j < calcRowLen(nCols,rowIndex); j++) {
@@ -63,11 +68,11 @@ class Game extends React.Component{
 	}
 
 
-	addLimbsToWall(wall){
+	mapLimbsToTiles(tiles){
 		Object.entries(this.state.limbData)
 		.filter(([key,value]) => (!value.isAtStart)).
-		map(([key,value]) => (wall[value.coords[0]].data[value.coords[1]].limbsData.limbsToDisplay.push(key)));
-		return (wall);
+		map(([key,value]) => (tiles[value.coords[0]].data[value.coords[1]].limbsData.limbsToDisplay.push(key)));
+		return (tiles);
 	}
 
 	generateCardDisplay(nCardDraw){
