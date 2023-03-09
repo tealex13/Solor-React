@@ -16,11 +16,12 @@ class Game extends React.Component{
 		this.state = {drawIndex: 0, 
 			drawPile: drawPile, 
 			displayDraw: true,
-			limbData: [{type: limbType.leftHand, coords: [0,0], isAtStart: false},
-				{type: limbType.rightHand, coords: [0,0], isAtStart: false},
-				{type: limbType.leftFoot, coords: [2,2], isAtStart: false},
-				{type: limbType.rightFoot, coords: [1,2], isAtStart: false},
-				{type: limbType.weight, coords: [4,4], isAtStart: true}],
+
+			limbData: {leftHand: {coords: [0,0], isAtStart: false, active: false},
+				rightHand: {coords: [0,0], isAtStart: false, active: false},
+				leftFoot: {coords: [2,2], isAtStart: false, active: false},
+				rightFoot: {coords: [1,2], isAtStart: false, active: false},
+				weight: {coords: [4,4], isAtStart: true, active: false}},
 			activeLimbs: []
 		}
 
@@ -28,8 +29,10 @@ class Game extends React.Component{
 		this.setActiveLimb = this.setActiveLimb.bind(this);
 	}
 
+// Object.values(limbType).map((type) => this.state.limbData[type])
+
 	generateWallData(nRows, nCols){
-		const colors  = this.mapColorsToHolds();
+		const colors  = this.generateHoldData();
 		let wall = [];
 		for (var i = 0; i < nRows; i++) {
 			wall[i] = {ID: uuid(),
@@ -39,10 +42,25 @@ class Game extends React.Component{
 		return (wall);
 	}
 
+	generateHoldData(){
+		let tempColors = [];
+		const iterNum = Math.ceil(calculateTotalHolds(this.props.nRows, this.props.nCols)/colorsArray.length);
+		for (var i = 0; i < iterNum; i++) {
+			tempColors = tempColors.concat(colorsArray);
+		}
+
+		let holdTemplate = {color: "white"};
+		let temp = [];
+		// temp = tempColors.map((color) => ( holdTemplate.color = color);
+		shuffleArray(tempColors,this.props.boardSeed);
+		return tempColors;
+	}
+
+
 	addLimbsToWall(wall){
-		this.state.limbData
-			.filter((limbData) => (!limbData.isAtStart))
-			.map((limbData) => (wall[limbData.coords[0]].data[limbData.coords[1]].data.limbsToDisplay.push(limbData.type)));
+		Object.entries(this.state.limbData)
+		.filter(([key,value]) => (!value.isAtStart)).
+		map(([key,value]) => (wall[value.coords[0]].data[value.coords[1]].data.limbsToDisplay.push(key)));
 		return (wall);
 	}
 
@@ -73,15 +91,6 @@ class Game extends React.Component{
 		return drawPile;
 	}
 
-	mapColorsToHolds(){
-		let tempColors = [];
-		const iterNum = Math.ceil(calculateTotalHolds(this.props.nRows, this.props.nCols)/colorsArray.length);
-		for (var i = 0; i < iterNum; i++) {
-			tempColors = tempColors.concat(colorsArray);
-		}
-		shuffleArray(tempColors,this.props.boardSeed);
-		return tempColors;
-	}
 
 	drawCards(){
 		const newDrawIndex = this.state.drawIndex + this.props.nCardDraw;
@@ -102,16 +111,16 @@ class Game extends React.Component{
 
 		const wallData = this.generateWallData(this.props.nRows, this.props.nCols)
 		const cardDisplay = this.generateCardDisplay(this.props.nCardDraw);
-		const limbsAtStart = {limbsToDisplay: this.state.limbData.filter((data) => (data.isAtStart)).map((data)=>(data.type))};
+		const limbsAtStart = {limbsToDisplay: Object.entries(this.state.limbData).filter(([key,value]) =>(value.isAtStart)).map(([key,value]) => (key))};
 		return(
 			<>
 				<div>
 				{wallData.reverse().map((row) => {
 					return(
 						<div key = {row.ID} className = "row">
-							{row.data.map((hold) => {
-								return (<Tile key = {hold.ID} limbData = {hold.data} handleClick = {this.setActiveLimb}>
-									<Hold holdData = {hold.data} key = {hold.ID} />
+							{row.data.map((tile) => {
+								return (<Tile key = {tile.ID} limbData = {tile.data} handleClick = {this.setActiveLimb}>
+									<Hold holdData = {tile.data} key = {tile.ID} />
 									</Tile>)
 							})}
 						</div>

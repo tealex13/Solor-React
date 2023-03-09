@@ -31,14 +31,19 @@ Limbs
 	-display limbs on two rows below the holds
 	-display weight
 	
-	refactor limb attributes to be an object
-	Add active field to object
-	setup context to share selectable 
 	Select limb to make it active
-	move selected move to selected hold
+	Obtain coordinates of seleced hold
+	Set limb coordinates of active limbs to coordinates of selected hold 
 
+Cleanup
+	-refactor limb attributes to be an object
+	
+	Seperate Hold data from limb data when passing it into tile
+	Use active from limbData object
+	
 Rules
-	Move Limbs according to the rules on the board
+	Come up with the a list of rules an the order in which to implement them
+	
 	
 Extras
 	make the limbs images
