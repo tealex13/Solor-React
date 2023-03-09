@@ -31,49 +31,43 @@ class Game extends React.Component{
 
 // Object.values(limbType).map((type) => this.state.limbData[type])
 
-	generateWallData(nRows, nCols){
-		const colors  = this.generateHoldData();
+	generateTilesData(nRows, nCols){
+		const holdData  = this.generateHoldData();
 		let wall = [];
 		for (var i = 0; i < nRows; i++) {
 			wall[i] = {ID: uuid(),
-				data: this.generateRowData(nCols, i, colors.slice(mapFromBoard(i,0,nCols),mapLastInRowFromBoard(i,nCols)+1))};
+				data: this.generateRowData(nCols, i, holdData.slice(mapFromBoard(i,0,nCols),mapLastInRowFromBoard(i,nCols)+1))};
 		}
 		this.addLimbsToWall(wall);
 		return (wall);
 	}
 
 	generateHoldData(){
-		let tempColors = [];
-		const iterNum = Math.ceil(calculateTotalHolds(this.props.nRows, this.props.nCols)/colorsArray.length);
+		let holdData = [];
+		const nTotalTiles =  calculateTotalHolds(this.props.nRows, this.props.nCols);
+		const iterNum = Math.ceil(nTotalTiles/colorsArray.length);
 		for (var i = 0; i < iterNum; i++) {
-			tempColors = tempColors.concat(colorsArray);
+			holdData = holdData.concat(colorsArray.map((color) =>({color: color})));
 		}
+		shuffleArray(holdData,this.props.boardSeed);
+		holdData = holdData.slice(0,nTotalTiles);
+		return holdData;
+	}
 
-		let holdTemplate = {color: "white"};
-		let temp = [];
-		// temp = tempColors.map((color) => ( holdTemplate.color = color);
-		shuffleArray(tempColors,this.props.boardSeed);
-		return tempColors;
+	generateRowData(nCols, rowIndex, holdData){
+		let tempRow = [];
+		for (var j = 0; j < calcRowLen(nCols,rowIndex); j++) {
+			tempRow[j] = {ID: uuid(), holdData: holdData[j], limbsData: {limbsToDisplay:[]}};
+		}
+		return tempRow;
 	}
 
 
 	addLimbsToWall(wall){
 		Object.entries(this.state.limbData)
 		.filter(([key,value]) => (!value.isAtStart)).
-		map(([key,value]) => (wall[value.coords[0]].data[value.coords[1]].data.limbsToDisplay.push(key)));
+		map(([key,value]) => (wall[value.coords[0]].data[value.coords[1]].limbsData.limbsToDisplay.push(key)));
 		return (wall);
-	}
-
-	generateLimbStart(){
-		this.state.limbData.filter((limbData) => (limbData.isAtStart));
-	}
-
-	generateRowData(nCols, rowIndex, colors){
-		let tempRow = [];
-		for (var j = 0; j < calcRowLen(nCols,rowIndex); j++) {
-			tempRow[j] = {ID: uuid(), data: {color: colors[j], limbsToDisplay: []}};
-		}
-		return tempRow;
 	}
 
 	generateCardDisplay(nCardDraw){
@@ -109,18 +103,18 @@ class Game extends React.Component{
 		const handle = this.setActiveLimb
 	
 
-		const wallData = this.generateWallData(this.props.nRows, this.props.nCols)
+		const tilesData = this.generateTilesData(this.props.nRows, this.props.nCols)
 		const cardDisplay = this.generateCardDisplay(this.props.nCardDraw);
 		const limbsAtStart = {limbsToDisplay: Object.entries(this.state.limbData).filter(([key,value]) =>(value.isAtStart)).map(([key,value]) => (key))};
 		return(
 			<>
 				<div>
-				{wallData.reverse().map((row) => {
+				{tilesData.reverse().map((row) => {
 					return(
 						<div key = {row.ID} className = "row">
 							{row.data.map((tile) => {
-								return (<Tile key = {tile.ID} limbData = {tile.data} handleClick = {this.setActiveLimb}>
-									<Hold holdData = {tile.data} key = {tile.ID} />
+								return (<Tile key = {tile.ID} limbsData = {tile.limbsData} handleClick = {this.setActiveLimb}>
+									<Hold holdData = {tile.holdData} key = {tile.ID} />
 									</Tile>)
 							})}
 						</div>
@@ -128,9 +122,9 @@ class Game extends React.Component{
 				})}
 				</div>
 				<div>
-					{limbsAtStart.limbsToDisplay.length > 0 && (<Tile limbData = {limbsAtStart} handleClick = {this.setActiveLimb}>
+					{limbsAtStart.limbsToDisplay.length > 0 ? (<Tile limbsData = {limbsAtStart} handleClick = {this.setActiveLimb}>
 						<Hold/>
-					</Tile>)}
+					</Tile>) : null}
 				
 				</div>
 				<div className = "playerControls">
@@ -140,16 +134,11 @@ class Game extends React.Component{
 						})
 						}
 					</div>
-					{this.state.displayDraw &&
+					{this.state.displayDraw ?
 						<button onClick = {this.drawCards}> 
 							Draw
 						</button>
-
-					}	
-					<button onClick = {this.setActiveLimb}> 
-							ClickMe
-					</button>
-					
+						: null}						
 				</div>	
 				
 			</>
