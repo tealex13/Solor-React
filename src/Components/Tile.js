@@ -15,22 +15,22 @@ export function Tile(props){
 			<div>
 				<div className = "limbRow topRow">
 					<div>
-						{props.limbsData.limbsToDisplay.find((element) => element == limbType.leftHand) ? 
+						{props.limbsData.find((element) => element.type == limbType.leftHand) ? 
 						<Limb type = {limbType.leftHand} handleClick = {props.handleClick}/> : null}
 					</div>
 					<div>
-						{props.limbsData.limbsToDisplay.find((element) => element == limbType.rightHand) ? 
+						{props.limbsData.find((element) => element.type == limbType.rightHand) ? 
 						<Limb type = {limbType.rightHand}/> : null} 
 					</div>
 				</div>				
-					{React.cloneElement(props.children, { children: props.limbsData.limbsToDisplay.find((element) => element == limbType.weight) ? <Limb type = {limbType.leftHand}/> : null})}
+					{React.cloneElement(props.children, { children: props.limbsData.find((element) => element.type == limbType.weight) ? <Limb type = {limbType.leftHand}/> : null})}
 				 <div className = "limbRow bottomRow">
 					<div>
-						{props.limbsData.limbsToDisplay.find((element) => element == limbType.leftFoot) ? 
+						{props.limbsData.find((element) => element.type == limbType.leftFoot) ? 
 						<Limb type = {limbType.leftFoot}/> : null}
 					</div>
 					<div>
-						{props.limbsData.limbsToDisplay.find((element) => element == limbType.rightFoot) ? 
+						{props.limbsData.find((element) => element.type == limbType.rightFoot) ? 
 						<Limb type = {limbType.rightFoot}/> : null} 
 					</div>
 				</div>

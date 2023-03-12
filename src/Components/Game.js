@@ -26,7 +26,9 @@ class Game extends React.Component{
 		}
 
 		this.drawCards = this.drawCards.bind(this);
-		this.setActiveLimb = this.setActiveLimb.bind(this);
+		this.selectLimb = this.selectLimb.bind(this);
+		this.deselectLimb = this.deselectLimb.bind(this);
+		this.limbHandleClick = this.limbHandleClick.bind(this);
 	}
 
 // Object.values(limbType).map((type) => this.state.limbData[type])
@@ -62,16 +64,15 @@ class Game extends React.Component{
 	generateRowData(nCols, rowIndex, holdData){
 		let tempRow = [];
 		for (var j = 0; j < calcRowLen(nCols,rowIndex); j++) {
-			tempRow[j] = {ID: uuid(), holdData: holdData[j], limbsData: {limbsToDisplay:[]}};
+			tempRow[j] = {ID: uuid(), holdData: holdData[j], limbsData: []};
 		}
 		return tempRow;
 	}
 
-
 	mapLimbsToTiles(tiles){
 		Object.entries(this.state.limbData)
 		.filter(([key,value]) => (!value.isAtStart)).
-		map(([key,value]) => (tiles[value.coords[0]].data[value.coords[1]].limbsData.limbsToDisplay.push(key)));
+		map(([key,value]) => (tiles[value.coords[0]].data[value.coords[1]].limbsData.push(this.formatLimbsForTile(key,value))));
 		return (tiles);
 	}
 
@@ -90,6 +91,18 @@ class Game extends React.Component{
 		return drawPile;
 	}
 
+	limbHandleClick(){
+		if(Object.values(this.state.limbData).filter((element) => (!element.active))){
+			return this.selectLimb;
+		} else {
+			return this.deselectActive;
+		}
+
+	}
+
+	formatLimbsForTile(key,value){
+		return{type: key, active: value.active, handleClick: this.limbHandleClick()};
+	}
 
 	drawCards(){
 		const newDrawIndex = this.state.drawIndex + this.props.nCardDraw;
@@ -98,19 +111,23 @@ class Game extends React.Component{
 
 	}
 
-	setActiveLimb = (limb) => {
-		this.setState({activeLimbs : [...this.state.activeLimbs,limb]});
-		console.log(limb);
+	selectLimb = (limb) => {
+		const tempLimbState = {...this.state.limbData, ...{[limb] : {...this.state.limbData[limb], ...{active:true}}}}
+		this.setState((state) => ({limbData: tempLimbState}));
 		}
+
+	deselectLimb = (limb) => {
+		console.log("deselecting: ",limb);
+	}
 
 
 	render(){
-		const handle = this.setActiveLimb
-	
 
 		const tilesData = this.generateTilesData(this.props.nRows, this.props.nCols)
 		const cardDisplay = this.generateCardDisplay(this.props.nCardDraw);
-		const limbsAtStart = {limbsToDisplay: Object.entries(this.state.limbData).filter(([key,value]) =>(value.isAtStart)).map(([key,value]) => (key))};
+		const limbsAtStart = Object.entries(this.state.limbData)
+		.filter(([key,value]) =>(value.isAtStart))
+		.map(([key,value]) => (this.formatLimbsForTile(key,value)));
 		return(
 			<>
 				<div>
@@ -118,7 +135,7 @@ class Game extends React.Component{
 					return(
 						<div key = {row.ID} className = "row">
 							{row.data.map((tile) => {
-								return (<Tile key = {tile.ID} limbsData = {tile.limbsData} handleClick = {this.setActiveLimb}>
+								return (<Tile key = {tile.ID} limbsData = {tile.limbsData} handleClick = {this.selectLimb}>
 									<Hold holdData = {tile.holdData} key = {tile.ID} />
 									</Tile>)
 							})}
@@ -127,7 +144,7 @@ class Game extends React.Component{
 				})}
 				</div>
 				<div>
-					{limbsAtStart.limbsToDisplay.length > 0 ? (<Tile limbsData = {limbsAtStart} handleClick = {this.setActiveLimb}>
+					{limbsAtStart.length > 0 ? (<Tile limbsData = {limbsAtStart} handleClick = {this.selectLimb}>
 						<Hold/>
 					</Tile>) : null}
 				
