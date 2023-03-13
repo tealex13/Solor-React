@@ -4,8 +4,8 @@ import {shuffleArray} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
 import {Card} from "./Card.js";
-import {Tile} from "./Tile.js";
-import {Limb, limbType} from "./Limb.js";
+import {Tile, limbType} from "./Tile.js";
+import {Limb} from "./Limb.js";
 import './Game.css';
 
 class Game extends React.Component{
@@ -19,7 +19,7 @@ class Game extends React.Component{
 
 			limbData: {leftHand: {coords: [0,0], isAtStart: false, active: false},
 				rightHand: {coords: [0,0], isAtStart: false, active: false},
-				leftFoot: {coords: [2,2], isAtStart: false, active: false},
+				leftFoot: {coords: [2,2], isAtStart: true, active: false},
 				rightFoot: {coords: [1,2], isAtStart: false, active: false},
 				weight: {coords: [4,4], isAtStart: true, active: false}},
 			activeLimbs: []
@@ -64,15 +64,18 @@ class Game extends React.Component{
 	generateRowData(nCols, rowIndex, holdData){
 		let tempRow = [];
 		for (var j = 0; j < calcRowLen(nCols,rowIndex); j++) {
-			tempRow[j] = {ID: uuid(), holdData: holdData[j], limbsData: []};
+			tempRow[j] = {ID: uuid(), holdData: holdData[j], limbsData: {}};
 		}
 		return tempRow;
 	}
 
 	mapLimbsToTiles(tiles){
 		Object.entries(this.state.limbData)
-		.filter(([key,value]) => (!value.isAtStart)).
-		map(([key,value]) => (tiles[value.coords[0]].data[value.coords[1]].limbsData.push(this.formatLimbsForTile(key,value))));
+		.filter(([key,value]) => (!value.isAtStart))
+		.map(([key,value]) => {
+			let tempLimbsData = tiles[value.coords[0]].data[value.coords[1]].limbsData;
+			return (tiles[value.coords[0]].data[value.coords[1]].limbsData = {...tempLimbsData, ...this.formatLimbsForTile(key,value)});
+		});
 		return (tiles);
 	}
 
@@ -91,17 +94,18 @@ class Game extends React.Component{
 		return drawPile;
 	}
 
-	limbHandleClick(){
-		if(Object.values(this.state.limbData).filter((element) => (!element.active))){
-			return this.selectLimb;
+	limbHandleClick(limb){
+		alert("clicked");
+		if(this.state.limbData[limb].active){
+			this.deselectLimb(limb);
 		} else {
-			return this.deselectActive;
+			this.selectLimb(limb);
 		}
 
 	}
 
 	formatLimbsForTile(key,value){
-		return{type: key, active: value.active, handleClick: this.limbHandleClick()};
+		return{[key]: {active: value.active, handleClick: this.limbHandleClick}};
 	}
 
 	drawCards(){
@@ -117,7 +121,8 @@ class Game extends React.Component{
 		}
 
 	deselectLimb = (limb) => {
-		console.log("deselecting: ",limb);
+		const tempLimbState = {...this.state.limbData, ...{[limb] : {...this.state.limbData[limb], ...{active:false}}}}
+		this.setState((state) => ({limbData: tempLimbState}));
 	}
 
 
@@ -125,9 +130,14 @@ class Game extends React.Component{
 
 		const tilesData = this.generateTilesData(this.props.nRows, this.props.nCols)
 		const cardDisplay = this.generateCardDisplay(this.props.nCardDraw);
-		const limbsAtStart = Object.entries(this.state.limbData)
+		let limbsAtStart = {};
+		Object.entries(this.state.limbData)
 		.filter(([key,value]) =>(value.isAtStart))
-		.map(([key,value]) => (this.formatLimbsForTile(key,value)));
+		.forEach(([key,value]) => (
+			limbsAtStart = {...limbsAtStart, ...this.formatLimbsForTile(key,value)}
+			));
+
+
 		return(
 			<>
 				<div>
@@ -135,7 +145,7 @@ class Game extends React.Component{
 					return(
 						<div key = {row.ID} className = "row">
 							{row.data.map((tile) => {
-								return (<Tile key = {tile.ID} limbsData = {tile.limbsData} handleClick = {this.selectLimb}>
+								return (<Tile key = {tile.ID} limbsData = {tile.limbsData} handleClick = {this.limbHandleClick}>
 									<Hold holdData = {tile.holdData} key = {tile.ID} />
 									</Tile>)
 							})}
@@ -144,7 +154,7 @@ class Game extends React.Component{
 				})}
 				</div>
 				<div>
-					{limbsAtStart.length > 0 ? (<Tile limbsData = {limbsAtStart} handleClick = {this.selectLimb}>
+					{limbsAtStart ? (<Tile limbsData = {limbsAtStart} handleClick = {this.limbHandleClick}>
 						<Hold/>
 					</Tile>) : null}
 				

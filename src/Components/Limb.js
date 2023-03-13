@@ -1,13 +1,5 @@
 import React from 'react';
 
-export const limbType = {
-	leftHand: "leftHand",
-	rightHand: "rightHand",
-	leftFoot: "leftFoot",
-	rightFoot: "rightFoot",
-	weight: "weight"
-}
-
 export function Limb(props) {
 
 	//{ActiveLimbsArray setActiveLimb} = useContext("contextinitializedinparent")

@@ -10,27 +10,30 @@ export const limbType = {
 }
 
 export function Tile(props){
+		// console.log(props.limbsData[limbType.leftHand]? "hello0" : "not found");
+		// console.log(props.limbsData.find((element) => (Object.keys(element).find((element) => (element === limbType.rightHand)))));
+		// console.log(Object.keys(props.limbsData[0]).find((element) => (element === limbType.leftHand)));
 
 		return(
 			<div>
 				<div className = "limbRow topRow">
 					<div>
-						{props.limbsData.find((element) => element.type == limbType.leftHand) ? 
-						<Limb type = {limbType.leftHand} handleClick = {props.handleClick}/> : null}
+						{props.limbsData[limbType.leftHand] ? 
+						<Limb type = {limbType.leftHand} handleClick = {props.limbsData[limbType.leftHand].handleClick}/> : null}
 					</div>
 					<div>
-						{props.limbsData.find((element) => element.type == limbType.rightHand) ? 
+						{props.limbsData[limbType.rightHand] ? 
 						<Limb type = {limbType.rightHand}/> : null} 
 					</div>
 				</div>				
-					{React.cloneElement(props.children, { children: props.limbsData.find((element) => element.type == limbType.weight) ? <Limb type = {limbType.leftHand}/> : null})}
+					{React.cloneElement(props.children, { children: (props.limbsData[limbType.weight] ? <Limb type = {limbType.weight}/> : null)})}
 				 <div className = "limbRow bottomRow">
 					<div>
-						{props.limbsData.find((element) => element.type == limbType.leftFoot) ? 
+						{props.limbsData[limbType.leftFoot] ? 
 						<Limb type = {limbType.leftFoot}/> : null}
 					</div>
 					<div>
-						{props.limbsData.find((element) => element.type == limbType.rightFoot) ? 
+						{props.limbsData[limbType.rightFoot] ? 
 						<Limb type = {limbType.rightFoot}/> : null} 
 					</div>
 				</div>
