@@ -31,14 +31,14 @@ Limbs
 	-display limbs on two rows below the holds
 	-display weight
 	
-	Select limb to make it active
+	-Select limb to make it active
 	Obtain coordinates of seleced hold
 	Set limb coordinates of active limbs to coordinates of selected hold 
 
 Cleanup
 	-refactor limb attributes to be an object
 	-Seperate Hold data from limb data when passing it into tile
-	Use active from limbData object
+	-Use active from limbData object
 	
 Rules
 	Come up with the a list of rules an the order in which to implement them

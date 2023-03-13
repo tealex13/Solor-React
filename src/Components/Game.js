@@ -95,7 +95,6 @@ class Game extends React.Component{
 	}
 
 	limbHandleClick(limb){
-		alert("clicked");
 		if(this.state.limbData[limb].active){
 			this.deselectLimb(limb);
 		} else {
@@ -137,7 +136,6 @@ class Game extends React.Component{
 			limbsAtStart = {...limbsAtStart, ...this.formatLimbsForTile(key,value)}
 			));
 
-
 		return(
 			<>
 				<div>
@@ -145,7 +143,7 @@ class Game extends React.Component{
 					return(
 						<div key = {row.ID} className = "row">
 							{row.data.map((tile) => {
-								return (<Tile key = {tile.ID} limbsData = {tile.limbsData} handleClick = {this.limbHandleClick}>
+								return (<Tile key = {tile.ID} limbsData = {tile.limbsData}>
 									<Hold holdData = {tile.holdData} key = {tile.ID} />
 									</Tile>)
 							})}
@@ -154,7 +152,7 @@ class Game extends React.Component{
 				})}
 				</div>
 				<div>
-					{limbsAtStart ? (<Tile limbsData = {limbsAtStart} handleClick = {this.limbHandleClick}>
+					{limbsAtStart ? (<Tile limbsData = {limbsAtStart}>
 						<Hold/>
 					</Tile>) : null}
 				
