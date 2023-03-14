@@ -10,9 +10,7 @@ export const limbType = {
 }
 
 export function Tile(props){
-		// console.log(props.limbsData[limbType.leftHand]? "hello0" : "not found");
-		// console.log(props.limbsData.find((element) => (Object.keys(element).find((element) => (element === limbType.rightHand)))));
-		// console.log(Object.keys(props.limbsData[0]).find((element) => (element === limbType.leftHand)));
+
 		const handleClick = (limb) => () => {
 			props.limbsData[limb].handleClick(limb);
 		}
@@ -47,7 +45,7 @@ export function Tile(props){
 	}
 
 Tile.defaultProps = {
-	limbsData:{limbsToDisplay: []}
+	limbsData:{}
 }
 
 

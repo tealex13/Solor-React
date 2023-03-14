@@ -10,6 +10,7 @@ export default function Hold(props){
 					background: props.holdData.color,
 					width: 100,
 					height: 100}}
+				onClick = {props.holdData.handleClick}
 			>
 			{props.children}
 			</button>

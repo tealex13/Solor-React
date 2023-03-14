@@ -17,18 +17,19 @@ class Game extends React.Component{
 			drawPile: drawPile, 
 			displayDraw: true,
 
-			limbData: {leftHand: {coords: [0,0], isAtStart: false, active: false},
-				rightHand: {coords: [0,0], isAtStart: false, active: false},
-				leftFoot: {coords: [2,2], isAtStart: true, active: false},
-				rightFoot: {coords: [1,2], isAtStart: false, active: false},
-				weight: {coords: [4,4], isAtStart: true, active: false}},
-			activeLimbs: []
+			limbData: {leftHand: {coords: [0,0], isAtStart: false, selected: false},
+				rightHand: {coords: [0,0], isAtStart: false, selected: false},
+				leftFoot: {coords: [2,2], isAtStart: true, selected: false},
+				rightFoot: {coords: [1,2], isAtStart: false, selected: false},
+				weight: {coords: [4,4], isAtStart: true, selected: false}},
 		}
 
 		this.drawCards = this.drawCards.bind(this);
 		this.selectLimb = this.selectLimb.bind(this);
 		this.deselectLimb = this.deselectLimb.bind(this);
 		this.limbHandleClick = this.limbHandleClick.bind(this);
+		this.moveLimbs = this.moveLimbs.bind(this);
+		this.holdHandleClick = this.holdHandleClick.bind(this);
 	}
 
 // Object.values(limbType).map((type) => this.state.limbData[type])
@@ -64,7 +65,7 @@ class Game extends React.Component{
 	generateRowData(nCols, rowIndex, holdData){
 		let tempRow = [];
 		for (var j = 0; j < calcRowLen(nCols,rowIndex); j++) {
-			tempRow[j] = {ID: uuid(), holdData: holdData[j], limbsData: {}};
+			tempRow[j] = {ID: uuid(), holdData: {...holdData[j], ...{handleClick: this.holdHandleClick([rowIndex,j])}}, limbsData: {}};
 		}
 		return tempRow;
 	}
@@ -95,16 +96,40 @@ class Game extends React.Component{
 	}
 
 	limbHandleClick(limb){
-		if(this.state.limbData[limb].active){
+		if(this.state.limbData[limb].selected){
 			this.deselectLimb(limb);
 		} else {
 			this.selectLimb(limb);
 		}
-
 	}
 
+	selectLimb = (limb) => {
+		const tempLimbState = {...this.state.limbData, ...{[limb] : {...this.state.limbData[limb], ...{selected:true}}}};
+		this.setState((state) => ({limbData: tempLimbState}));
+		}
+
+	deselectLimb = (limb) => {
+		const tempLimbState = {...this.state.limbData, ...{[limb] : {...this.state.limbData[limb], ...{selected:false}}}};
+		this.setState((state) => ({limbData: tempLimbState}));
+	}
+
+	holdHandleClick = (coords) => () => {
+		let selectedLimbs = Object.entries(this.state.limbData).filter(([key,value]) => (value.selected)).map(([key,value]) => (key));
+		console.log(selectedLimbs);
+		this.moveLimbs(selectedLimbs,coords);
+	} 
+
+	moveLimbs = (limbs, coords) => {
+		console.log(limbs)
+		let tempLimbsState = {...this.state.limbData};
+		limbs.forEach((limb) => {
+			tempLimbsState = {...tempLimbsState, ...{[limb] : {...this.state.limbData[limb], ...{coords: coords, isAtStart: false, selected: false}}}};
+			})
+		this.setState((state) => ({limbData: tempLimbsState}));
+		}
+
 	formatLimbsForTile(key,value){
-		return{[key]: {active: value.active, handleClick: this.limbHandleClick}};
+		return{[key]: {selected: value.selected, handleClick: this.limbHandleClick}};
 	}
 
 	drawCards(){
@@ -114,28 +139,24 @@ class Game extends React.Component{
 
 	}
 
-	selectLimb = (limb) => {
-		const tempLimbState = {...this.state.limbData, ...{[limb] : {...this.state.limbData[limb], ...{active:true}}}}
-		this.setState((state) => ({limbData: tempLimbState}));
-		}
-
-	deselectLimb = (limb) => {
-		const tempLimbState = {...this.state.limbData, ...{[limb] : {...this.state.limbData[limb], ...{active:false}}}}
-		this.setState((state) => ({limbData: tempLimbState}));
-	}
-
-
-	render(){
-
-		const tilesData = this.generateTilesData(this.props.nRows, this.props.nCols)
-		const cardDisplay = this.generateCardDisplay(this.props.nCardDraw);
+	generateLimbsAtStart(){
 		let limbsAtStart = {};
 		Object.entries(this.state.limbData)
 		.filter(([key,value]) =>(value.isAtStart))
 		.forEach(([key,value]) => (
 			limbsAtStart = {...limbsAtStart, ...this.formatLimbsForTile(key,value)}
 			));
+		return	limbsAtStart;
+	}
 
+
+
+	render(){
+
+		const tilesData = this.generateTilesData(this.props.nRows, this.props.nCols);
+		const cardDisplay = this.generateCardDisplay(this.props.nCardDraw);
+		const limbsAtStart = this.generateLimbsAtStart();
+	
 		return(
 			<>
 				<div>
