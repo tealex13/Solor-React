@@ -27,3 +27,13 @@ export function mapLastInRowFromBoard (rowIndex, nCols){
 function calcTwoRowsLen(nCols){
 	return calcRowLen(nCols,0) + calcRowLen(nCols,1);
 }
+
+export function dist (a,b){
+	const rs = Math.abs(b[0]-a[0]); //row shift
+	const goingRight =  Math.floor((rs + a[0]%2)/2);
+	const goingLeft =  Math.floor((rs + (a[0]+1)%2)/2);
+	const left = Math.max(a[1] - b[1] - goingLeft,0);
+	const right = Math.max(b[1] - a[1] - goingRight,0);
+	const dist =  rs + Math.max(left,right);
+	return dist;
+}
