@@ -45,7 +45,7 @@ Rules:
 
 Limited Distance Rules:	
 	-Calculate distance between two coords tool
-	Limbs can only move distance of 1
+	-Limbs can only move distance of 1
 	Create limb groups
 	limbs in group cannot be > 3 apart
 	Ignore distance of 1 rule when moving from start 

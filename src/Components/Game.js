@@ -1,5 +1,5 @@
 import React from 'react';
-import {calcRowLen,calculateTotalHolds,mapFromBoard, mapLastInRowFromBoard} from "../Helper Functions/board calculator";
+import {calcRowLen,calculateTotalHolds,mapFromBoard, mapLastInRowFromBoard,dist} from "../Helper Functions/board calculator";
 import {shuffleArray} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
@@ -115,9 +115,14 @@ class Game extends React.Component{
 
 	holdHandleClick = (coords) => () => {
 		let selectedLimbs = Object.entries(this.state.limbData).filter(([key,value]) => (value.selected)).map(([key,value]) => (key));
-		console.log(selectedLimbs);
+		selectedLimbs = this.validMoves(selectedLimbs,coords);
 		this.moveLimbs(selectedLimbs,coords);
 	} 
+
+	validMoves = (limbs,coords) => {
+		let validLimbs = limbs.filter((limb) => (this.props.maxMoveDist >= dist(this.state.limbData[limb].coords,coords)));
+		return validLimbs;
+	}
 
 	moveLimbs = (limbs, coords) => {
 		console.log(limbs)
@@ -207,7 +212,8 @@ Game.defaultProps = {
 	nCols: 6,
 	boardSeed: 1234,
 	cardSeed: 4321,
-	nCardDraw: 3
+	nCardDraw: 3,
+	maxMoveDist: 1
 
 
 };
