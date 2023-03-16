@@ -4,7 +4,7 @@ import {shuffleArray} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
 import {Card} from "./Card.js";
-import {Tile, limbType} from "./Tile.js";
+import {Tile, limbType, groupType} from "./Tile.js";
 import {Limb} from "./Limb.js";
 import './Game.css';
 
@@ -17,10 +17,10 @@ class Game extends React.Component{
 			drawPile: drawPile, 
 			displayDraw: true,
 
-			limbData: {leftHand: {coords: [2,2], isAtStart: false, selected: false, group: ["left","hand"]},
-				rightHand: {coords: [2,2], isAtStart: false, selected: false, group: ["right","hand"]},
-				leftFoot: {coords: [2,2], isAtStart: false, selected: false, group: ["left","foot"]},
-				rightFoot: {coords: [2,2], isAtStart: false, selected: false, group: ["right","foot"]},
+			limbData: {leftHand: {coords: [2,2], isAtStart: false, selected: false, group: [groupType.left,groupType.hand]},
+				rightHand: {coords: [2,2], isAtStart: false, selected: false, group: [groupType.right,groupType.hand]},
+				leftFoot: {coords: [2,2], isAtStart: false, selected: false, group: [groupType.left,groupType.foot]},
+				rightFoot: {coords: [2,2], isAtStart: false, selected: false, group: [groupType.right,groupType.foot]},
 				weight: {coords: [2,2], isAtStart: false, selected: false, group:[]}},
 		}
 

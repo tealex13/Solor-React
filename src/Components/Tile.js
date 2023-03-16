@@ -9,6 +9,13 @@ export const limbType = {
 	weight: "weight"
 }
 
+export const groupType = {
+	hand: "hand",
+	foot: "foot",
+	left: "left",
+	right: "right"
+}
+
 export function Tile(props){
 
 		const handleClick = (limb) => () => {
