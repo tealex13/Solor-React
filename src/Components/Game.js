@@ -17,11 +17,11 @@ class Game extends React.Component{
 			drawPile: drawPile, 
 			displayDraw: true,
 
-			limbData: {leftHand: {coords: [0,0], isAtStart: false, selected: false},
-				rightHand: {coords: [0,0], isAtStart: false, selected: false},
-				leftFoot: {coords: [2,2], isAtStart: true, selected: false},
-				rightFoot: {coords: [1,2], isAtStart: false, selected: false},
-				weight: {coords: [4,4], isAtStart: true, selected: false}},
+			limbData: {leftHand: {coords: [2,2], isAtStart: false, selected: false, group: ["left","hand"]},
+				rightHand: {coords: [2,2], isAtStart: false, selected: false, group: ["right","hand"]},
+				leftFoot: {coords: [2,2], isAtStart: false, selected: false, group: ["left","foot"]},
+				rightFoot: {coords: [2,2], isAtStart: false, selected: false, group: ["right","foot"]},
+				weight: {coords: [2,2], isAtStart: false, selected: false, group:[]}},
 		}
 
 		this.drawCards = this.drawCards.bind(this);
@@ -120,12 +120,22 @@ class Game extends React.Component{
 	} 
 
 	validMoves = (limbs,coords) => {
-		let validLimbs = limbs.filter((limb) => (this.props.maxMoveDist >= dist(this.state.limbData[limb].coords,coords)));
-		return validLimbs;
+		limbs = limbs.filter((limb) => (this.props.maxMoveDist >= dist(this.state.limbData[limb].coords,coords))); //max distance from ogigin
+
+		limbs = limbs.filter(selectedLimb => 
+			!this.state.limbData[selectedLimb].group.reduce((invalidGroup, groupee) => (
+				invalidGroup ||
+				Object.values(this.state.limbData)
+				.filter(limb => (limb.group.find(element => element === groupee)))
+				.reduce((invalid,limb) => (invalid || 3 < dist(limb.coords,coords)),false)
+				)
+				,false
+				)
+			)
+		return limbs;
 	}
 
 	moveLimbs = (limbs, coords) => {
-		console.log(limbs)
 		let tempLimbsState = {...this.state.limbData};
 		limbs.forEach((limb) => {
 			tempLimbsState = {...tempLimbsState, ...{[limb] : {...this.state.limbData[limb], ...{coords: coords, isAtStart: false, selected: false}}}};
@@ -213,7 +223,8 @@ Game.defaultProps = {
 	boardSeed: 1234,
 	cardSeed: 4321,
 	nCardDraw: 3,
-	maxMoveDist: 1
+	maxMoveDist: 1,
+	maxGroupDist: 3
 
 
 };
