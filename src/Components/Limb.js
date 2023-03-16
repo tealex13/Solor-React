@@ -7,12 +7,12 @@ export function Limb(props) {
 		props.handleClick(props.type);
 	};
 
-
+	const color =  props.selected? "grey" : "white";
 	return(
 		<button 
 			onClick = {handleClick}
 			style={{
-				background: "white",
+				backgroundColor: color,
 				width: 30,
 				height: 30}}
 		/>

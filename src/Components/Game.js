@@ -122,15 +122,13 @@ class Game extends React.Component{
 	validMoves = (limbs,coords) => {
 		limbs = limbs.filter((limb) => (this.props.maxMoveDist >= dist(this.state.limbData[limb].coords,coords))); //max distance from ogigin
 
-		limbs = limbs.filter(selectedLimb => 
+		limbs = limbs.filter(selectedLimb => //max distance between limbs
 			!this.state.limbData[selectedLimb].group.reduce((invalidGroup, groupee) => (
 				invalidGroup ||
 				Object.values(this.state.limbData)
 				.filter(limb => (limb.group.find(element => element === groupee)))
-				.reduce((invalid,limb) => (invalid || 3 < dist(limb.coords,coords)),false)
-				)
-				,false
-				)
+				.reduce((invalid,limb) => (invalid || this.props.maxGroupDist < dist(limb.coords,coords)),false))
+				,false)
 			)
 		return limbs;
 	}
