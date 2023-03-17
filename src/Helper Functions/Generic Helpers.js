@@ -14,3 +14,12 @@ function mulberry32(a) {
       return ((t ^ t >>> 14) >>> 0) / 4294967296;
     }
 }
+
+export function mergeObjects(a, b) {
+    return Object.entries(b).reduce((o, [k, v]) => {
+        o[k] = v && typeof v === 'object'
+            ? mergeObjects(o[k] = o[k] || (Array.isArray(v) ? [] : {}), v)
+            : v;
+        return o;
+    }, a);
+}

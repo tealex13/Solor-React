@@ -1,6 +1,6 @@
 import React from 'react';
 import {calcRowLen,calculateTotalHolds,mapFromBoard, mapLastInRowFromBoard,dist} from "../Helper Functions/board calculator";
-import {shuffleArray} from "../Helper Functions/Generic Helpers"
+import {shuffleArray, mergeObjects} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
 import {Card} from "./Card.js";
@@ -23,6 +23,8 @@ class Game extends React.Component{
 				rightFoot: {coords: [2,2], isAtStart: false, selected: false, group: [groupType.right,groupType.foot]},
 				weight: {coords: [2,2], isAtStart: false, selected: false, group:[]}},
 		}
+
+		this.generateMoveTree();
 
 		this.drawCards = this.drawCards.bind(this);
 		this.selectLimb = this.selectLimb.bind(this);
@@ -80,9 +82,45 @@ class Game extends React.Component{
 		return (tiles);
 	}
 
-	generateCardDisplay(nCardDraw){
+	getCardsToDisplay(nCardDraw){
 		const lastCardInDisplay = (this.state.drawIndex + nCardDraw) > this.state.drawPile.length ? this.state.drawPile.length : this.state.drawIndex + nCardDraw;
 		return this.state.drawPile.slice(this.state.drawIndex,lastCardInDisplay);
+	}
+
+	generateMoveTree(){
+		const drawnCards = this.getCardsToDisplay(this.props.nCardDraw);
+
+		const topFirst = (card,remainingCards,recurs) => {
+			return {[card.data.colors[0]]:{[card.data.colors[1]]:recurs(remainingCards)}};
+		}
+		const bottomFirst = (card,remainingCards,recurs) => {
+			return {[card.data.colors[1]]:{[card.data.colors[0]]:recurs(remainingCards)}};
+		}
+		const topOnly = (card,remainingCards,recurs) => {
+			return {[card.data.colors[0]]:recurs(remainingCards)};
+		}
+		const bottomOnly = (card,remainingCards,recurs) => {
+			return {[card.data.colors[1]]:recurs(remainingCards)};
+		}
+
+		const generateMoveOptions = (drawnCards) => {
+			 return drawnCards.reduce((acc,curVal,index,array) => {
+			 	let tempAcc = {};
+				let tempArray = array.slice();
+				tempArray.splice(index,1); //remove element from array
+
+				if (array.length > 0){
+					tempAcc = topFirst(curVal,tempArray,generateMoveOptions);
+					tempAcc = mergeObjects(tempAcc, bottomFirst(curVal,tempArray,generateMoveOptions));
+					tempAcc = mergeObjects(tempAcc, topOnly(curVal,tempArray,generateMoveOptions));
+					tempAcc = mergeObjects(tempAcc, bottomOnly(curVal,tempArray,generateMoveOptions));
+				} else{
+				}
+				return mergeObjects(acc,tempAcc);
+			},{});
+		}
+
+		console.log(generateMoveOptions(drawnCards));
 
 	}
 
@@ -149,6 +187,7 @@ class Game extends React.Component{
 		const newDrawIndex = this.state.drawIndex + this.props.nCardDraw;
 		this.setState({drawIndex: newDrawIndex, 
 			displayDraw: newDrawIndex + this.props.nCardDraw < this.state.drawPile.length});
+		this.generateMoveTree();
 
 	}
 
@@ -167,7 +206,7 @@ class Game extends React.Component{
 	render(){
 
 		const tilesData = this.generateTilesData(this.props.nRows, this.props.nCols);
-		const cardDisplay = this.generateCardDisplay(this.props.nCardDraw);
+		const cardDisplay = this.getCardsToDisplay(this.props.nCardDraw);
 		const limbsAtStart = this.generateLimbsAtStart();
 	
 		return(
