@@ -23,3 +23,13 @@ export function mergeObjects(a, b) {
         return o;
     }, a);
 }
+
+export function traverseKeys(object, keys) {
+ 
+    if (keys.length > 1){
+        return traverseKeys(object[keys[0]],keys.slice(1));
+    } else {
+        return object[keys[0]];
+    }
+     
+}

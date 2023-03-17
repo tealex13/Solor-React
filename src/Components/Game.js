@@ -1,6 +1,6 @@
 import {useRef, useState} from 'react';
 import {calcRowLen,calculateTotalHolds,mapFromBoard, mapLastInRowFromBoard,dist} from "../Helper Functions/board calculator";
-import {shuffleArray, mergeObjects} from "../Helper Functions/Generic Helpers"
+import {shuffleArray, mergeObjects, traverseKeys} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
 import {Card} from "./Card.js";
@@ -11,16 +11,17 @@ import './Game.css';
 function Game (props){
 
 	const generateDrawPile = () => {
-		const drawPile = colorsArray.map((firstColor,index) => {
+		let drawPile = colorsArray.map((firstColor,index) => {
 			return (colorsArray.slice(index, colorsArray.length).map(secondColor => {
 				return ({ID: uuid(), data: {colors: [firstColor, secondColor]}})
 			}))
 		}).flat();
+		shuffleArray(drawPile, props.cardSeed);
 		return drawPile;
 	}
 
 	const [drawIndex,setDrawIndex] = useState(0);
-	const [drawPile,setDrawPile] = useState(generateDrawPile()); //move to useRef
+	const [drawPile,setDrawPile] = useState(generateDrawPile); //move to useRef
 	const [displayDraw,setDisplayDraw] = useState(true);
 	const [limbData,setLimbData] = useState(
 		{leftHand: {coords: [2,2], isAtStart: false, selected: false, group: [groupType.left,groupType.hand]},
@@ -30,7 +31,7 @@ function Game (props){
 		weight: {coords: [2,2], isAtStart: false, selected: false, group:[]}}
 		);
 
-// Object.values(limbType).map((type) => limbData[type])
+	const moveHistory = useRef([]);
 
 	const generateTilesData = (nRows, nCols) =>{
 		const holdData  = generateHoldData();
@@ -143,7 +144,12 @@ function Game (props){
 	const holdHandleClick = (coords) => () => {
 		let selectedLimbs = Object.entries(limbData).filter(([key,value]) => (value.selected)).map(([key,value]) => (key));
 		selectedLimbs = validateMove(selectedLimbs,coords);
-		moveLimbs(selectedLimbs,coords);
+		if (selectedLimbs.length > 0){
+			console.log("here");
+			moveLimbs(selectedLimbs,coords);
+			moveHistory.current.push(generateHoldData()[mapFromBoard(coords[0],coords[1],props.nCols)].color);
+		}
+		
 	} 
 
 	const validateMove = (limbs,coords) => {
@@ -156,9 +162,11 @@ function Game (props){
 				.filter(limb => (limb.group.find(element => element === groupee)))
 				.reduce((invalid,limb) => (invalid || props.maxGroupDist < dist(limb.coords,coords)),false))
 				,false)
-			)
-
-
+			);
+		let tempMoveHistory = [...moveHistory.current];
+		tempMoveHistory.push(generateHoldData()[mapFromBoard(coords[0],coords[1],props.nCols)].color);
+		console.log(traverseKeys(generateMoveTree(),tempMoveHistory));
+		limbs = limbs.filter(selectedLimb => traverseKeys(generateMoveTree(),tempMoveHistory));
 		return limbs;
 	}
 
