@@ -53,15 +53,18 @@ Extra
 
 	-Make selected limb different color
 	
-Start rule
-	Ignore distance of 1 rule when moving from start 
-	Limbs can only move to row 1 when moving from start
-	
 Move according to card:
 	-Create card permutations tools
 	-Remove permutations that do not follow a move sequence
 	-Limbs moved create a sequence
 	-Limbs movement must match the sequence of a permutation
+	
+Cleanup:
+	-Replace at start with -1 row index
+
+Start rule
+	-Ignore distance of 1 rule when moving from start 
+	-Limbs can only move to row 1 when moving from start
 	
 Only one limb per hold:
 
@@ -75,9 +78,15 @@ Rules V2:
 			?Make tile a grid?
 		Write down movement rules
 	
+Moves are undo-able
+	
+Mark Used Cards:
+	
+
 Cleanup Round 2
 	Seperate tile generation from hold mapping
 	
 Extras
 	make the limbs images
+	give cards dropshadows
 

@@ -24,10 +24,10 @@ function Game (props){
 	const [drawPile,setDrawPile] = useState(generateDrawPile); //move to useRef
 	const [displayDraw,setDisplayDraw] = useState(true);
 	const [limbData,setLimbData] = useState(
-		{leftHand: {coords: [0,2], selected: false, group: [groupType.left,groupType.hand]},
-		rightHand: {coords: [0,2], selected: false, group: [groupType.right,groupType.hand]},
-		leftFoot: {coords: [0,2], selected: false, group: [groupType.left,groupType.foot]},
-		rightFoot: {coords: [-1,2], selected: false, group: [groupType.right,groupType.foot]},
+		{leftHand: {coords: [0,0], selected: false, group: [groupType.left,groupType.hand]},
+		rightHand: {coords: [0,0], selected: false, group: [groupType.right,groupType.hand]},
+		leftFoot: {coords: [0,0], selected: false, group: [groupType.left,groupType.foot]},
+		rightFoot: {coords: [-1,5], selected: false, group: [groupType.right,groupType.foot]},
 		weight: {coords: [-1,2], selected: false, group:[]}}
 		);
 
@@ -149,7 +149,6 @@ function Game (props){
 		let selectedLimbs = Object.entries(limbData).filter(([key,value]) => (value.selected)).map(([key,value]) => (key));
 		selectedLimbs = validateMove(selectedLimbs,coords);
 		if (selectedLimbs.length > 0){
-			console.log("here");
 			moveLimbs(selectedLimbs,coords);
 			moveHistory.current.push(generateHoldData()[mapFromBoard(coords[0],coords[1],props.nCols)].color);
 		}
@@ -157,7 +156,10 @@ function Game (props){
 	} 
 
 	const validateMove = (limbs,coords) => {
-		limbs = limbs.filter((limb) => (props.maxMoveDist >= dist(limbData[limb].coords,coords))); //max distance from ogigin
+	limbs = limbs.filter((limb) => {
+		const tempLimbCoords = isAtStart(limbData[limb].coords) ? [limbData[limb].coords[0],coords[1]] : limbData[limb].coords;
+		return(props.maxMoveDist >= dist(tempLimbCoords,coords))
+		}); //max distance from ogigin
 
 		//Limbs stay in range of other limbs
 		limbs = limbs.filter(selectedLimb => //max distance between limbs
@@ -165,14 +167,15 @@ function Game (props){
 				invalidGroup ||
 				Object.values(limbData)
 				.filter(limb => (limb.group.find(element => element === groupee)))
-				.reduce((invalid,limb) => (invalid || props.maxGroupDist < dist(limb.coords,coords)),false))
+				.reduce((invalid,limb) => {
+					const tempLimbCoords = isAtStart(limb.coords) ? [limb.coords[0],coords[1]] : limb.coords;
+					return (invalid || props.maxGroupDist < dist(tempLimbCoords,coords))},false))
 				,false)
 			);
 
 		//Limbs move on color
 		let tempMoveHistory = [...moveHistory.current];
 		tempMoveHistory.push(generateHoldData()[mapFromBoard(coords[0],coords[1],props.nCols)].color);
-		console.log(traverseKeys(generateMoveTree(),tempMoveHistory));
 		limbs = limbs.filter(selectedLimb => traverseKeys(generateMoveTree(),tempMoveHistory));
 
 
