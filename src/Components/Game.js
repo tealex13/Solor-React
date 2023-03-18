@@ -6,6 +6,7 @@ import uuid from 'react-uuid';
 import {Card} from "./Card.js";
 import {Tile, limbType, groupType} from "./Tile.js";
 import {Limb} from "./Limb.js";
+import isEqual from "lodash/isEqual";
 import './Game.css';
 
 function Game (props){
@@ -25,7 +26,7 @@ function Game (props){
 	const [displayDraw,setDisplayDraw] = useState(true);
 	const [limbData,setLimbData] = useState(
 		{leftHand: {coords: [0,0], selected: false, group: [groupType.left,groupType.hand]},
-		rightHand: {coords: [0,0], selected: false, group: [groupType.right,groupType.hand]},
+		rightHand: {coords: [0,1], selected: false, group: [groupType.right,groupType.hand]},
 		leftFoot: {coords: [0,0], selected: false, group: [groupType.left,groupType.foot]},
 		rightFoot: {coords: [-1,5], selected: false, group: [groupType.right,groupType.foot]},
 		weight: {coords: [-1,2], selected: false, group:[]}}
@@ -147,6 +148,7 @@ function Game (props){
 
 	const holdHandleClick = (coords) => () => {
 		let selectedLimbs = Object.entries(limbData).filter(([key,value]) => (value.selected)).map(([key,value]) => (key));
+		
 		selectedLimbs = validateMove(selectedLimbs,coords);
 		if (selectedLimbs.length > 0){
 			moveLimbs(selectedLimbs,coords);
@@ -156,7 +158,9 @@ function Game (props){
 	} 
 
 	const validateMove = (limbs,coords) => {
-	limbs = limbs.filter((limb) => {
+		limbs = limbs.filter((limb) => !isEqual(limbData[limb].coords, coords));
+
+		limbs = limbs.filter((limb) => {
 		const tempLimbCoords = isAtStart(limbData[limb].coords) ? [limbData[limb].coords[0],coords[1]] : limbData[limb].coords;
 		return(props.maxMoveDist >= dist(tempLimbCoords,coords))
 		}); //max distance from ogigin

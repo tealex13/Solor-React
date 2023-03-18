@@ -48,9 +48,9 @@ Limited Distance Rules:
 	-Limbs can only move distance of 1
 	-Create limb groups
 	-limbs in group cannot be > 3 apart
+	-Can't select same hold as limb starts on
 	
 Extra
-
 	-Make selected limb different color
 	
 Move according to card:
@@ -61,22 +61,28 @@ Move according to card:
 	
 Cleanup:
 	-Replace at start with -1 row index
+	
+	holdHandleClick only calls move limb if a limb is selected
 
 Start rule
 	-Ignore distance of 1 rule when moving from start 
 	-Limbs can only move to row 1 when moving from start
+	
+
+Rules V2:
+	Weight
+		Make weight selectable
+			?Make tile a grid?
+		Write down movement rules
 	
 Only one limb per hold:
 
 Feet can't move above hands:
 
 left can't be more than 1 to the right of right:
-	
-Rules V2:
-	Weight
-		Make weight selectable
-			?Make tile a grid?
-		Write down movement rules
+
+Edge Cases:
+	limbs not in group cannot be more than double max the distance apart (this covers the edge case where leftHand is on the wall, then right foot is placed on the wall froms start)
 	
 Moves are undo-able
 	
