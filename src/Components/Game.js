@@ -24,11 +24,11 @@ function Game (props){
 	const [drawPile,setDrawPile] = useState(generateDrawPile); //move to useRef
 	const [displayDraw,setDisplayDraw] = useState(true);
 	const [limbData,setLimbData] = useState(
-		{leftHand: {coords: [2,2], isAtStart: false, selected: false, group: [groupType.left,groupType.hand]},
-		rightHand: {coords: [2,2], isAtStart: false, selected: false, group: [groupType.right,groupType.hand]},
-		leftFoot: {coords: [2,2], isAtStart: false, selected: false, group: [groupType.left,groupType.foot]},
-		rightFoot: {coords: [2,2], isAtStart: false, selected: false, group: [groupType.right,groupType.foot]},
-		weight: {coords: [2,2], isAtStart: false, selected: false, group:[]}}
+		{leftHand: {coords: [0,2], isAtStart: false, selected: false, group: [groupType.left,groupType.hand]},
+		rightHand: {coords: [0,2], isAtStart: false, selected: false, group: [groupType.right,groupType.hand]},
+		leftFoot: {coords: [0,2], isAtStart: false, selected: false, group: [groupType.left,groupType.foot]},
+		rightFoot: {coords: [-1,2], isAtStart: true, selected: false, group: [groupType.right,groupType.foot]},
+		weight: {coords: [-1,2], isAtStart: true, selected: false, group:[]}}
 		);
 
 	const moveHistory = useRef([]);
@@ -155,6 +155,7 @@ function Game (props){
 	const validateMove = (limbs,coords) => {
 		limbs = limbs.filter((limb) => (props.maxMoveDist >= dist(limbData[limb].coords,coords))); //max distance from ogigin
 
+		//Limbs stay in range of other limbs
 		limbs = limbs.filter(selectedLimb => //max distance between limbs
 			!limbData[selectedLimb].group.reduce((invalidGroup, groupee) => (
 				invalidGroup ||
@@ -163,10 +164,14 @@ function Game (props){
 				.reduce((invalid,limb) => (invalid || props.maxGroupDist < dist(limb.coords,coords)),false))
 				,false)
 			);
+
+		//Limbs move on color
 		let tempMoveHistory = [...moveHistory.current];
 		tempMoveHistory.push(generateHoldData()[mapFromBoard(coords[0],coords[1],props.nCols)].color);
 		console.log(traverseKeys(generateMoveTree(),tempMoveHistory));
 		limbs = limbs.filter(selectedLimb => traverseKeys(generateMoveTree(),tempMoveHistory));
+
+
 		return limbs;
 	}
 
@@ -186,8 +191,7 @@ function Game (props){
 		const newDrawIndex = drawIndex + props.nCardDraw;
 		setDrawIndex(newDrawIndex);
 		setDisplayDraw(newDrawIndex + props.nCardDraw < drawPile.length);
-		generateMoveTree();
-
+		moveHistory.current = [];
 	}
 
 	const generateLimbsAtStart = () => {
@@ -251,7 +255,7 @@ function Game (props){
 const colorsArray = ["white","orange","green","purple","black","red"];
 
 Game.defaultProps = {
-	nRows: 6,
+	nRows: 20,
 	nCols: 6,
 	boardSeed: 1234,
 	cardSeed: 4321,
