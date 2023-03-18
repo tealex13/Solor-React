@@ -24,11 +24,11 @@ function Game (props){
 	const [drawPile,setDrawPile] = useState(generateDrawPile); //move to useRef
 	const [displayDraw,setDisplayDraw] = useState(true);
 	const [limbData,setLimbData] = useState(
-		{leftHand: {coords: [0,2], isAtStart: false, selected: false, group: [groupType.left,groupType.hand]},
-		rightHand: {coords: [0,2], isAtStart: false, selected: false, group: [groupType.right,groupType.hand]},
-		leftFoot: {coords: [0,2], isAtStart: false, selected: false, group: [groupType.left,groupType.foot]},
-		rightFoot: {coords: [-1,2], isAtStart: true, selected: false, group: [groupType.right,groupType.foot]},
-		weight: {coords: [-1,2], isAtStart: true, selected: false, group:[]}}
+		{leftHand: {coords: [0,2], selected: false, group: [groupType.left,groupType.hand]},
+		rightHand: {coords: [0,2], selected: false, group: [groupType.right,groupType.hand]},
+		leftFoot: {coords: [0,2], selected: false, group: [groupType.left,groupType.foot]},
+		rightFoot: {coords: [-1,2], selected: false, group: [groupType.right,groupType.foot]},
+		weight: {coords: [-1,2], selected: false, group:[]}}
 		);
 
 	const moveHistory = useRef([]);
@@ -69,9 +69,13 @@ function Game (props){
 		return tempRow;
 	}
 
+	const isAtStart = (coords) => {
+		return coords[0] === -1;
+	}
+
 	const mapLimbsToTiles = (tiles) => {
 		Object.entries(limbData)
-		.filter(([key,value]) => (!value.isAtStart))
+		.filter(([key,value]) => (!isAtStart(value.coords)))
 		.map(([key,value]) => {
 			let tempLimbsData = tiles[value.coords[0]].data[value.coords[1]].limbsData;
 			return (tiles[value.coords[0]].data[value.coords[1]].limbsData = {...tempLimbsData, ...formatLimbsForTile(key,value)});
@@ -178,7 +182,7 @@ function Game (props){
 	const moveLimbs = (limbs, coords) => {
 		let tempLimbsState = {...limbData};
 		limbs.forEach((limb) => {
-			tempLimbsState = {...tempLimbsState, ...{[limb] : {...limbData[limb], ...{coords: coords, isAtStart: false, selected: false}}}};
+			tempLimbsState = {...tempLimbsState, ...{[limb] : {...limbData[limb], ...{coords: coords, selected: false}}}};
 			})
 		setLimbData(tempLimbsState);
 		}
@@ -197,7 +201,7 @@ function Game (props){
 	const generateLimbsAtStart = () => {
 		let limbsAtStart = {};
 		Object.entries(limbData)
-		.filter(([key,value]) =>(value.isAtStart))
+		.filter(([key,value]) =>(isAtStart(value.coords)))
 		.forEach(([key,value]) => (
 			limbsAtStart = {...limbsAtStart, ...formatLimbsForTile(key,value)}
 			));
