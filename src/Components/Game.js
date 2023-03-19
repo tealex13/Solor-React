@@ -25,9 +25,9 @@ function Game (props){
 	const [drawPile,setDrawPile] = useState(generateDrawPile); //move to useRef
 	const [displayDraw,setDisplayDraw] = useState(true);
 	const [limbData,setLimbData] = useState(
-		{leftHand: {coords: [0,0], selected: false, group: [groupType.left,groupType.hand]},
-		rightHand: {coords: [0,1], selected: false, group: [groupType.right,groupType.hand]},
-		leftFoot: {coords: [0,0], selected: false, group: [groupType.left,groupType.foot]},
+		{leftHand: {coords: [-1,0], selected: false, group: [groupType.left,groupType.hand]},
+		rightHand: {coords: [-1,1], selected: false, group: [groupType.right,groupType.hand]},
+		leftFoot: {coords: [-1,0], selected: false, group: [groupType.left,groupType.foot]},
 		rightFoot: {coords: [-1,5], selected: false, group: [groupType.right,groupType.foot]},
 		weight: {coords: [-1,2], selected: false, group:[]}}
 		);
@@ -148,13 +148,12 @@ function Game (props){
 
 	const holdHandleClick = (coords) => () => {
 		let selectedLimbs = Object.entries(limbData).filter(([key,value]) => (value.selected)).map(([key,value]) => (key));
-		
+
 		selectedLimbs = validateMove(selectedLimbs,coords);
 		if (selectedLimbs.length > 0){
 			moveLimbs(selectedLimbs,coords);
 			moveHistory.current.push(generateHoldData()[mapFromBoard(coords[0],coords[1],props.nCols)].color);
-		}
-		
+		}	
 	} 
 
 	const validateMove = (limbs,coords) => {
@@ -186,10 +185,15 @@ function Game (props){
 		return limbs;
 	}
 
+	const deselectAllLimbs = (limbs) => {
+		return Object.fromEntries(Object.entries(limbs).map(([key,value]) => [key, value = {...value, ...{selected: false}}]));
+	}
+
 	const moveLimbs = (limbs, coords) => {
 		let tempLimbsState = {...limbData};
+		tempLimbsState = deselectAllLimbs(tempLimbsState);
 		limbs.forEach((limb) => {
-			tempLimbsState = {...tempLimbsState, ...{[limb] : {...limbData[limb], ...{coords: coords, selected: false}}}};
+			tempLimbsState = {...tempLimbsState, ...{[limb] : {...tempLimbsState[limb], ...{coords: coords}}}};
 			})
 		setLimbData(tempLimbsState);
 		}
