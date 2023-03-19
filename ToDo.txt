@@ -75,7 +75,7 @@ Weight Epic:
 		-Make weight selectable
 	
 	Changes to cards
-		Add weight directions to cards
+		-Add weight directions to cards
 	
 	Board tool:
 		Determine if a hold is left or right
@@ -85,7 +85,10 @@ Weight Epic:
 		Weight can only be moved during the direction section of a card 
 		Weight only moves left and right instead of to a color
 
+Weight Wilds
+
 Moves are undo-able
+
 	
 Mark Used Cards:
 

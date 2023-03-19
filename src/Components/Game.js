@@ -14,7 +14,7 @@ function Game (props){
 	const generateDrawPile = () => {
 		let drawPile = colorsArray.map((firstColor,index) => {
 			return (colorsArray.slice(index, colorsArray.length).map(secondColor => {
-				return ({ID: uuid(), data: {colors: [firstColor, secondColor]}})
+				return ({ID: uuid(), data: {colors: [firstColor, secondColor], weightDir: index%2 === 0 ? weightDir.left : weightDir.right}})
 			}))
 		}).flat();
 		shuffleArray(drawPile, props.cardSeed);
@@ -123,7 +123,6 @@ function Game (props){
 		}
 
 		return generateMoveOptions(drawnCards);
-
 	}
 
 	
@@ -268,10 +267,11 @@ function Game (props){
 
 
 const colorsArray = ["white","orange","green","purple","black","red"];
+const weightDir = {left:"left",right:"right"};
 
 Game.defaultProps = {
-	nRows: 20,
-	nCols: 6,
+	nRows: 4,
+	nCols: 4,
 	boardSeed: 1234,
 	cardSeed: 4321,
 	nCardDraw: 3,
