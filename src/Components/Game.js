@@ -93,10 +93,10 @@ function Game (props){
 		const drawnCards = getCardsToDisplay(props.nCardDraw);
 
 		const topFirst = (card,remainingCards,recurs) => {
-			return {[card.data.colors[0]]:{[card.data.colors[1]]:recurs(remainingCards)}};
+			return {[card.data.colors[0]]:{[card.data.weightDir]: {[card.data.colors[1]]:recurs(remainingCards)}}};
 		}
 		const bottomFirst = (card,remainingCards,recurs) => {
-			return {[card.data.colors[1]]:{[card.data.colors[0]]:recurs(remainingCards)}};
+			return {[card.data.colors[1]]:{[card.data.weightDir]: {[card.data.colors[0]]:recurs(remainingCards)}}};
 		}
 		const topOnly = (card,remainingCards,recurs) => {
 			return {[card.data.colors[0]]:recurs(remainingCards)};
