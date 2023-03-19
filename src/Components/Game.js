@@ -175,7 +175,12 @@ function Game (props){
 				,false)
 			);
 
-		//Limbs move on color
+		//weight cannot be combined with other limbs
+		limbs = limbs.includes(limbType.weight) & (limbs.filter(limb => limb !== limbType.weight).length > 0) ?
+			[] : limbs;
+		// const getMove([limbs])
+
+		//Limbs follow a valid sequence along move tree;
 		let tempMoveHistory = [...moveHistory.current];
 		tempMoveHistory.push(generateHoldData()[mapFromBoard(coords[0],coords[1],props.nCols)].color);
 		limbs = limbs.filter(selectedLimb => traverseKeys(generateMoveTree(),tempMoveHistory));
