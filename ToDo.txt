@@ -69,28 +69,40 @@ Start rule
 	-Limbs can only move to row 1 when moving from start
 	
 
-Rules V2:
-	Weight
+Weight Epic:
+	Formatting:
+		Make tile a grid?
 		Make weight selectable
-			?Make tile a grid?
-		Write down movement rules
 	
-Only one limb per hold:
+	Changes to cards
+		Add weight directions to cards
+	
+	Board tool:
+		Determine if a hold is left or right
+	
+	Weight Rules:
+		Weight ignores color rules
+		Weight can only be moved during the direction section of a card 
+		Weight only moves left and right instead of to a color
 
-Feet can't move above hands:
+Moves are undo-able
+	
+Mark Used Cards:
 
-left can't be more than 1 to the right of right:
+Weight 
+
+
+Less important rules	
+	Only one limb per hold:
+	Feet can't move above hands:
+	left can't be more than 1 to the right of right:
 
 Edge Cases:
 	limbs not in group cannot be more than double max the distance apart (this covers the edge case where leftHand is on the wall, then right foot is placed on the wall froms start)
 	
-Moves are undo-able
-	
-Mark Used Cards:
-	
-
 Cleanup Round 2
 	Seperate tile generation from hold mapping
+	Consolidate topFirst and topOnly functions in generate move tree
 	
 Extras
 	make the limbs images

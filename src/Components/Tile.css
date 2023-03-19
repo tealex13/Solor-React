@@ -1,0 +1,44 @@
+.tile{
+	display: grid;
+	align-items: center;
+	justify-items: center;
+	grid-template-columns: [first-col] 30px [second-col] 60px[third-col] 30px [last-col];
+  	grid-template-rows: [first-row] 30px [second-row] 60px [third-row] 30px [last-row];
+}
+
+.central {
+	grid-row-start: second-row;
+	grid-row-end: third-row;
+	grid-column-start: second-col;
+	grid-column-end: third-col;
+}
+
+.top {
+	grid-row-start: first-row;
+	grid-row-end: second-row;
+}
+
+.bottom {
+	grid-row-start: third-row;
+	grid-row-end: last-row;
+}
+
+.left {
+	grid-column-start: first-col;
+	grid-column-end : second-col}
+
+.right{
+	grid-column-start: third-col;
+	grid-column-end : last-col
+}
+
+.background{
+	z-index: 10;
+}
+
+.overlay {
+	z-index: 100;
+}
+
+
+
