@@ -71,8 +71,8 @@ Start rule
 
 Weight Epic:
 	Formatting:
-		Make tile a grid?
-		Make weight selectable
+		-Make tile a grid?
+		-Make weight selectable
 	
 	Changes to cards
 		Add weight directions to cards
