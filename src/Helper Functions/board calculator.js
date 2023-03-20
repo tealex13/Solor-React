@@ -43,13 +43,15 @@ export function moveDir (fromCoords,toCoords){
 	const secondIsEven = toCoords[0]%2 === 0;
 	if (firstIsEven === secondIsEven){
 		if (fromCoords[1] === toCoords[1]){
-			return "center";
+			return dirs.center;
 		} else{
-			return toCoords[1] - fromCoords[1] > 0 ? "right" : "left";
+			return toCoords[1] - fromCoords[1] > 0 ? dirs.right : dirs.left;
 		}
 	} else if (firstIsEven & !secondIsEven){
-		return toCoords[1] - fromCoords[1] >= 0 ? "right" : "left";
+		return toCoords[1] - fromCoords[1] >= 0 ? dirs.right : dirs.left;
 	} else {
-		return toCoords[1] - fromCoords[1] > 0 ? "right" : "left";
+		return toCoords[1] - fromCoords[1] > 0 ? dirs.right : dirs.left;
 	}
 }
+
+export const dirs = {left: "left", right: "right", center: "center"};

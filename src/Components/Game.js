@@ -1,5 +1,5 @@
 import {useRef, useState} from 'react';
-import {calcRowLen,calculateTotalHolds,mapFromBoard, mapLastInRowFromBoard,dist} from "../Helper Functions/board calculator";
+import {calcRowLen,calculateTotalHolds,mapFromBoard, mapLastInRowFromBoard, dist, moveDir, dirs} from "../Helper Functions/board calculator";
 import {shuffleArray, mergeObjects, traverseKeys} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
@@ -14,7 +14,7 @@ function Game (props){
 	const generateDrawPile = () => {
 		let drawPile = colorsArray.map((firstColor,index) => {
 			return (colorsArray.slice(index, colorsArray.length).map(secondColor => {
-				return ({ID: uuid(), data: {colors: [firstColor, secondColor], weightDir: index%2 === 0 ? weightDir.left : weightDir.right}})
+				return ({ID: uuid(), data: {colors: [firstColor, secondColor], weightDir: index%2 === 0 ? dirs.left : dirs.right}})
 			}))
 		}).flat();
 		shuffleArray(drawPile, props.cardSeed);
@@ -151,17 +151,23 @@ function Game (props){
 		selectedLimbs = validateMove(selectedLimbs,coords);
 		if (selectedLimbs.length > 0){
 			moveLimbs(selectedLimbs,coords);
-			moveHistory.current.push(generateHoldData()[mapFromBoard(coords[0],coords[1],props.nCols)].color);
+			moveHistory.current.push(getMoveType(selectedLimbs,coords));
 		}	
 	} 
 
 	const validateMove = (limbs,coords) => {
+		//weight cannot be combined with other limbs
+		limbs = limbs.includes(limbType.weight) & (limbs.filter(limb => limb !== limbType.weight).length > 0) ?
+			[] : limbs;
+
+		//Same hold as starting hold not allowed
 		limbs = limbs.filter((limb) => !isEqual(limbData[limb].coords, coords));
 
+		//Only allow movement within a range of starting hold
 		limbs = limbs.filter((limb) => {
 		const tempLimbCoords = isAtStart(limbData[limb].coords) ? [limbData[limb].coords[0],coords[1]] : limbData[limb].coords;
 		return(props.maxMoveDist >= dist(tempLimbCoords,coords))
-		}); //max distance from ogigin
+		}); 
 
 		//Limbs stay in range of other limbs
 		limbs = limbs.filter(selectedLimb => //max distance between limbs
@@ -175,19 +181,21 @@ function Game (props){
 				,false)
 			);
 
-		//weight cannot be combined with other limbs
-		limbs = limbs.includes(limbType.weight) & (limbs.filter(limb => limb !== limbType.weight).length > 0) ?
-			[] : limbs;
-		// const getMove([limbs])
-
 		//Limbs follow a valid sequence along move tree;
 		let tempMoveHistory = [...moveHistory.current];
-		tempMoveHistory.push(generateHoldData()[mapFromBoard(coords[0],coords[1],props.nCols)].color);
+		tempMoveHistory.push(getMoveType(limbs,coords));  
 		limbs = limbs.filter(selectedLimb => traverseKeys(generateMoveTree(),tempMoveHistory));
 
 
 		return limbs;
 	}
+
+	const getMoveType = (limbs, coords) => {
+			const moveTypes = limbs.map(limb => 
+				limb === limbType.weight ? moveDir(limbData[limb].coords, coords) : generateHoldData()[mapFromBoard(coords[0],coords[1],props.nCols)].color
+			);
+			return moveTypes.every(moveType => moveType === moveTypes[0]) ? moveTypes[0] : "";
+		}
 
 	const deselectAllLimbs = (limbs) => {
 		return Object.fromEntries(Object.entries(limbs).map(([key,value]) => [key, value = {...value, ...{selected: false}}]));
@@ -272,7 +280,6 @@ function Game (props){
 
 
 const colorsArray = ["white","orange","green","purple","black","red"];
-const weightDir = {left:"left",right:"right"};
 
 Game.defaultProps = {
 	nRows: 4,
