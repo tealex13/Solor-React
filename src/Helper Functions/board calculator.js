@@ -38,18 +38,18 @@ export function dist (a,b){
 	return dist;
 }
 
-export function moveDir (firstCoords,secondCoords){
-	const firstIsEven = firstCoords[0]%2 === 0;
-	const secondIsEven = secondCoords[0]%2 === 0;
+export function moveDir (fromCoords,toCoords){
+	const firstIsEven = fromCoords[0]%2 === 0;
+	const secondIsEven = toCoords[0]%2 === 0;
 	if (firstIsEven === secondIsEven){
-		if (firstCoords[1] === secondCoords[1]){
+		if (fromCoords[1] === toCoords[1]){
 			return "center";
 		} else{
-			return secondCoords[1] - firstCoords[1] > 0 ? "right" : "left";
+			return toCoords[1] - fromCoords[1] > 0 ? "right" : "left";
 		}
 	} else if (firstIsEven & !secondIsEven){
-		return secondCoords[1] - firstCoords[1] >= 0 ? "right" : "left";
+		return toCoords[1] - fromCoords[1] >= 0 ? "right" : "left";
 	} else {
-		return secondCoords[1] - firstCoords[1] > 0 ? "right" : "left";
+		return toCoords[1] - fromCoords[1] > 0 ? "right" : "left";
 	}
 }
