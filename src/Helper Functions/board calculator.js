@@ -37,3 +37,19 @@ export function dist (a,b){
 	const dist =  rs + Math.max(left,right);
 	return dist;
 }
+
+export function moveDir (firstCoords,secondCoords){
+	const firstIsEven = firstCoords[0]%2 === 0;
+	const secondIsEven = secondCoords[0]%2 === 0;
+	if (firstIsEven === secondIsEven){
+		if (firstCoords[1] === secondCoords[1]){
+			return "center";
+		} else{
+			return secondCoords[1] - firstCoords[1] > 0 ? "right" : "left";
+		}
+	} else if (firstIsEven & !secondIsEven){
+		return secondCoords[1] - firstCoords[1] >= 0 ? "right" : "left";
+	} else {
+		return secondCoords[1] - firstCoords[1] > 0 ? "right" : "left";
+	}
+}

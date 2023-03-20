@@ -1,6 +1,6 @@
 import React from "react";
 
-import {dist} from "./board calculator";
+import {dist, moveDir} from "./board calculator";
 
 beforeEach(() => {
 });
@@ -70,3 +70,85 @@ it("Dist in the negative direction equal cols", () => {
   const d = dist([6,3],[2,3]);
   expect(d).toBe(4);
 });
+
+
+//moveDir()----------------
+it("The same space is center", () => {
+  const d = Math.floor(Math.random()*100);
+  expect(moveDir([d,d],[d,d])).toBe("center");
+});
+
+it("Same column from even to even is center", () => {
+  const d = Math.floor(Math.random()*100)*2;
+  const c = Math.floor(Math.random()*100)*2;
+  const e = Math.floor(Math.random()*100);
+  expect(moveDir([c,e],[d,e])).toBe("center");
+});
+
+it("Same column from odd to odd is center", () => {
+  const d = Math.floor(Math.random()*100)*2+1;
+  const c = Math.floor(Math.random()*100)*2+1;
+  const e = Math.floor(Math.random()*100);
+  expect(moveDir([c,e],[d,e])).toBe("center");
+});
+
+it("Directly to the right is right", () => {
+  const d = Math.ceil(Math.random()*5);
+  const e = Math.floor(Math.random()*100)-50;
+  const c = Math.floor(Math.random()*100)-50;
+  expect(moveDir([e,c],[e,c+d])).toBe("right");
+});
+
+it("Directly to the left is left", () => {
+  const d = Math.ceil(Math.random()*5);
+  const e = Math.floor(Math.random()*100)-50;
+  const c = Math.floor(Math.random()*100)-50;
+  expect(moveDir([e,c],[e,c-d])).toBe("left");
+});
+
+it("Same 'column' even to odd is right", () => {
+  const d = Math.floor(Math.random()*5)*2-5;
+  const e = Math.floor(Math.random()*50)*2-50;
+  const c = Math.floor(Math.random()*100)-50;
+  expect(moveDir([e,c],[e+d,c])).toBe("right");
+});
+
+it("Same 'column' odd to even is left", () => {
+  const d = Math.floor(Math.random()*5)*2-5;
+  const e = Math.floor(Math.random()*50)*2-50;
+  const c = Math.floor(Math.random()*100)-50;
+  expect(moveDir([e+d,c],[e,c])).toBe("left");
+});
+
+it("Same 'column' and right are right for even to odd", () => {
+  const d = Math.floor(Math.random()*5)*2-5;
+  const e = Math.floor(Math.random()*50)*2-50;
+  const c = Math.floor(Math.random()*100)-50;
+  const f = Math.floor(Math.random()*10);
+  expect(moveDir([e,c],[e+d,c+f])).toBe("right");
+});
+
+it("Left of same 'column' are left for even to odd", () => {
+  const d = Math.floor(Math.random()*5)*2-5;
+  const e = Math.floor(Math.random()*50)*2-50;
+  const c = Math.floor(Math.random()*100)-50;
+  const f = Math.ceil(Math.random()*10);
+  expect(moveDir([e,c+f],[e+d,c])).toBe("left");
+});
+
+it("Right of the same 'column' is right for odd to even", () => {
+  const d = Math.floor(Math.random()*5)*2-5;
+  const e = Math.floor(Math.random()*50)*2-50;
+  const c = Math.floor(Math.random()*100)-50;
+  const f = Math.ceil(Math.random()*10);
+  expect(moveDir([e+d,c],[e,c+f])).toBe("right");
+});
+
+it("Same 'column' and left are left for odd to even", () => {
+  const d = Math.floor(Math.random()*5)*2-5;
+  const e = Math.floor(Math.random()*50)*2-50;
+  const c = Math.floor(Math.random()*100)-50;
+  const f = Math.floor(Math.random()*10);
+  expect(moveDir([e+d,c+f],[e,c])).toBe("left");
+});
+
