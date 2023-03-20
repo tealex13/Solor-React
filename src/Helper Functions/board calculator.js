@@ -54,4 +54,15 @@ export function moveDir (fromCoords,toCoords){
 	}
 }
 
+export const getOppositeDir = (direction) => {
+	switch(direction){
+	case dirs.left:
+		return dirs.right;
+	case dirs.right:
+		return dirs.left;
+	case dirs.center:
+		return dirs.center;
+	}
+}
+
 export const dirs = {left: "left", right: "right", center: "center"};

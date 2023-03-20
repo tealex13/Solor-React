@@ -1,5 +1,5 @@
 import {useRef, useState} from 'react';
-import {calcRowLen,calculateTotalHolds,mapFromBoard, mapLastInRowFromBoard, dist, moveDir, dirs} from "../Helper Functions/board calculator";
+import {calcRowLen,calculateTotalHolds,mapFromBoard, mapLastInRowFromBoard, dist, moveDir, dirs,getOppositeDir} from "../Helper Functions/board calculator";
 import {shuffleArray, mergeObjects, traverseKeys} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
@@ -29,7 +29,7 @@ function Game (props){
 		rightHand: {coords: [-1,1], selected: false, group: [groupType.right,groupType.hand]},
 		leftFoot: {coords: [-1,0], selected: false, group: [groupType.left,groupType.foot]},
 		rightFoot: {coords: [-1,5], selected: false, group: [groupType.right,groupType.foot]},
-		weight: {coords: [-1,2], selected: false, group:[]}}
+		weight: {coords: [0,2], selected: false, group:[]}}
 		);
 
 	const moveHistory = useRef([]);
@@ -93,10 +93,10 @@ function Game (props){
 		const drawnCards = getCardsToDisplay(props.nCardDraw);
 
 		const topFirst = (card,remainingCards,recurs) => {
-			return {[card.data.colors[0]]:{[card.data.weightDir]: {[card.data.colors[1]]:recurs(remainingCards)}}};
+			return {[card.data.colors[0]] :{[card.data.weightDir]: {[card.data.colors[1]]:recurs(remainingCards)}}};
 		}
 		const bottomFirst = (card,remainingCards,recurs) => {
-			return {[card.data.colors[1]]:{[card.data.weightDir]: {[card.data.colors[0]]:recurs(remainingCards)}}};
+			return {[card.data.colors[1]]:{[getOppositeDir(card.data.weightDir)]: {[card.data.colors[0]]:recurs(remainingCards)}}};
 		}
 		const topOnly = (card,remainingCards,recurs) => {
 			return {[card.data.colors[0]]:recurs(remainingCards)};
@@ -125,7 +125,7 @@ function Game (props){
 		return generateMoveOptions(drawnCards);
 	}
 
-	
+	console.log(generateMoveTree());
 
 	const limbHandleClick = (limb) => {
 		if(limbData[limb].selected){
@@ -286,7 +286,7 @@ Game.defaultProps = {
 	nCols: 4,
 	boardSeed: 1234,
 	cardSeed: 4321,
-	nCardDraw: 3,
+	nCardDraw: 2,
 	maxMoveDist: 1,
 	maxGroupDist: 3
 
