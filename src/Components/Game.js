@@ -1,6 +1,6 @@
 import {useRef, useState} from 'react';
 import * as bc from "../Helper Functions/board calculator";
-import {shuffleArray, mergeObjects, traverseKeys} from "../Helper Functions/Generic Helpers"
+import {shuffleArray, mergeObjects} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
 import {Card} from "./Card.js";
@@ -125,8 +125,6 @@ function Game (props){
 		return generateMoveOptions(drawnCards);
 	}
 
-	console.log(generateMoveTree());
-
 	const limbHandleClick = (limb) => {
 		if(limbData[limb].selected){
 			deselectLimb(limb);
@@ -151,9 +149,15 @@ function Game (props){
 		selectedLimbs = validateMove(selectedLimbs,coords);
 		if (selectedLimbs.length > 0){
 			moveLimbs(selectedLimbs,coords);
-			moveHistory.current.push(getMoveType(selectedLimbs,coords));
+			moveHistory.current = addMoveToHistory(moveHistory.current,getMoveType(selectedLimbs,coords));
 		}	
 	} 
+
+	const addMoveToHistory = (history,move) => {
+		const tempHistory = [...history];
+		tempHistory.push([move]);
+		return tempHistory;
+	}
 
 	const validateMove = (limbs,coords) => {
 		//weight cannot be combined with other limbs
@@ -182,9 +186,8 @@ function Game (props){
 			);
 
 		//Limbs follow a valid sequence along move tree;
-		let tempMoveHistory = [...moveHistory.current];
-		tempMoveHistory.push(getMoveType(limbs,coords));  
-		limbs = limbs.filter(selectedLimb => traverseKeys(generateMoveTree(),tempMoveHistory));
+		console.log(addMoveToHistory(moveHistory.current,getMoveType(limbs,coords)));
+		limbs = limbs.filter(selectedLimb => bc.areMovesOnTree(generateMoveTree(),addMoveToHistory(moveHistory.current,getMoveType(limbs,coords))));
 
 
 		return limbs;

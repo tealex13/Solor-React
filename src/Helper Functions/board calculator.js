@@ -65,4 +65,23 @@ export const getOppositeDir = (direction) => {
 	}
 }
 
+export function areMovesOnTree(moveTree, moves) {
+	if (moves.length === 0){
+		return true;
+	} 
+	if (moveTree === undefined){
+		return false;
+	} else {
+		const isAnyMoveOptionANode = (moveTree, moves, validationMethod) => {
+		return moves[0].reduce((valid,move) => {return valid || validationMethod(move)},false);
+		};
+	    if (moves.length > 1){
+	    	return isAnyMoveOptionANode(moveTree,moves, (move) => areMovesOnTree(moveTree[move],moves.slice(1)));
+	    } else {
+	        return isAnyMoveOptionANode(moveTree,moves, (move) => moveTree[move] ? true : false);
+	    } 
+	}
+	   
+}
+
 export const dirs = {left: "left", right: "right", center: "center"};
