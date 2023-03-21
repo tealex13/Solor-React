@@ -1,5 +1,5 @@
 import {useRef, useState} from 'react';
-import {calcRowLen,calculateTotalHolds,mapFromBoard, mapLastInRowFromBoard, dist, moveDir, dirs,getOppositeDir} from "../Helper Functions/board calculator";
+import * as bc from "../Helper Functions/board calculator";
 import {shuffleArray, mergeObjects, traverseKeys} from "../Helper Functions/Generic Helpers"
 import Hold from "./Hold.js";
 import uuid from 'react-uuid';
@@ -14,7 +14,7 @@ function Game (props){
 	const generateDrawPile = () => {
 		let drawPile = colorsArray.map((firstColor,index) => {
 			return (colorsArray.slice(index, colorsArray.length).map(secondColor => {
-				return ({ID: uuid(), data: {colors: [firstColor, secondColor], weightDir: index%2 === 0 ? dirs.left : dirs.right}})
+				return ({ID: uuid(), data: {colors: [firstColor, secondColor], weightDir: index%2 === 0 ? bc.dirs.left : bc.dirs.right}})
 			}))
 		}).flat();
 		shuffleArray(drawPile, props.cardSeed);
@@ -43,7 +43,7 @@ function Game (props){
 
 	const generateHoldData = () => {
 		let holdData = [];
-		const nTotalTiles =  calculateTotalHolds(props.nRows, props.nCols);
+		const nTotalTiles =  bc.calculateTotalHolds(props.nRows, props.nCols);
 		const iterNum = Math.ceil(nTotalTiles/colorsArray.length);
 		for (var i = 0; i < iterNum; i++) {
 			holdData = holdData.concat(colorsArray.map((color) =>({color: color})));
@@ -57,14 +57,14 @@ function Game (props){
 		let tiles = [];
 		for (var i = 0; i < nRows; i++) {
 			tiles[i] = {ID: uuid(),
-				data: generateRowData(nCols, i, holdData.slice(mapFromBoard(i,0,nCols),mapLastInRowFromBoard(i,nCols)+1))};
+				data: generateRowData(nCols, i, holdData.slice(bc.mapFromBoard(i,0,nCols),bc.mapLastInRowFromBoard(i,nCols)+1))};
 		}
 		return tiles;
 	}
 
 	const generateRowData = (nCols, rowIndex, holdData) =>{
 		let tempRow = [];
-		for (var j = 0; j < calcRowLen(nCols,rowIndex); j++) {
+		for (var j = 0; j < bc.calcRowLen(nCols,rowIndex); j++) {
 			tempRow[j] = {ID: uuid(), holdData: {...holdData[j], ...{handleClick: holdHandleClick([rowIndex,j])}}, limbsData: {}};
 		}
 		return tempRow;
@@ -96,7 +96,7 @@ function Game (props){
 			return {[card.data.colors[0]] :{[card.data.weightDir]: {[card.data.colors[1]]:recurs(remainingCards)}}};
 		}
 		const bottomFirst = (card,remainingCards,recurs) => {
-			return {[card.data.colors[1]]:{[getOppositeDir(card.data.weightDir)]: {[card.data.colors[0]]:recurs(remainingCards)}}};
+			return {[card.data.colors[1]]:{[bc.getOppositeDir(card.data.weightDir)]: {[card.data.colors[0]]:recurs(remainingCards)}}};
 		}
 		const topOnly = (card,remainingCards,recurs) => {
 			return {[card.data.colors[0]]:recurs(remainingCards)};
@@ -166,7 +166,7 @@ function Game (props){
 		//Only allow movement within a range of starting hold
 		limbs = limbs.filter((limb) => {
 		const tempLimbCoords = isAtStart(limbData[limb].coords) ? [limbData[limb].coords[0],coords[1]] : limbData[limb].coords;
-		return(props.maxMoveDist >= dist(tempLimbCoords,coords))
+		return(props.maxMoveDist >= bc.dist(tempLimbCoords,coords))
 		}); 
 
 		//Limbs stay in range of other limbs
@@ -177,7 +177,7 @@ function Game (props){
 				.filter(limb => (limb.group.find(element => element === groupee)))
 				.reduce((invalid,limb) => {
 					const tempLimbCoords = isAtStart(limb.coords) ? [limb.coords[0],coords[1]] : limb.coords;
-					return (invalid || props.maxGroupDist < dist(tempLimbCoords,coords))},false))
+					return (invalid || props.maxGroupDist < bc.dist(tempLimbCoords,coords))},false))
 				,false)
 			);
 
@@ -192,7 +192,7 @@ function Game (props){
 
 	const getMoveType = (limbs, coords) => {
 			const moveTypes = limbs.map(limb => 
-				limb === limbType.weight ? moveDir(limbData[limb].coords, coords) : generateHoldData()[mapFromBoard(coords[0],coords[1],props.nCols)].color
+				limb === limbType.weight ? bc.moveDir(limbData[limb].coords, coords) : generateHoldData()[bc.mapFromBoard(coords[0],coords[1],props.nCols)].color
 			);
 			return moveTypes.every(moveType => moveType === moveTypes[0]) ? moveTypes[0] : "";
 		}
@@ -282,14 +282,12 @@ function Game (props){
 const colorsArray = ["white","orange","green","purple","black","red"];
 
 Game.defaultProps = {
-	nRows: 4,
-	nCols: 4,
+	nRows: 10,
+	nCols: 6,
 	boardSeed: 1234,
 	cardSeed: 4321,
 	nCardDraw: 2,
 	maxMoveDist: 1,
 	maxGroupDist: 3
-
-
 };
 export default Game;

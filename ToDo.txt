@@ -76,6 +76,7 @@ Weight Epic:
 	
 	Changes to cards
 		-Add weight directions to cards
+		Display weight direction on card
 	
 	Board tool:
 		-Determine if a hold is left or right
@@ -86,7 +87,10 @@ Weight Epic:
 		-Weight only moves left and right instead of to a color
 
 Weight Wilds
-
+	Accept array into transverseOjbect/Rename
+	
+	
+		
 Moves are undo-able
 
 clean up
@@ -94,8 +98,7 @@ clean up
 	
 Mark Used Cards:
 
-Weight 
-
+Display turn history:
 
 Less important rules	
 	Only one limb per hold:
