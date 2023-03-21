@@ -81,9 +81,9 @@ Weight Epic:
 		-Determine if a hold is left or right
 	
 	Weight Rules:
-		Weight ignores color rules
-		Weight can only be moved during the direction section of a card 
-		Weight only moves left and right instead of to a color
+		-Weight ignores color rules
+		-Weight can only be moved during the direction section of a card 
+		-Weight only moves left and right instead of to a color
 
 Weight Wilds
 
