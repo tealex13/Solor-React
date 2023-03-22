@@ -73,7 +73,7 @@ export function areMovesOnTree(moveTree, moves) {
 		return false;
 	} else {
 		const isAnyMoveOptionANode = (moveTree, moves, validationMethod) => {
-		return moves[0].reduce((valid,move) => {return valid || validationMethod(move)},false);
+		return convertMoveTypes(moves[0]).reduce((valid,move) => {return valid || validationMethod(move)},false);
 		};
 	    if (moves.length > 1){
 	    	return isAnyMoveOptionANode(moveTree,moves, (move) => areMovesOnTree(moveTree[move],moves.slice(1)));
@@ -84,4 +84,14 @@ export function areMovesOnTree(moveTree, moves) {
 	   
 }
 
+const convertMoveTypes = (typeIn) => {
+	if (typeIn.includes(dirWild)){
+		return [dirs.left, dirs.right, dirs.center];
+	} else {
+		return typeIn;
+	}
+}
+
 export const dirs = {left: "left", right: "right", center: "center"};
+export const dirWild = "dirWild";
+export const colorWild = "colorWild";

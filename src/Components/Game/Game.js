@@ -175,7 +175,6 @@ function Game (props){
 		}); 
 
 		//Limbs follow a valid sequence along move tree;
-		console.log(addMoveToHistory(moveHistory.current,getMoveType(selectedLimbs,newCoords)));
 		selectedLimbs = selectedLimbs.filter(selectedLimb => bc.areMovesOnTree(generateMoveTree(),addMoveToHistory(moveHistory.current,getMoveType(selectedLimbs,newCoords))));
 
 
@@ -210,12 +209,22 @@ function Game (props){
 		)
 	}
 
-	const getMoveType = (limbs, coords) => {
-			const moveTypes = limbs.map(limb => 
-				limb === limbType.weight ? bc.moveDir(limbData[limb].coords, coords) : generateHoldData()[bc.mapFromBoard(coords[0],coords[1],props.nCols)].color
-			);
-			return moveTypes.every(moveType => moveType === moveTypes[0]) ? moveTypes[0] : "";
+	const getMoveType = (selectedLimbs, coords) => {
+		const moveTypes = selectedLimbs.map(limb => 
+			limb === limbType.weight ? 
+				bc.moveDir(limbData[limb].coords, coords) :
+				generateHoldData()[bc.mapFromBoard(coords[0],coords[1],props.nCols)].color
+		);
+		return moveTypes.every(moveType => moveType === moveTypes[0]) ? moveTypes[0] : "";
+	}
+
+	const getWeightMoveType = (limbsData, limb, coords) => {
+		if (isAtStart(limbsData[limb])){
+			return bc.dirWild;
+		} else {
+			return bc.moveDir(limbsData[limb].coords, coords);
 		}
+	}
 
 	const deselectAllLimbs = (limbs) => {
 		return Object.fromEntries(Object.entries(limbs).map(([key,value]) => [key, value = {...value, ...{selected: false}}]));
