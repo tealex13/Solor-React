@@ -86,7 +86,9 @@ export function areMovesOnTree(moveTree, moves) {
 
 const convertMoveTypes = (typeIn) => {
 	if (typeIn.includes(dirWild)){
-		return [dirs.left, dirs.right, dirs.center];
+		return [dirs.left, dirs.right, dirs.center, dirWild];
+	} else if(Object.values(dirs).reduce((includes,dir) => includes || typeIn.includes(dir),false)){
+		return [...typeIn, ...[dirWild]];
 	} else {
 		return typeIn;
 	}

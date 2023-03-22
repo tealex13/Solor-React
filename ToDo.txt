@@ -93,13 +93,11 @@ Wilds
 	
 	-weight wild move is converted to an array of all directions
 		(this is to handle leaving start)
-	Weight moves are always converted to an array that includes wild
-	Color wilds are converted to an array of all colors
-	
-	Weight move from start is a wild
+	-Weight move from start is a wild
+	-Weight moves are always converted to an array that includes wild
 
 Weight on a limb makes the opposite limb free (left hand frees right hand)
-	Convert wilds to an appopriate array in the on move tree
+	Color wilds are converted to an array of all colors while checking the move tree
 	Store a limbWild move in the history if weight conditions are met
 
 Convert Cards to weightWild
