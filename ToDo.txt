@@ -85,20 +85,32 @@ Weight Epic:
 		-Weight ignores color rules
 		-Weight can only be moved during the direction section of a card 
 		-Weight only moves left and right instead of to a color
+		
+		Weight cannot be higher than hands
+		Weight cannot be lower than feet
 
-Weight Wilds
-	Accept array into transverseOjbect/Rename
+Wilds
+	-Accept array into transverseOjbect/Rename
 	
+	weight wild is converted to an array of all directions
+	weight moves are always converted to an array that includes wild
+	color wilds are converted to an array of all colors
+	
+	Weight move from start is a wild
 	
 		
+Display History
+
 Moves are undo-able
 
 clean up
 	validate move returns a boolean
 	
 Mark Used Cards:
+	Cards are marked as unusable if all future moves in the tree do not include that card
+	Colors are marked as unusable if all future moved do not include that (card AND color) combo 
+		This works for directions as well
 
-Display turn history:
 
 Less important rules	
 	Only one limb per hold:
@@ -106,7 +118,8 @@ Less important rules
 	left can't be more than 1 to the right of right:
 
 Edge Cases:
-	limbs not in group cannot be more than double max the distance apart (this covers the edge case where leftHand is on the wall, then right foot is placed on the wall froms start)
+	limbs not in group cannot be more than double max the distance apart 
+		(this covers the edge case where leftHand is on the wall, then right foot is placed on the wall froms start)
 	
 Cleanup Round 2
 	Seperate tile generation from hold mapping

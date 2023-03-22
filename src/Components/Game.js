@@ -189,6 +189,8 @@ function Game (props){
 		console.log(addMoveToHistory(moveHistory.current,getMoveType(limbs,coords)));
 		limbs = limbs.filter(selectedLimb => bc.areMovesOnTree(generateMoveTree(),addMoveToHistory(moveHistory.current,getMoveType(limbs,coords))));
 
+		//As a result of the move weight is not higher than lowest foot
+
 
 		return limbs;
 	}
@@ -204,12 +206,17 @@ function Game (props){
 		return Object.fromEntries(Object.entries(limbs).map(([key,value]) => [key, value = {...value, ...{selected: false}}]));
 	}
 
-	const moveLimbs = (limbs, coords) => {
+	const applyNewCoords = (limbsState, selectedLimbs, newCoords) => {
 		let tempLimbsState = {...limbData};
-		tempLimbsState = deselectAllLimbs(tempLimbsState);
-		limbs.forEach((limb) => {
-			tempLimbsState = {...tempLimbsState, ...{[limb] : {...tempLimbsState[limb], ...{coords: coords}}}};
+		selectedLimbs.forEach((limb) => {
+			tempLimbsState = {...tempLimbsState, ...{[limb] : {...tempLimbsState[limb], ...{coords: newCoords}}}};
 			})
+		return tempLimbsState;
+	}
+
+	const moveLimbs = (selectedLimbs, coords) => {
+		let tempLimbsState = applyNewCoords({...limbData},selectedLimbs,coords);
+		tempLimbsState = deselectAllLimbs(tempLimbsState);
 		setLimbData(tempLimbsState);
 		}
 
