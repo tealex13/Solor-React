@@ -85,9 +85,8 @@ Weight Epic:
 		-Weight ignores color rules
 		-Weight can only be moved during the direction section of a card 
 		-Weight only moves left and right instead of to a color
-		
-		Weight cannot be higher than hands
-		Weight cannot be lower than feet
+		-Weight cannot be higher than hands
+		-Weight cannot be lower than feet
 
 Wilds
 	-Accept array into transverseOjbect/Rename
@@ -103,8 +102,11 @@ Display History
 
 Moves are undo-able
 
+Player is informed what rule/s are getting violated
+
 clean up
 	validate move returns a boolean
+	change group check to validate all groups instead of just the one that got moved
 	
 Mark Used Cards:
 	Cards are marked as unusable if all future moves in the tree do not include that card

@@ -195,23 +195,18 @@ function Game (props){
 			);
 
 		//As a result of the move weight is on or less above hands and 1 or less below the feet
-		// selectedLimbs = checkWeightInRange(tempLimbsState) ? selectedLimbs : [];
+		selectedLimbs = checkWeightInRange(tempLimbsState) ? selectedLimbs : [];
 
 		return selectedLimbs;
 	}
 
 	const checkWeightInRange = (limbsState) => {
 		return (
-			Object.values(limbsState).reduce((valid,limb) => {
-				let tempValid = true;
-				if (limb.group.includes(groupType.foot)){
-					tempValid = limbsState[limbType.weight].coords[0] >= (limb.coords[0] - 1);
-				} else if (limb.group.includes(groupType.hand)){
-					tempValid = limbsState[limbType.weight].coords[0] <= (limb.coords[0] + 1);
-				} else{
-				}
-				return valid && tempValid;
-			},true)
+			Object.values(limbsState).filter(limb => limb.group.includes(groupType.hand))
+				.reduce((valid,limb) => valid || (limb.coords[0] + 1) >= limbsState[limbType.weight].coords[0],false)
+			&&
+			Object.values(limbsState).filter(limb => limb.group.includes(groupType.foot))
+				.reduce((valid,limb) => valid || (limb.coords[0] - 1) <= limbsState[limbType.weight].coords[0],false)
 		)
 	}
 
