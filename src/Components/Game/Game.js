@@ -1,11 +1,11 @@
 import {useRef, useState} from 'react';
-import * as bc from "../Helper Functions/board calculator";
-import {shuffleArray, mergeObjects} from "../Helper Functions/Generic Helpers"
-import Hold from "./Hold.js";
+import * as bc from "../../Helper Functions/board calculator";
+import {shuffleArray, mergeObjects} from "../../Helper Functions/Generic Helpers"
+import Hold from "../Hold/Hold.js";
 import uuid from 'react-uuid';
-import {Card} from "./Card.js";
-import {Tile, limbType, groupType} from "./Tile.js";
-import {Limb} from "./Limb.js";
+import {Card} from "../Card/Card.js";
+import {Tile, limbType, groupType} from "../Tile/Tile.js";
+import {Limb} from "../Limb/Limb.js";
 import isEqual from "lodash/isEqual";
 import './Game.css';
 
@@ -194,10 +194,25 @@ function Game (props){
 				,false)
 			);
 
-		//As a result of the move weight is not higher than lowest foot
-
+		//As a result of the move weight is on or less above hands and 1 or less below the feet
+		// selectedLimbs = checkWeightInRange(tempLimbsState) ? selectedLimbs : [];
 
 		return selectedLimbs;
+	}
+
+	const checkWeightInRange = (limbsState) => {
+		return (
+			Object.values(limbsState).reduce((valid,limb) => {
+				let tempValid = true;
+				if (limb.group.includes(groupType.foot)){
+					tempValid = limbsState[limbType.weight].coords[0] >= (limb.coords[0] - 1);
+				} else if (limb.group.includes(groupType.hand)){
+					tempValid = limbsState[limbType.weight].coords[0] <= (limb.coords[0] + 1);
+				} else{
+				}
+				return valid && tempValid;
+			},true)
+		)
 	}
 
 	const getMoveType = (limbs, coords) => {

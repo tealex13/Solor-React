@@ -1,5 +1,5 @@
 import React from 'react';
-import {Limb} from "./Limb";
+import {Limb} from "../Limb/Limb";
 import "./Tile.css"
 
 export const limbType = {

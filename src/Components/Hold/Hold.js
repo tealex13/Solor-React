@@ -1,5 +1,4 @@
 import React from 'react';
-import {Limb, limbType} from "./Limb";
 import './Hold.css'
 
 export default function Hold(props){
