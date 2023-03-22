@@ -159,40 +159,45 @@ function Game (props){
 		return tempHistory;
 	}
 
-	const validateMove = (limbs,coords) => {
-		//weight cannot be combined with other limbs
-		limbs = limbs.includes(limbType.weight) & (limbs.filter(limb => limb !== limbType.weight).length > 0) ?
-			[] : limbs;
+	const validateMove = (selectedLimbs,newCoords) => {
+		//Tests that require previous state
+		//weight cannot be moves a the same time as other limbs
+		selectedLimbs = selectedLimbs.includes(limbType.weight) & (selectedLimbs.filter(limb => limb !== limbType.weight).length > 0) ?
+			[] : selectedLimbs;
 
 		//Same hold as starting hold not allowed
-		limbs = limbs.filter((limb) => !isEqual(limbData[limb].coords, coords));
+		selectedLimbs = selectedLimbs.filter((limb) => !isEqual(limbData[limb].coords, newCoords));
 
 		//Only allow movement within a range of starting hold
-		limbs = limbs.filter((limb) => {
-		const tempLimbCoords = isAtStart(limbData[limb].coords) ? [limbData[limb].coords[0],coords[1]] : limbData[limb].coords;
-		return(props.maxMoveDist >= bc.dist(tempLimbCoords,coords))
+		selectedLimbs = selectedLimbs.filter((limb) => {
+		const tempLimbCoords = isAtStart(limbData[limb].coords) ? [limbData[limb].coords[0],newCoords[1]] : limbData[limb].coords;
+		return(props.maxMoveDist >= bc.dist(tempLimbCoords,newCoords))
 		}); 
 
+		//Limbs follow a valid sequence along move tree;
+		console.log(addMoveToHistory(moveHistory.current,getMoveType(selectedLimbs,newCoords)));
+		selectedLimbs = selectedLimbs.filter(selectedLimb => bc.areMovesOnTree(generateMoveTree(),addMoveToHistory(moveHistory.current,getMoveType(selectedLimbs,newCoords))));
+
+
+		//Current state tests
+		const tempLimbsState = applyNewCoords({...limbData},selectedLimbs,newCoords);
+
 		//Limbs stay in range of other limbs
-		limbs = limbs.filter(selectedLimb => //max distance between limbs
+		selectedLimbs = selectedLimbs.filter(selectedLimb => //max distance between limbs
 			!limbData[selectedLimb].group.reduce((invalidGroup, groupee) => (
 				invalidGroup ||
 				Object.values(limbData)
 				.filter(limb => (limb.group.find(element => element === groupee)))
 				.reduce((invalid,limb) => {
-					const tempLimbCoords = isAtStart(limb.coords) ? [limb.coords[0],coords[1]] : limb.coords;
-					return (invalid || props.maxGroupDist < bc.dist(tempLimbCoords,coords))},false))
+					const tempLimbCoords = isAtStart(limb.coords) ? [limb.coords[0],newCoords[1]] : limb.coords;
+					return (invalid || props.maxGroupDist < bc.dist(tempLimbCoords,newCoords))},false))
 				,false)
 			);
-
-		//Limbs follow a valid sequence along move tree;
-		console.log(addMoveToHistory(moveHistory.current,getMoveType(limbs,coords)));
-		limbs = limbs.filter(selectedLimb => bc.areMovesOnTree(generateMoveTree(),addMoveToHistory(moveHistory.current,getMoveType(limbs,coords))));
 
 		//As a result of the move weight is not higher than lowest foot
 
 
-		return limbs;
+		return selectedLimbs;
 	}
 
 	const getMoveType = (limbs, coords) => {
