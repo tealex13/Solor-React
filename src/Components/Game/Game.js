@@ -29,7 +29,7 @@ function Game (props){
 		rightHand: {coords: [-1,1], selected: false, group: [groupType.right,groupType.hand]},
 		leftFoot: {coords: [-1,0], selected: false, group: [groupType.left,groupType.foot]},
 		rightFoot: {coords: [-1,5], selected: false, group: [groupType.right,groupType.foot]},
-		weight: {coords: [0,2], selected: false, group:[]}}
+		weight: {coords: [-1,2], selected: false, group:[]}}
 		);
 
 	const moveHistory = useRef([]);
@@ -212,17 +212,17 @@ function Game (props){
 	const getMoveType = (selectedLimbs, coords) => {
 		const moveTypes = selectedLimbs.map(limb => 
 			limb === limbType.weight ? 
-				bc.moveDir(limbData[limb].coords, coords) :
+				getWeightMoveType(limbData[limb], coords) :
 				generateHoldData()[bc.mapFromBoard(coords[0],coords[1],props.nCols)].color
 		);
 		return moveTypes.every(moveType => moveType === moveTypes[0]) ? moveTypes[0] : "";
 	}
 
-	const getWeightMoveType = (limbsData, limb, coords) => {
-		if (isAtStart(limbsData[limb])){
+	const getWeightMoveType = (limb, coords) => {
+		if (isAtStart(limb.coords)){
 			return bc.dirWild;
 		} else {
-			return bc.moveDir(limbsData[limb].coords, coords);
+			return bc.moveDir(limb.coords, coords);
 		}
 	}
 
