@@ -213,7 +213,7 @@ function Game (props){
 		const moveTypes = selectedLimbs.map(limb => 
 			limb === limbType.weight ? 
 				getWeightMoveType(limbData[limb], coords) :
-				generateHoldData()[bc.mapFromBoard(coords[0],coords[1],props.nCols)].color
+				getColorMoveType(limbData,limb,coords)
 		);
 		return moveTypes.every(moveType => moveType === moveTypes[0]) ? moveTypes[0] : "";
 	}
@@ -226,6 +226,31 @@ function Game (props){
 		}
 	}
 
+	const getColorMoveType = (limbsState,limb,coords) => {
+		let oppositeLimb = false;
+		switch (limb){
+		case limbType.leftHand:
+			oppositeLimb = limbType.rightHand;
+			break;
+		case limbType.rightHand:
+			oppositeLimb = limbType.leftHand;
+			break;
+		case limbType.leftFoot:
+			oppositeLimb = limbType.rightFoot;
+			break;
+		case limbType.rightFoot:
+			oppositeLimb = limbType.leftFoot;
+			break;
+		}
+
+		if ((oppositeLimb) && 
+			(isEqual(limbsState[limbType.weight].coords,limbsState[oppositeLimb].coords))){
+			return bc.colorWild;
+		}
+		else {
+			return generateHoldData()[bc.mapFromBoard(coords[0],coords[1],props.nCols)].color;
+		}
+	}
 	const deselectAllLimbs = (limbs) => {
 		return Object.fromEntries(Object.entries(limbs).map(([key,value]) => [key, value = {...value, ...{selected: false}}]));
 	}
