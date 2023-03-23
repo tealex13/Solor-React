@@ -2,6 +2,11 @@
 	background-color: white;
 	margin: 5px;
 	padding: 5px;
+	display: grid;
+	align-items: center;
+	justify-items: center;
+	grid-template-columns: [first-col] 30px [second-col] 60px[third-col] 30px [last-col];
+  	grid-template-rows: [first-row] 20px [second-row] 80px [third-row] 50px [fourth-row] 80px [fifth-row] 20px [last-row];
 }
 
 .cardColor{
@@ -17,6 +22,27 @@
 	height: 30px;
 }
 
-.left {
+.leftFacing {
 	transform: scaleX(-1);
 }
+
+.centerPip {
+	grid-row-start: third-row;
+	grid-row-end: fourth-row;
+	grid-column-start: second-col;
+	grid-column-end: third-col;	
+}
+
+.topPip {
+	grid-row-start: second-row;
+	grid-row-end: third-row;
+	grid-column-start: second-col;
+	grid-column-end: third-col;	
+}	
+
+.bottomPip {
+	grid-row-start: fourth-row;
+	grid-row-end: fifth-row;
+	grid-column-start: second-col;
+	grid-column-end: third-col;	
+}	

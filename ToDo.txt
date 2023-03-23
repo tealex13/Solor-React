@@ -102,7 +102,7 @@ Weight on a limb makes the opposite limb free (left hand frees right hand)
 	-Limbs with weight are not selectable
 
 Convert Cards to weightWild
-	Add wild state to cards
+	-Add wild state to cards
 	Toggle wild state when selecting the card
 	Create a new tree with toggled trees
 	Prevent toggling card wild state if the move tree can no longer be satisfied
@@ -124,7 +124,7 @@ Mark Used Cards:
 
 
 Less important rules	
-	Only one limb per hold:
+	-Only one limb per hold:
 	Feet can't move above hands:
 	left can't be more than 1 to the right of right:
 	Weight can only be one to the left and one the right of the extreme limbs

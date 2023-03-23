@@ -14,7 +14,7 @@ function Game (props){
 	const generateDrawPile = () => {
 		let drawPile = bc.colorsArray.map((firstColor,index) => {
 			return (bc.colorsArray.slice(index, bc.colorsArray.length).map(secondColor => {
-				return ({ID: uuid(), data: {colors: [firstColor, secondColor], weightDir: index%2 === 0 ? bc.dirs.left : bc.dirs.right}})
+				return ({ID: uuid(), data: {wild: false, colors: [firstColor, secondColor], weightDir: index%2 === 0 ? bc.dirs.left : bc.dirs.right}})
 			}))
 		}).flat();
 		shuffleArray(drawPile, props.cardSeed);
