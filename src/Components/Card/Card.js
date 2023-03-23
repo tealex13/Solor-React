@@ -11,14 +11,22 @@ export function Card(props) {
 	}
 	return(
 		<span className = "card">
-
-			<>
-				
-				{displayColor(0)}
-				<img src={require("./Arrow.png")} alt="right Arrow" className = {"arrow " + props.data.weightDir + "Facing" + " centerPip"}/>
-				{displayColor(1)}
-				<button className = "wild" onClick = {props.data.handleClick}/>
-			</>
+			{props.data.wild ? 
+				<>
+					<div className = "centerPip">
+						<img src={require("./Arrow.png")} alt="right Arrow" className = "arrow leftFacing"/>
+						<img src={require("./Arrow.png")} alt="right Arrow" className = "arrow rightFacing"/>
+					</div>
+					<button className = "wild" onClick = {props.data.handleClick}/>
+				</>:
+				<>
+					{displayColor(0)}
+					<img src={require("./Arrow.png")} alt="right Arrow" className = {"arrow " + props.data.weightDir + "Facing" + " centerPip"}/>
+					{displayColor(1)}
+					<button className = "wild" onClick = {props.data.handleClick}/>
+				</>
+			}
+			
 		</span>
 	)
 }
