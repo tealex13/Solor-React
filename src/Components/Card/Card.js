@@ -2,6 +2,7 @@ import React from 'react';
 import './Card.css';
 
 export function Card(props) {
+
 	
 	const displayColor = (index) => {
 		const pipLocation = (index === 0) ? "topPip" : "bottomPip";
@@ -12,9 +13,11 @@ export function Card(props) {
 		<span className = "card">
 
 			<>
+				
 				{displayColor(0)}
 				<img src={require("./Arrow.png")} alt="right Arrow" className = {"arrow " + props.data.weightDir + "Facing" + " centerPip"}/>
 				{displayColor(1)}
+				<button className = "wild" onClick = {props.data.handleClick}/>
 			</>
 		</span>
 	)

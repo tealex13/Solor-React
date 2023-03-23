@@ -11,13 +11,24 @@ import './Game.css';
 
 function Game (props){
 
+	const cardHandleClick = (index) => () => {
+		const tempDrawPile = [...drawPile];
+		console.log(index);
+		tempDrawPile[index].data.wild = !tempDrawPile[index].data.wild;
+		// console.log(tempDrawPile);
+		setDrawPile(tempDrawPile);
+	}
+
 	const generateDrawPile = () => {
 		let drawPile = bc.colorsArray.map((firstColor,index) => {
 			return (bc.colorsArray.slice(index, bc.colorsArray.length).map(secondColor => {
-				return ({ID: uuid(), data: {wild: false, colors: [firstColor, secondColor], weightDir: index%2 === 0 ? bc.dirs.left : bc.dirs.right}})
+				return ({ID: uuid(), data: {wild: false,
+					colors: [firstColor, secondColor], 
+					weightDir: index%2 === 0 ? bc.dirs.left : bc.dirs.right}})
 			}))
 		}).flat();
 		shuffleArray(drawPile, props.cardSeed);
+		drawPile = drawPile.map((card,index) => mergeObjects(card,{data:{handleClick: cardHandleClick(index)}}));
 		return drawPile;
 	}
 
@@ -311,6 +322,7 @@ function Game (props){
 	const cardDisplay = getCardsToDisplay(props.nCardDraw);
 	const limbsAtStart = generateLimbsAtStart();
 	
+	let cardData = {"color":"yellow", "weightDir":"right"};
 	return(
 		<>
 			<div>

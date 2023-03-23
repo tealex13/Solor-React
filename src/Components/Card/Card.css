@@ -46,3 +46,13 @@
 	grid-column-start: second-col;
 	grid-column-end: third-col;	
 }	
+
+.wild {
+	width: 30px;
+	height: 30px;
+	grid-row-start: first-row;
+	grid-row-end: second-row;
+	grid-column-start: third-col;
+	grid-column-end: last-col;	
+
+}

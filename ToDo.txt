@@ -103,6 +103,7 @@ Weight on a limb makes the opposite limb free (left hand frees right hand)
 
 Convert Cards to weightWild
 	-Add wild state to cards
+	-Add toogle button to card
 	Toggle wild state when selecting the card
 	Create a new tree with toggled trees
 	Prevent toggling card wild state if the move tree can no longer be satisfied
