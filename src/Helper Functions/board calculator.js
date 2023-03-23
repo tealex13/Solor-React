@@ -89,11 +89,14 @@ const convertMoveTypes = (typeIn) => {
 		return [dirs.left, dirs.right, dirs.center, dirWild];
 	} else if(Object.values(dirs).reduce((includes,dir) => includes || typeIn.includes(dir),false)){
 		return [...typeIn, ...[dirWild]];
+	} else if(typeIn.includes(colorWild)){
+		return [...colorsArray, ...[colorWild]];
 	} else {
 		return typeIn;
 	}
 }
 
+export const colorsArray = ["white","orange","green","purple","black","red"];
 export const dirs = {left: "left", right: "right", center: "center"};
 export const dirWild = "dirWild";
 export const colorWild = "colorWild";

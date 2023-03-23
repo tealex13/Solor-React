@@ -99,6 +99,7 @@ Wilds
 Weight on a limb makes the opposite limb free (left hand frees right hand)
 	Color wilds are converted to an array of all colors while checking the move tree
 	Store a limbWild move in the history if weight conditions are met
+	Limbs with weight are not selectable
 
 Convert Cards to weightWild
 	Add wild state to cards

@@ -12,8 +12,8 @@ import './Game.css';
 function Game (props){
 
 	const generateDrawPile = () => {
-		let drawPile = colorsArray.map((firstColor,index) => {
-			return (colorsArray.slice(index, colorsArray.length).map(secondColor => {
+		let drawPile = bc.colorsArray.map((firstColor,index) => {
+			return (bc.colorsArray.slice(index, bc.colorsArray.length).map(secondColor => {
 				return ({ID: uuid(), data: {colors: [firstColor, secondColor], weightDir: index%2 === 0 ? bc.dirs.left : bc.dirs.right}})
 			}))
 		}).flat();
@@ -44,9 +44,9 @@ function Game (props){
 	const generateHoldData = () => {
 		let holdData = [];
 		const nTotalTiles =  bc.calculateTotalHolds(props.nRows, props.nCols);
-		const iterNum = Math.ceil(nTotalTiles/colorsArray.length);
+		const iterNum = Math.ceil(nTotalTiles/bc.colorsArray.length);
 		for (var i = 0; i < iterNum; i++) {
-			holdData = holdData.concat(colorsArray.map((color) =>({color: color})));
+			holdData = holdData.concat(bc.colorsArray.map((color) =>({color: color})));
 		}
 		shuffleArray(holdData,props.boardSeed);
 		holdData = holdData.slice(0,nTotalTiles);
@@ -310,10 +310,6 @@ function Game (props){
 	)
 
 }
-
-
-
-const colorsArray = ["white","orange","green","purple","black","red"];
 
 Game.defaultProps = {
 	nRows: 10,
