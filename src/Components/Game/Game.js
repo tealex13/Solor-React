@@ -116,6 +116,19 @@ function Game (props){
 			return {[card.data.colors[1]]:recurs(remainingCards)};
 		}
 
+		const createFrontOfCardPerm = (curVal,tempArray,recurs) => {
+			let tempAcc = {}
+			tempAcc = topFirst(curVal,tempArray,recurs);
+			tempAcc = mergeObjects(tempAcc, bottomFirst(curVal,tempArray,recurs));
+			tempAcc = mergeObjects(tempAcc, topOnly(curVal,tempArray,recurs));
+			tempAcc = mergeObjects(tempAcc, bottomOnly(curVal,tempArray,recurs));
+			return tempAcc;
+		}
+
+		const createWildSideCardPerm = (curVal, tempArray, recurs) => {
+			return {[bc.dirWild] : recurs(tempArray)};
+		}
+
 		const generateMoveOptions = (drawnCards) => {
 			 return drawnCards.reduce((acc,curVal,index,array) => {
 			 	let tempAcc = {};
@@ -123,10 +136,7 @@ function Game (props){
 				tempArray.splice(index,1); //remove element from array
 
 				if (array.length > 0){
-					tempAcc = topFirst(curVal,tempArray,generateMoveOptions);
-					tempAcc = mergeObjects(tempAcc, bottomFirst(curVal,tempArray,generateMoveOptions));
-					tempAcc = mergeObjects(tempAcc, topOnly(curVal,tempArray,generateMoveOptions));
-					tempAcc = mergeObjects(tempAcc, bottomOnly(curVal,tempArray,generateMoveOptions));
+					tempAcc = curVal.data.wild ? createWildSideCardPerm(curVal,tempArray,generateMoveOptions) : createFrontOfCardPerm(curVal,tempArray,generateMoveOptions);
 				} else{
 				}
 				return mergeObjects(acc,tempAcc);
