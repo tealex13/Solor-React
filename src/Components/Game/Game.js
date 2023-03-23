@@ -27,9 +27,9 @@ function Game (props){
 	const [limbData,setLimbData] = useState(
 		{leftHand: {coords: [-1,0], selected: false, group: [groupType.left,groupType.hand]},
 		rightHand: {coords: [-1,1], selected: false, group: [groupType.right,groupType.hand]},
-		leftFoot: {coords: [-1,0], selected: false, group: [groupType.left,groupType.foot]},
-		rightFoot: {coords: [-1,5], selected: false, group: [groupType.right,groupType.foot]},
-		weight: {coords: [-1,2], selected: false, group:[]}}
+		leftFoot: {coords: [-1,2], selected: false, group: [groupType.left,groupType.foot]},
+		rightFoot: {coords: [-1,3], selected: false, group: [groupType.right,groupType.foot]},
+		weight: {coords: [-1,4], selected: false, group:[]}}
 		);
 
 	const moveHistory = useRef([]);
@@ -131,7 +131,6 @@ function Game (props){
 			&& isEqual(limbData[limb].coords,limbData[limbType.weight].coords)){
 			const  alertMessage = "The " + limbData[limb].group[0]+" "+limbData[limb].group[1]+ " cannot be selected because it share a space with weight."
 			alert(alertMessage);
-			// alert("invalid");
 		} else {
 			if(limbData[limb].selected){
 				deselectLimb(limb);
@@ -203,8 +202,15 @@ function Game (props){
 				,false)
 			);
 
-		//As a result of the move weight is on or less above hands and 1 or less below the feet
+		//Weight is not 1 or higher than hands and 1 or lower than the feet
 		selectedLimbs = checkWeightInRange(tempLimbsState) ? selectedLimbs : [];
+
+		//Only one non-weight limb allowed per hold
+		const nonWeightLimbs = Object.entries(tempLimbsState).filter(([limb,data]) => limb !== limbType.weight);
+		selectedLimbs = nonWeightLimbs.slice(0,-1).reduce((invalid,[limb1,data1],index) => {
+				return invalid || 
+				nonWeightLimbs.slice(index+1).reduce((invalid,[limb2,data2]) => invalid || isEqual(data1.coords,data2.coords),false)
+			},false) ? [] : selectedLimbs;
 
 		return selectedLimbs;
 	}
