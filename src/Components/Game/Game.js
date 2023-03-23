@@ -126,12 +126,22 @@ function Game (props){
 	}
 
 	const limbHandleClick = (limb) => {
-		if(limbData[limb].selected){
-			deselectLimb(limb);
+		//if the limb is not wieght, but shares the same space as weight, it cannot be selected
+		if((limb !== limbType.weight)
+			&& isEqual(limbData[limb].coords,limbData[limbType.weight].coords)){
+			const  alertMessage = "The " + limbData[limb].group[0]+" "+limbData[limb].group[1]+ " cannot be selected because it share a space with weight."
+			alert(alertMessage);
+			// alert("invalid");
 		} else {
-			selectLimb(limb);
+			if(limbData[limb].selected){
+				deselectLimb(limb);
+			} else {
+				selectLimb(limb);
+			}
 		}
+		
 	}
+
 
 	const selectLimb = (limb) => {
 		const tempLimbState = {...limbData, ...{[limb] : {...limbData[limb], ...{selected:true}}}};
