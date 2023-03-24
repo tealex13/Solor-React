@@ -47,17 +47,15 @@ function Game (props){
 	const [drawOrder,setDrawOrder] = useState(getDrawOrder);
 
 	const cardHandleClick = (index,drawPile) => () => {
-		//Check the move tree
-		console.log("clicked");
+
 		const tempDrawPile = structuredClone(drawPile);
 
 		tempDrawPile[index].data.wild = !tempDrawPile[index].data.wild;
-		setDrawPile(tempDrawPile);
-		// if (bc.areMovesOnTree(generateMoveTree(getCardsToDisplay(props.nCardDraw,tempDrawPile,drawOrder)),moveHistory.current)){
-		// 	setDrawPile([...tempDrawPile]);
-		// } else {
-		// 	alert("The card you want to change to a wild has already been used.")
-		// }		
+		if (bc.areMovesOnTree(generateMoveTree(getCardsToDisplay(props.nCardDraw,tempDrawPile,drawOrder),tempDrawPile),moveHistory.current)){
+			setDrawPile(tempDrawPile);
+		} else {
+			alert("The card you want to change to a wild has already been used.")
+		}		
 	}
 
 	const generateTilesData = (nRows, nCols) =>{
@@ -115,7 +113,7 @@ function Game (props){
 		return drawOrder.slice(drawIndex,lastCardInDisplay);
 	}
 
-	const generateMoveTree = (drawnCardsIndex) => {
+	const generateMoveTree = (drawnCardsIndex, drawPile) => {
 
 		const drawnCards = drawnCardsIndex.map(index => drawPile[index]); 
 
@@ -224,7 +222,7 @@ function Game (props){
 
 		//Limbs follow a valid sequence along move tree;
 		selectedLimbs = selectedLimbs.filter(selectedLimb => 
-			bc.areMovesOnTree(generateMoveTree(getCardsToDisplay(props.nCardDraw,drawPile,drawOrder)),addMoveToHistory(moveHistory.current,getMoveType(selectedLimbs,newCoords))));
+			bc.areMovesOnTree(generateMoveTree(getCardsToDisplay(props.nCardDraw,drawPile,drawOrder),drawPile),addMoveToHistory(moveHistory.current,getMoveType(selectedLimbs,newCoords))));
 
 
 		//Current state tests
