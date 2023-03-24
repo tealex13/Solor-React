@@ -105,14 +105,20 @@ Convert Cards to weightWild
 	-Add wild state to cards
 	-Add toogle button to card
 	-Toggle wild state when selecting the card
-	Factor card wild state into move tree
+	-Display wild move when wild is true
+	-Factor card wild state into move tree
 	Prevent toggling card wild state if the move tree can no longer be satisfied
 	
 Display History
 
 Moves are undo-able
+	look at react tic-tac-toe example
 
 Player is informed what rule/s are getting violated
+
+Implement Redux in Game first
+
+Migrate using game 
 
 clean up
 	validate move returns a boolean

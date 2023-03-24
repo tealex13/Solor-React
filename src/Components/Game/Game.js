@@ -12,10 +12,14 @@ import './Game.css';
 function Game (props){
 
 	const cardHandleClick = (index) => () => {
+		//Check the move tree
+
 		const tempDrawPile = [...drawPile];
 		console.log(index);
 		tempDrawPile[index].data.wild = !tempDrawPile[index].data.wild;
 		// console.log(tempDrawPile);
+
+		// generateMoveTree(getCardsToDisplay(props.nCardDraw,tempDrawPile))
 		setDrawPile(tempDrawPile);
 	}
 
@@ -95,13 +99,13 @@ function Game (props){
 		return (tiles);
 	}
 
-	const getCardsToDisplay = (nCardDraw) => {
+	const getCardsToDisplay = (nCardDraw,drawPile) => {
 		const lastCardInDisplay = (drawIndex + nCardDraw) > drawPile.length ? drawPile.length : drawIndex + nCardDraw;
 		return drawPile.slice(drawIndex,lastCardInDisplay);
 	}
 
-	const generateMoveTree = () => {
-		const drawnCards = getCardsToDisplay(props.nCardDraw);
+	const generateMoveTree = (drawnCards) => {
+		// const drawnCards = getCardsToDisplay(props.nCardDraw);
 
 		const topFirst = (card,remainingCards,recurs) => {
 			return {[card.data.colors[0]] :{[card.data.weightDir]: {[card.data.colors[1]]:recurs(remainingCards)}}};
@@ -205,7 +209,8 @@ function Game (props){
 		}); 
 
 		//Limbs follow a valid sequence along move tree;
-		selectedLimbs = selectedLimbs.filter(selectedLimb => bc.areMovesOnTree(generateMoveTree(),addMoveToHistory(moveHistory.current,getMoveType(selectedLimbs,newCoords))));
+		selectedLimbs = selectedLimbs.filter(selectedLimb => 
+			bc.areMovesOnTree(generateMoveTree(getCardsToDisplay(props.nCardDraw,drawPile)),addMoveToHistory(moveHistory.current,getMoveType(selectedLimbs,newCoords))));
 
 
 		//Current state tests
@@ -329,7 +334,7 @@ function Game (props){
 
 
 	const tilesData = generateTilesData(props.nRows, props.nCols);
-	const cardDisplay = getCardsToDisplay(props.nCardDraw);
+	const cardDisplay = getCardsToDisplay(props.nCardDraw,drawPile);
 	const limbsAtStart = generateLimbsAtStart();
 	
 	let cardData = {"color":"yellow", "weightDir":"right"};
