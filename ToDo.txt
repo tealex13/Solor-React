@@ -107,7 +107,14 @@ Convert Cards to weightWild
 	-Toggle wild state when selecting the card
 	-Display wild move when wild is true
 	-Factor card wild state into move tree
-	Prevent toggling card wild state if the move tree can no longer be satisfied
+	-Prevent toggling card wild state if the move tree can no longer be satisfied
+	
+Clean Up
+	Rename getDrawnCards
+	Evalute where we are using global state vs local state...
+	Rename draw cards button
+	make drawPile useRef
+	
 	
 Display History
 

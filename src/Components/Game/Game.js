@@ -11,24 +11,28 @@ import './Game.css';
 
 function Game (props){
 
-	
-
-	const generateDrawPile = () => {
-		let drawPile = bc.colorsArray.map((firstColor,index) => {
+	const generateCardsData = () => {
+		let cardsData = bc.colorsArray.map((firstColor,index) => {
 			return (bc.colorsArray.slice(index, bc.colorsArray.length).map(secondColor => {
-				return ({ID: uuid(), data: {wild: false,
+				return ({ID: uuid(), data: {
 					colors: [firstColor, secondColor], 
 					weightDir: index%2 === 0 ? bc.dirs.left : bc.dirs.right}})
 			}))
 		}).flat();
-		return drawPile;
+		return cardsData;
 	}
 
+	const cardData = useRef(generateCardsData());
+
+	const generateCardsState = () => {
+		return cardData.current.map(card => ({wild: false}));
+	}
 
 	const [drawIndex,setDrawIndex] = useState(0);
-	const [drawPile,setDrawPile] = useState(generateDrawPile); //move to useRef
+	
+	const [drawPile,setDrawPile] = useState(generateCardsState); //move to useRef
 	const [displayDraw,setDisplayDraw] = useState(true);
-	const [limbData,setLimbData] = useState(
+	const [limbsData,setLimbsData] = useState(
 		{leftHand: {coords: [-1,0], selected: false, group: [groupType.left,groupType.hand]},
 		rightHand: {coords: [-1,1], selected: false, group: [groupType.right,groupType.hand]},
 		leftFoot: {coords: [-1,2], selected: false, group: [groupType.left,groupType.foot]},
@@ -39,7 +43,7 @@ function Game (props){
 	const moveHistory = useRef([]);
 
 	const getDrawOrder = () => {
-		const drawOrder = drawPile.map((card,index) => index);
+		const drawOrder = cardData.current.map((card,index) => index);
 		shuffleArray(drawOrder,props.cardSeed);
 		return drawOrder
 	}
@@ -50,8 +54,9 @@ function Game (props){
 
 		const tempDrawPile = structuredClone(drawPile);
 
-		tempDrawPile[index].data.wild = !tempDrawPile[index].data.wild;
-		if (bc.areMovesOnTree(generateMoveTree(getCardsToDisplay(props.nCardDraw,tempDrawPile,drawOrder),tempDrawPile),moveHistory.current)){
+		tempDrawPile[index].wild = !tempDrawPile[index].wild;
+		console.log("temp:",tempDrawPile);
+		if (bc.areMovesOnTree(generateMoveTree(tempDrawPile),moveHistory.current)){
 			setDrawPile(tempDrawPile);
 		} else {
 			alert("The card you want to change to a wild has already been used.")
@@ -99,7 +104,7 @@ function Game (props){
 	}
 
 	const mapLimbsToTiles = (tiles) => {
-		Object.entries(limbData)
+		Object.entries(limbsData)
 		.filter(([key,value]) => (!isAtStart(value.coords)))
 		.map(([key,value]) => {
 			let tempLimbsData = tiles[value.coords[0]].data[value.coords[1]].limbsData;
@@ -108,14 +113,15 @@ function Game (props){
 		return (tiles);
 	}
 
-	const getCardsToDisplay = (nCardDraw,drawPile,drawOrder) => {
-		const lastCardInDisplay = (drawIndex + nCardDraw) > drawPile.length ? drawPile.length : drawIndex + nCardDraw;
+	const getIndexOfCardsToDisplay = () => {
+		const lastCardInDisplay = (drawIndex + props.nCardDraw) > cardData.current.length ? cardData.current.length : drawIndex + props.nCardDraw;
 		return drawOrder.slice(drawIndex,lastCardInDisplay);
 	}
 
-	const generateMoveTree = (drawnCardsIndex, drawPile) => {
+	const generateMoveTree = (cardState) => {
 
-		const drawnCards = drawnCardsIndex.map(index => drawPile[index]); 
+		const drawnCardsData = getIndexOfCardsToDisplay().map(index => cardData.current[index]);
+		const drawnCardsState = getIndexOfCardsToDisplay().map(index => cardState[index]); 
 
 		const topFirst = (card,remainingCards,recurs) => {
 			return {[card.data.colors[0]] :{[card.data.weightDir]: {[card.data.colors[1]]:recurs(remainingCards)}}};
@@ -143,31 +149,31 @@ function Game (props){
 			return {[bc.dirWild] : recurs(tempArray)};
 		}
 
-		const generateMoveOptions = (drawnCards) => {
-			 return drawnCards.reduce((acc,curVal,index,array) => {
+		const generateMoveOptions = (drawnCardsData) => {
+			 return drawnCardsData.reduce((acc,curVal,index,array) => {
 			 	let tempAcc = {};
 				let tempArray = array.slice();
 				tempArray.splice(index,1); //remove element from array
 
 				if (array.length > 0){
-					tempAcc = curVal.data.wild ? createWildSideCardPerm(curVal,tempArray,generateMoveOptions) : createFrontOfCardPerm(curVal,tempArray,generateMoveOptions);
+					tempAcc = drawnCardsState[index].wild ? createWildSideCardPerm(curVal,tempArray,generateMoveOptions) : createFrontOfCardPerm(curVal,tempArray,generateMoveOptions);
 				} else{
 				}
 				return mergeObjects(acc,tempAcc);
 			},{});
 		}
 
-		return generateMoveOptions(drawnCards);
+		return generateMoveOptions(drawnCardsData);
 	}
 
 	const limbHandleClick = (limb) => {
 		//if the limb is not wieght, but shares the same space as weight, it cannot be selected
 		if((limb !== limbType.weight)
-			&& isEqual(limbData[limb].coords,limbData[limbType.weight].coords)){
-			const  alertMessage = "The " + limbData[limb].group[0]+" "+limbData[limb].group[1]+ " cannot be selected because it share a space with weight."
+			&& isEqual(limbsData[limb].coords,limbsData[limbType.weight].coords)){
+			const  alertMessage = "The " + limbsData[limb].group[0]+" "+limbsData[limb].group[1]+ " cannot be selected because it share a space with weight."
 			alert(alertMessage);
 		} else {
-			if(limbData[limb].selected){
+			if(limbsData[limb].selected){
 				deselectLimb(limb);
 			} else {
 				selectLimb(limb);
@@ -178,19 +184,17 @@ function Game (props){
 
 
 	const selectLimb = (limb) => {
-		console.log(drawPile[1].data);
-		const tempLimbState = {...limbData, ...{[limb] : {...limbData[limb], ...{selected:true}}}};
-		setLimbData(tempLimbState);
+		const tempLimbState = {...limbsData, ...{[limb] : {...limbsData[limb], ...{selected:true}}}};
+		setLimbsData(tempLimbState);
 		}
 
 	const deselectLimb = (limb) => {
-		console.log(drawPile[1].data);
-		const tempLimbState = {...limbData, ...{[limb] : {...limbData[limb], ...{selected:false}}}};
-		setLimbData(tempLimbState);
+		const tempLimbState = {...limbsData, ...{[limb] : {...limbsData[limb], ...{selected:false}}}};
+		setLimbsData(tempLimbState);
 	}
 
 	const holdHandleClick = (coords) => () => {
-		let selectedLimbs = Object.entries(limbData).filter(([key,value]) => (value.selected)).map(([key,value]) => (key));
+		let selectedLimbs = Object.entries(limbsData).filter(([key,value]) => (value.selected)).map(([key,value]) => (key));
 
 		selectedLimbs = validateMove(selectedLimbs,coords);
 		if (selectedLimbs.length > 0){
@@ -212,27 +216,27 @@ function Game (props){
 			[] : selectedLimbs;
 
 		//Same hold as starting hold not allowed
-		selectedLimbs = selectedLimbs.filter((limb) => !isEqual(limbData[limb].coords, newCoords));
+		selectedLimbs = selectedLimbs.filter((limb) => !isEqual(limbsData[limb].coords, newCoords));
 
 		//Only allow movement within a range of starting hold
 		selectedLimbs = selectedLimbs.filter((limb) => {
-		const tempLimbCoords = isAtStart(limbData[limb].coords) ? [limbData[limb].coords[0],newCoords[1]] : limbData[limb].coords;
+		const tempLimbCoords = isAtStart(limbsData[limb].coords) ? [limbsData[limb].coords[0],newCoords[1]] : limbsData[limb].coords;
 		return(props.maxMoveDist >= bc.dist(tempLimbCoords,newCoords))
 		}); 
 
 		//Limbs follow a valid sequence along move tree;
 		selectedLimbs = selectedLimbs.filter(selectedLimb => 
-			bc.areMovesOnTree(generateMoveTree(getCardsToDisplay(props.nCardDraw,drawPile,drawOrder),drawPile),addMoveToHistory(moveHistory.current,getMoveType(selectedLimbs,newCoords))));
+			bc.areMovesOnTree(generateMoveTree(drawPile),addMoveToHistory(moveHistory.current,getMoveType(selectedLimbs,newCoords))));
 
 
 		//Current state tests
-		const tempLimbsState = applyNewCoords({...limbData},selectedLimbs,newCoords);
+		const tempLimbsState = applyNewCoords({...limbsData},selectedLimbs,newCoords);
 
 		//Limbs stay in range of other limbs
 		selectedLimbs = selectedLimbs.filter(selectedLimb => //max distance between limbs
-			!limbData[selectedLimb].group.reduce((invalidGroup, groupee) => (
+			!limbsData[selectedLimb].group.reduce((invalidGroup, groupee) => (
 				invalidGroup ||
-				Object.values(limbData)
+				Object.values(limbsData)
 				.filter(limb => (limb.group.find(element => element === groupee)))
 				.reduce((invalid,limb) => {
 					const tempLimbCoords = isAtStart(limb.coords) ? [limb.coords[0],newCoords[1]] : limb.coords;
@@ -266,8 +270,8 @@ function Game (props){
 	const getMoveType = (selectedLimbs, coords) => {
 		const moveTypes = selectedLimbs.map(limb => 
 			limb === limbType.weight ? 
-				getWeightMoveType(limbData[limb], coords) :
-				getColorMoveType(limbData,limb,coords)
+				getWeightMoveType(limbsData[limb], coords) :
+				getColorMoveType(limbsData,limb,coords)
 		);
 		return moveTypes.every(moveType => moveType === moveTypes[0]) ? moveTypes[0] : "";
 	}
@@ -310,7 +314,7 @@ function Game (props){
 	}
 
 	const applyNewCoords = (limbsState, selectedLimbs, newCoords) => {
-		let tempLimbsState = {...limbData};
+		let tempLimbsState = {...limbsData};
 		selectedLimbs.forEach((limb) => {
 			tempLimbsState = {...tempLimbsState, ...{[limb] : {...tempLimbsState[limb], ...{coords: newCoords}}}};
 			})
@@ -318,9 +322,9 @@ function Game (props){
 	}
 
 	const moveLimbs = (selectedLimbs, coords) => {
-		let tempLimbsState = applyNewCoords({...limbData},selectedLimbs,coords);
+		let tempLimbsState = applyNewCoords({...limbsData},selectedLimbs,coords);
 		tempLimbsState = deselectAllLimbs(tempLimbsState);
-		setLimbData(tempLimbsState);
+		setLimbsData(tempLimbsState);
 		}
 
 	const formatLimbsForTile = (key,value) => {
@@ -330,13 +334,13 @@ function Game (props){
 	const drawCards = () => {
 		const newDrawIndex = drawIndex + props.nCardDraw;
 		setDrawIndex(newDrawIndex);
-		setDisplayDraw(newDrawIndex + props.nCardDraw < drawPile.length);
+		setDisplayDraw(newDrawIndex + props.nCardDraw < cardData.current.length);
 		moveHistory.current = [];
 	}
 
 	const generateLimbsAtStart = () => {
 		let limbsAtStart = {};
-		Object.entries(limbData)
+		Object.entries(limbsData)
 		.filter(([key,value]) =>(isAtStart(value.coords)))
 		.forEach(([key,value]) => (
 			limbsAtStart = {...limbsAtStart, ...formatLimbsForTile(key,value)}
@@ -346,7 +350,7 @@ function Game (props){
 
 	
 	const tilesData = generateTilesData(props.nRows, props.nCols);
-	const cardsToDisplay = getCardsToDisplay(props.nCardDraw,drawPile,drawOrder);
+	const indexOfCardsToDisplay = getIndexOfCardsToDisplay();
 	const limbsAtStart = generateLimbsAtStart();
 	
 	
@@ -373,8 +377,8 @@ function Game (props){
 			</div>
 			<div className = "playerControls">
 				<div className ="cardDisplay">
-					{cardsToDisplay.map((index) => {
-						return(<Card key = {drawPile[index].ID} data = {drawPile[index].data} handleClick = {cardHandleClick(index,drawPile)}/>)
+					{indexOfCardsToDisplay.map((index) => {
+						return(<Card key = {cardData.current[index].ID} data = {cardData.current[index].data} state = {drawPile[index]} handleClick = {cardHandleClick(index,drawPile)}/>)
 					})
 					}
 				</div>

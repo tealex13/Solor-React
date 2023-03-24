@@ -11,7 +11,7 @@ export function Card(props) {
 	}
 	return(
 		<span className = "card">
-			{props.data.wild ? 
+			{props.state.wild ? 
 				<>
 					<div className = "centerPip">
 						<img src={require("./Arrow.png")} alt="right Arrow" className = "arrow leftFacing"/>
