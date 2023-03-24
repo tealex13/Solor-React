@@ -11,17 +11,7 @@ import './Game.css';
 
 function Game (props){
 
-	const cardHandleClick = (index) => () => {
-		//Check the move tree
-
-		const tempDrawPile = [...drawPile];
-		console.log(index);
-		tempDrawPile[index].data.wild = !tempDrawPile[index].data.wild;
-		// console.log(tempDrawPile);
-
-		// generateMoveTree(getCardsToDisplay(props.nCardDraw,tempDrawPile))
-		setDrawPile(tempDrawPile);
-	}
+	
 
 	const generateDrawPile = () => {
 		let drawPile = bc.colorsArray.map((firstColor,index) => {
@@ -31,10 +21,9 @@ function Game (props){
 					weightDir: index%2 === 0 ? bc.dirs.left : bc.dirs.right}})
 			}))
 		}).flat();
-		shuffleArray(drawPile, props.cardSeed);
-		drawPile = drawPile.map((card,index) => mergeObjects(card,{data:{handleClick: cardHandleClick(index)}}));
 		return drawPile;
 	}
+
 
 	const [drawIndex,setDrawIndex] = useState(0);
 	const [drawPile,setDrawPile] = useState(generateDrawPile); //move to useRef
@@ -48,6 +37,28 @@ function Game (props){
 		);
 
 	const moveHistory = useRef([]);
+
+	const getDrawOrder = () => {
+		const drawOrder = drawPile.map((card,index) => index);
+		shuffleArray(drawOrder,props.cardSeed);
+		return drawOrder
+	}
+
+	const [drawOrder,setDrawOrder] = useState(getDrawOrder);
+
+	const cardHandleClick = (index,drawPile) => () => {
+		//Check the move tree
+		console.log("clicked");
+		const tempDrawPile = structuredClone(drawPile);
+
+		tempDrawPile[index].data.wild = !tempDrawPile[index].data.wild;
+		setDrawPile(tempDrawPile);
+		// if (bc.areMovesOnTree(generateMoveTree(getCardsToDisplay(props.nCardDraw,tempDrawPile,drawOrder)),moveHistory.current)){
+		// 	setDrawPile([...tempDrawPile]);
+		// } else {
+		// 	alert("The card you want to change to a wild has already been used.")
+		// }		
+	}
 
 	const generateTilesData = (nRows, nCols) =>{
 		const holdData  = generateHoldData();
@@ -99,13 +110,14 @@ function Game (props){
 		return (tiles);
 	}
 
-	const getCardsToDisplay = (nCardDraw,drawPile) => {
+	const getCardsToDisplay = (nCardDraw,drawPile,drawOrder) => {
 		const lastCardInDisplay = (drawIndex + nCardDraw) > drawPile.length ? drawPile.length : drawIndex + nCardDraw;
-		return drawPile.slice(drawIndex,lastCardInDisplay);
+		return drawOrder.slice(drawIndex,lastCardInDisplay);
 	}
 
-	const generateMoveTree = (drawnCards) => {
-		// const drawnCards = getCardsToDisplay(props.nCardDraw);
+	const generateMoveTree = (drawnCardsIndex) => {
+
+		const drawnCards = drawnCardsIndex.map(index => drawPile[index]); 
 
 		const topFirst = (card,remainingCards,recurs) => {
 			return {[card.data.colors[0]] :{[card.data.weightDir]: {[card.data.colors[1]]:recurs(remainingCards)}}};
@@ -168,11 +180,13 @@ function Game (props){
 
 
 	const selectLimb = (limb) => {
+		console.log(drawPile[1].data);
 		const tempLimbState = {...limbData, ...{[limb] : {...limbData[limb], ...{selected:true}}}};
 		setLimbData(tempLimbState);
 		}
 
 	const deselectLimb = (limb) => {
+		console.log(drawPile[1].data);
 		const tempLimbState = {...limbData, ...{[limb] : {...limbData[limb], ...{selected:false}}}};
 		setLimbData(tempLimbState);
 	}
@@ -210,7 +224,7 @@ function Game (props){
 
 		//Limbs follow a valid sequence along move tree;
 		selectedLimbs = selectedLimbs.filter(selectedLimb => 
-			bc.areMovesOnTree(generateMoveTree(getCardsToDisplay(props.nCardDraw,drawPile)),addMoveToHistory(moveHistory.current,getMoveType(selectedLimbs,newCoords))));
+			bc.areMovesOnTree(generateMoveTree(getCardsToDisplay(props.nCardDraw,drawPile,drawOrder)),addMoveToHistory(moveHistory.current,getMoveType(selectedLimbs,newCoords))));
 
 
 		//Current state tests
@@ -332,12 +346,12 @@ function Game (props){
 		return	limbsAtStart;
 	}
 
-
+	
 	const tilesData = generateTilesData(props.nRows, props.nCols);
-	const cardDisplay = getCardsToDisplay(props.nCardDraw,drawPile);
+	const cardsToDisplay = getCardsToDisplay(props.nCardDraw,drawPile,drawOrder);
 	const limbsAtStart = generateLimbsAtStart();
 	
-	let cardData = {"color":"yellow", "weightDir":"right"};
+	
 	return(
 		<>
 			<div>
@@ -361,8 +375,8 @@ function Game (props){
 			</div>
 			<div className = "playerControls">
 				<div className ="cardDisplay">
-					{cardDisplay.map((card) => {
-						return(<Card key = {card.ID} data = {card.data}/>)
+					{cardsToDisplay.map((index) => {
+						return(<Card key = {drawPile[index].ID} data = {drawPile[index].data} handleClick = {cardHandleClick(index,drawPile)}/>)
 					})
 					}
 				</div>

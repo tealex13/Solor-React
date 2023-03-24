@@ -17,13 +17,13 @@ export function Card(props) {
 						<img src={require("./Arrow.png")} alt="right Arrow" className = "arrow leftFacing"/>
 						<img src={require("./Arrow.png")} alt="right Arrow" className = "arrow rightFacing"/>
 					</div>
-					<button className = "wild" onClick = {props.data.handleClick}/>
+					<button className = "wild" onClick = {props.handleClick}/>
 				</>:
 				<>
 					{displayColor(0)}
 					<img src={require("./Arrow.png")} alt="right Arrow" className = {"arrow " + props.data.weightDir + "Facing" + " centerPip"}/>
 					{displayColor(1)}
-					<button className = "wild" onClick = {props.data.handleClick}/>
+					<button className = "wild" onClick = {props.handleClick}/>
 				</>
 			}
 			
