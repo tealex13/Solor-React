@@ -173,24 +173,24 @@ function Game (props){
 			const  alertMessage = "The " + limbsData[limb].group[0]+" "+limbsData[limb].group[1]+ " cannot be selected because it share a space with weight."
 			alert(alertMessage);
 		} else {
-			if(limbsData[limb].selected){
-				deselectLimb(limb);
+			let tempLimbState = deselectAllLimbs({...limbsData});
+			if(!limbsData[limb].selected){
+				tempLimbState = selectLimb(tempLimbState,limb);
 			} else {
-				selectLimb(limb);
 			}
+			setLimbsData(tempLimbState);
 		}
 		
 	}
 
 
-	const selectLimb = (limb) => {
-		const tempLimbState = {...limbsData, ...{[limb] : {...limbsData[limb], ...{selected:true}}}};
-		setLimbsData(tempLimbState);
+	const selectLimb = (limbsState,limb) => {
+		return {...limbsState, ...{[limb] : {...limbsState[limb], ...{selected:true}}}};
+		
 		}
 
-	const deselectLimb = (limb) => {
-		const tempLimbState = {...limbsData, ...{[limb] : {...limbsData[limb], ...{selected:false}}}};
-		setLimbsData(tempLimbState);
+	const deselectAllLimbs = (limbsState) => {
+		return Object.fromEntries(Object.entries(limbsState).map(([key,value]) => [key, value = {...value, ...{selected: false}}]));
 	}
 
 	const holdHandleClick = (coords) => () => {
@@ -309,9 +309,7 @@ function Game (props){
 			return generateHoldData()[bc.mapFromBoard(coords[0],coords[1],props.nCols)].color;
 		}
 	}
-	const deselectAllLimbs = (limbs) => {
-		return Object.fromEntries(Object.entries(limbs).map(([key,value]) => [key, value = {...value, ...{selected: false}}]));
-	}
+	
 
 	const applyNewCoords = (limbsState, selectedLimbs, newCoords) => {
 		let tempLimbsState = {...limbsData};
@@ -384,7 +382,7 @@ function Game (props){
 				</div>
 				{displayDraw ?
 					<button onClick = {drawCards}> 
-						Draw
+						End Round
 					</button>
 					: null}						
 			</div>	

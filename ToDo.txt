@@ -110,16 +110,22 @@ Convert Cards to weightWild
 	-Prevent toggling card wild state if the move tree can no longer be satisfied
 	
 Clean Up
-	Rename getDrawnCards
-	Evalute where we are using global state vs local state...
-	Rename draw cards button
-	make drawPile useRef
+	-make drawPile useRef
+	-Rename getDrawnCards
+	-Rename draw cards button
+	-Evalute where we are using global state vs local state...
 	
-	
-Display History
+Less important rules	
+	-Only one limb per hold:
+	-Only one limb is selectable at a time
 
 Moves are undo-able
-	look at react tic-tac-toe example
+	look at react tic-tac-toe example	
+	
+Extras
+	make the limbs images	
+	
+Display History
 
 Player is informed what rule/s are getting violated
 
@@ -139,6 +145,7 @@ Mark Used Cards:
 
 Less important rules	
 	-Only one limb per hold:
+	Only one limb is selectable at a time
 	Feet can't move above hands:
 	left can't be more than 1 to the right of right:
 	Weight can only be one to the left and one the right of the extreme limbs
@@ -152,6 +159,5 @@ Cleanup Round 2
 	Consolidate topFirst and topOnly functions in generate move tree
 	
 Extras
-	make the limbs images
 	give cards dropshadows
 
