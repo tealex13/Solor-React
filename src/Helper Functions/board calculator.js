@@ -73,18 +73,19 @@ export function areMovesOnTree(moveTree, moves) {
 		return false;
 	} else {
 		const isAnyMoveOptionANode = (moveTree, moves, validationMethod) => {
-		return convertMoveTypes(moves[0]).reduce((valid,move) => {return valid || validationMethod(move)},false);
+		return convertMoveTypes(moves[0].moveType).reduce((valid,move) => {return valid || validationMethod(move)},false);
 		};
 	    if (moves.length > 1){
-	    	return isAnyMoveOptionANode(moveTree,moves, (move) => areMovesOnTree(moveTree[move],moves.slice(1)));
+	    	return isAnyMoveOptionANode(moveTree, moves, (move) => areMovesOnTree(moveTree[move],moves.slice(1)));
 	    } else {
-	        return isAnyMoveOptionANode(moveTree,moves, (move) => moveTree[move] ? true : false);
+	        return isAnyMoveOptionANode(moveTree, moves, (move) => moveTree[move] ? true : false);
 	    } 
 	}
 	   
 }
 
 const convertMoveTypes = (typeIn) => {
+
 	if (typeIn.includes(dirWild)){
 		return [dirs.left, dirs.right, dirs.center, dirWild];
 	} else if(Object.values(dirs).reduce((includes,dir) => includes || typeIn.includes(dir),false)){

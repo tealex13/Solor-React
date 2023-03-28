@@ -200,13 +200,17 @@ function Game (props){
 		selectedLimbs = validateMove(selectedLimbs,coords);
 		if (selectedLimbs.length > 0){
 			moveLimbs(selectedLimbs,coords);
-			moveHistory.current = addMoveToHistory(moveHistory.current,getMoveType(selectedLimbs,coords));
+			moveHistory.current = addMoveToHistory(selectedLimbs,coords);
 		}	
 	} 
 
-	const addMoveToHistory = (history,move) => {
-		const tempHistory = [...history];
-		tempHistory.push([move]);
+	const addMoveToHistory = (selectedLimbs,newCoords) => {
+
+		const tempHistory = [...moveHistory.current];
+		const moveState = {moveType: [getMoveType(selectedLimbs,newCoords)], 
+			limbsState: Object.entries(limbsData).map(([limb,data]) => ({[limb]: data.coords}))
+			};
+		tempHistory.push(moveState);
 		return tempHistory;
 	}
 
@@ -227,7 +231,7 @@ function Game (props){
 
 		//Limbs follow a valid sequence along move tree;
 		selectedLimbs = selectedLimbs.filter(selectedLimb => 
-			bc.areMovesOnTree(generateMoveTree(drawPile),addMoveToHistory(moveHistory.current,getMoveType(selectedLimbs,newCoords))));
+			bc.areMovesOnTree(generateMoveTree(drawPile),addMoveToHistory(selectedLimbs,newCoords)));
 
 
 		//Current state tests

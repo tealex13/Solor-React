@@ -157,37 +157,38 @@ it("Same 'column' and left are left for odd to even", () => {
 
 it("Options are all on tree", () => {
   const moveTree = {orange: {green: {left: {right: {}}}}};
-  const moveHistory = [["orange"],["green"],["left"]];
+  const moveHistory = [{moveType: ["orange"]},{moveType: ["green"]},{moveType:["left"]}];
+  console.log(moveHistory);
   expect(bc.areMovesOnTree(moveTree,moveHistory)).toBe(true);
 })
 
 it("Options are all on tree including last", () => {
   const moveTree = {orange: {green: {left: {right: {}}}}};
-  const moveHistory = [["orange"],["green"],["left"],["right"]];
+  const moveHistory = [{moveType: ["orange"]},{moveType: ["green"]},{moveType:["left"]},{moveType: ["right"]}];
   expect(bc.areMovesOnTree(moveTree,moveHistory)).toBe(true);
 })
 
 it("Option not on tree", () => {
   const moveTree = {orange: {green: {left: {right: {}}}}};
-  const moveHistory = [["orange"],["green"],["wrong","alsowrong"],["right"]];
+  const moveHistory = [{moveType: ["orange"]},{moveType: ["green"]},{moveType: ["wrong","alsowrong"]},{moveType: ["right"]}];
   expect(bc.areMovesOnTree(moveTree,moveHistory)).toBe(false);
 })
 
 it("One option is on the tree another is not", () => {
   const moveTree = {orange: {green: {left: {right: {}}}}};
-  const moveHistory = [["orange"],["green"],["wrong","left"],["right"]];
+  const moveHistory = [{moveType: ["orange"]},{moveType: ["green"]},{moveType: ["wrong","left"]},{moveType: ["right"]}];
   expect(bc.areMovesOnTree(moveTree,moveHistory)).toBe(true);
 })
 
 it("One valid branch and one invalid branch returns true", () => {
   const moveTree = {orange: {green: {red:{}, left: {right: {}}}}};
-  const moveHistory = [["orange"],["green"],["red","left"],["right"]];
+  const moveHistory = [{moveType: ["orange"]},{moveType: ["green"]},{moveType:["red","left"]},{moveType: ["right"]}];
   expect(bc.areMovesOnTree(moveTree,moveHistory)).toBe(true);
 })
 
 it("Empty tree returns false", () => {
   const moveTree = {};
-  const moveHistory = [["orange"],["green"],["red","left"],["right"]];
+  const moveHistory = [{moveType: ["orange"]},{moveType: ["green"]},{moveType:["red","left"]},{moveType: ["right"]}];
   expect(bc.areMovesOnTree(moveTree,moveHistory)).toBe(false);
 })
 
@@ -202,6 +203,6 @@ it("Multiple valid branches returns true", () => {
     green: {blue:{}, left: {right: {}}},
     yellow: {blue:{}, left: {right: {}}}
 }};
-  const moveHistory = [["orange"],["green","yellow"],["red","left"],["right"]];
+  const moveHistory = [{moveType: ["orange"]},{moveType: ["green","yellow"]},{moveType:["red","left"]},{moveType: ["right"]}];
   expect(bc.areMovesOnTree(moveTree,moveHistory)).toBe(true);
 })
