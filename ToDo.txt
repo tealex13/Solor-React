@@ -123,7 +123,13 @@ Moves are undo-able
 	look at react tic-tac-toe example	
 	
 Extras
-	make the limbs images	
+	make the limbs images
+
+Mark Used Cards:
+	Cards are marked as unusable if all future moves in the tree do not include that card
+	Colors are marked as unusable if all future moved do not include that (card AND color) combo 
+		This works for directions as well
+	
 	
 Display History
 
@@ -136,12 +142,6 @@ Migrate using game
 clean up
 	validate move returns a boolean
 	change group check to validate all groups instead of just the one that got moved
-	
-Mark Used Cards:
-	Cards are marked as unusable if all future moves in the tree do not include that card
-	Colors are marked as unusable if all future moved do not include that (card AND color) combo 
-		This works for directions as well
-
 
 Less important rules	
 	-Only one limb per hold:

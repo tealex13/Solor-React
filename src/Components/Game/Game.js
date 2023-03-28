@@ -9,6 +9,7 @@ import {Limb} from "../Limb/Limb.js";
 import isEqual from "lodash/isEqual";
 import './Game.css';
 
+
 function Game (props){
 
 	const generateCardsData = () => {
