@@ -26,10 +26,7 @@ export function Limb(props) {
 		case "weight"	:
 			return weight;
 		}
-	}
-
-	console.log(props.limbType);
-	
+	}	
 
 	const color =  props.selected? "lightblue" : 'rgba(0,0,0,0)';
 	return(
