@@ -28,14 +28,13 @@ function Game (props){
 	const generateCardsState = () => {
 		const tempCardState = [];
 		for (var i = props.nCardDraw - 1; i >= 0; i--) {
-			tempCardState.push({ID: uuid(), wild: false});
+			tempCardState.push({wild: false});
 		}
 	return tempCardState;
 	}
 
 	const [drawIndex,setDrawIndex] = useState(0);
 	const [drawPile,setDrawPile] = useState(generateCardsState); //move to useRef
-	console.log(drawPile);
 	const [displayDraw,setDisplayDraw] = useState(true);
 	const [limbsData,setLimbsData] = useState(
 		{leftHand: {coords: [-1,0], selected: false, group: [groupType.left,groupType.hand]},
@@ -44,6 +43,7 @@ function Game (props){
 		rightFoot: {coords: [-1,3], selected: false, group: [groupType.right,groupType.foot]},
 		weight: {coords: [-1,4], selected: false, group:[]}}
 		);
+	const [historyIndex,setHistoryIndex] = useState(0);
 
 	const moveHistory = useRef([]);
 
@@ -202,6 +202,7 @@ function Game (props){
 		if (selectedLimbs.length > 0){
 			moveLimbs(selectedLimbs,coords);
 			moveHistory.current = addMoveToHistory(selectedLimbs,coords);
+			setHistoryIndex(historyIndex+1);
 		}	
 	} 
 
@@ -209,7 +210,8 @@ function Game (props){
 
 		const tempHistory = [...moveHistory.current];
 		const moveState = {moveType: [getMoveType(selectedLimbs,newCoords)], 
-			limbsState: Object.entries(limbsData).map(([limb,data]) => ({[limb]: data.coords}))
+			limbsState: selectedLimbs.map(limb => ([limb,{coords: limbsData[limb].coords}])),
+			cardState: drawPile
 			};
 		tempHistory.push(moveState);
 		return tempHistory;
@@ -340,6 +342,7 @@ function Game (props){
 		setDrawIndex(newDrawIndex);
 		setDisplayDraw(newDrawIndex + props.nCardDraw < cardData.current.length);
 		setDrawPile(generateCardsState());
+		setHistoryIndex(0);
 		moveHistory.current = [];
 	}
 
@@ -351,6 +354,17 @@ function Game (props){
 			limbsAtStart = {...limbsAtStart, ...formatLimbsForTile(key,value)}
 			));
 		return	limbsAtStart;
+	}
+
+	const handleUndo = () => {
+		const tempHistory = [...moveHistory.current];
+		
+		setLimbsData(mergeObjects(limbsData,Object.fromEntries(tempHistory[tempHistory.length-1].limbsState)))
+		setDrawPile(tempHistory[tempHistory.length-1].cardState);
+		tempHistory.pop();
+		setHistoryIndex(historyIndex - 1);
+		moveHistory.current = tempHistory;
+
 	}
 
 	
@@ -387,11 +401,17 @@ function Game (props){
 					})
 					}
 				</div>
+				<div className = "buttonBoard">
+				<button onClick = {historyIndex > 0 ? handleUndo : null}
+					className = {historyIndex > 0? "enabled":"disabled"}> 
+						Undo
+					</button>
 				{displayDraw ?
 					<button onClick = {drawCards}> 
 						End Round
 					</button>
-					: null}						
+					: null}	
+				</div>					
 			</div>	
 			
 		</>

@@ -17,14 +17,24 @@
 	justify-content: center;
 }
 
+
 button{
 	width: 100px;
 	height: 50px;
 	border-radius: 20px;
 	border-width: 2px;
-	border-color: 'black;';
+	border-color: black;
 }
 
 button:hover{
 	background-color: lightgray;
+}
+
+.disabled{
+	background-color: lightgray;
+}
+
+.buttonBoard{
+	display: flex;
+	flex-direction: column;
 }
