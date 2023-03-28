@@ -26,12 +26,16 @@ function Game (props){
 	const cardData = useRef(generateCardsData());
 
 	const generateCardsState = () => {
-		return cardData.current.map(card => ({wild: false}));
+		const tempCardState = [];
+		for (var i = props.nCardDraw - 1; i >= 0; i--) {
+			tempCardState.push({ID: uuid(), wild: false});
+		}
+	return tempCardState;
 	}
 
 	const [drawIndex,setDrawIndex] = useState(0);
-	
 	const [drawPile,setDrawPile] = useState(generateCardsState); //move to useRef
+	console.log(drawPile);
 	const [displayDraw,setDisplayDraw] = useState(true);
 	const [limbsData,setLimbsData] = useState(
 		{leftHand: {coords: [-1,0], selected: false, group: [groupType.left,groupType.hand]},
@@ -54,9 +58,7 @@ function Game (props){
 	const cardHandleClick = (index,drawPile) => () => {
 
 		const tempDrawPile = structuredClone(drawPile);
-
 		tempDrawPile[index].wild = !tempDrawPile[index].wild;
-		console.log("temp:",tempDrawPile);
 		if (bc.areMovesOnTree(generateMoveTree(tempDrawPile),moveHistory.current)){
 			setDrawPile(tempDrawPile);
 		} else {
@@ -122,7 +124,6 @@ function Game (props){
 	const generateMoveTree = (cardState) => {
 
 		const drawnCardsData = getIndexOfCardsToDisplay().map(index => cardData.current[index]);
-		const drawnCardsState = getIndexOfCardsToDisplay().map(index => cardState[index]); 
 
 		const topFirst = (card,remainingCards,recurs) => {
 			return {[card.data.colors[0]] :{[card.data.weightDir]: {[card.data.colors[1]]:recurs(remainingCards)}}};
@@ -157,7 +158,7 @@ function Game (props){
 				tempArray.splice(index,1); //remove element from array
 
 				if (array.length > 0){
-					tempAcc = drawnCardsState[index].wild ? createWildSideCardPerm(curVal,tempArray,generateMoveOptions) : createFrontOfCardPerm(curVal,tempArray,generateMoveOptions);
+					tempAcc = cardState[index].wild ? createWildSideCardPerm(curVal,tempArray,generateMoveOptions) : createFrontOfCardPerm(curVal,tempArray,generateMoveOptions);
 				} else{
 				}
 				return mergeObjects(acc,tempAcc);
@@ -338,6 +339,7 @@ function Game (props){
 		const newDrawIndex = drawIndex + props.nCardDraw;
 		setDrawIndex(newDrawIndex);
 		setDisplayDraw(newDrawIndex + props.nCardDraw < cardData.current.length);
+		setDrawPile(generateCardsState());
 		moveHistory.current = [];
 	}
 
@@ -380,8 +382,8 @@ function Game (props){
 			</div>
 			<div className = "playerControls">
 				<div className ="cardDisplay">
-					{indexOfCardsToDisplay.map((index) => {
-						return(<Card key = {cardData.current[index].ID} data = {cardData.current[index].data} state = {drawPile[index]} handleClick = {cardHandleClick(index,drawPile)}/>)
+					{indexOfCardsToDisplay.map((cardNum,index) => {
+						return(<Card key = {cardData.current[index].ID} data = {cardData.current[cardNum].data} state = {drawPile[index]} handleClick = {cardHandleClick(index,drawPile)}/>)
 					})
 					}
 				</div>
