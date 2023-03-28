@@ -125,25 +125,18 @@ function Game (props){
 
 		const drawnCardsData = getIndexOfCardsToDisplay().map(index => cardData.current[index]);
 
+
 		const topFirst = (card,remainingCards,recurs) => {
-			return {[card.data.colors[0]] :{[card.data.weightDir]: {[card.data.colors[1]]:recurs(remainingCards)}}};
+			return {[card.data.colors[0]] :{[card.data.weightDir]: {[card.data.colors[1]]:recurs(remainingCards)}, ...recurs(remainingCards)}};
 		}
 		const bottomFirst = (card,remainingCards,recurs) => {
-			return {[card.data.colors[1]]:{[bc.getOppositeDir(card.data.weightDir)]: {[card.data.colors[0]]:recurs(remainingCards)}}};
-		}
-		const topOnly = (card,remainingCards,recurs) => {
-			return {[card.data.colors[0]]:recurs(remainingCards)};
-		}
-		const bottomOnly = (card,remainingCards,recurs) => {
-			return {[card.data.colors[1]]:recurs(remainingCards)};
+			return {[card.data.colors[1]]:{[bc.getOppositeDir(card.data.weightDir)]: {[card.data.colors[0]]:recurs(remainingCards)}, ...recurs(remainingCards)}};
 		}
 
 		const createFrontOfCardPerm = (curVal,tempArray,recurs) => {
 			let tempAcc = {}
 			tempAcc = topFirst(curVal,tempArray,recurs);
 			tempAcc = mergeObjects(tempAcc, bottomFirst(curVal,tempArray,recurs));
-			tempAcc = mergeObjects(tempAcc, topOnly(curVal,tempArray,recurs));
-			tempAcc = mergeObjects(tempAcc, bottomOnly(curVal,tempArray,recurs));
 			return tempAcc;
 		}
 
@@ -423,8 +416,8 @@ function Game (props){
 Game.defaultProps = {
 	nRows: 10,
 	nCols: 6,
-	boardSeed: 1234,
-	cardSeed: 4321,
+	boardSeed: 1235,
+	cardSeed: 4322,
 	nCardDraw: 2,
 	maxMoveDist: 1,
 	maxGroupDist: 3
