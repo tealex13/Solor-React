@@ -10,7 +10,7 @@ export function Card(props) {
 				</div>);
 	}
 	return(
-		<span className = "card">
+		<span className = {props.useStatus + " card"}>
 			{props.state.wild ? 
 				<>
 					<div className = "centerPip">

@@ -1,3 +1,5 @@
+import {mergeObjects} from "./Generic Helpers"
+
 export function calcRowLen(nCols, rowNumber){
 		return (nCols - rowNumber % 2);
 	}
@@ -80,8 +82,27 @@ export function areMovesOnTree(moveTree, moves) {
 	    } else {
 	        return isAnyMoveOptionANode(moveTree, moves, (move) => moveTree[move] ? true : false);
 	    } 
-	}
-	   
+	}	   
+}
+
+export function getRemainingMoves(moveTree, moves) {
+	if (moves.length === 0){
+		return moveTree;
+	} 
+	if (moveTree === undefined){
+		return {};
+	} else {
+		const isAnyMoveOptionANode = (moveTree, moves, validationMethod) => {
+			return convertMoveTypes(moves[0].moveType)
+			.filter(move => Object.keys(moveTree).includes(move))
+			.reduce((valid,move) => {return mergeObjects(valid, validationMethod(move))},{});
+		};
+	    if (moves.length > 1){
+	    	return isAnyMoveOptionANode(moveTree, moves, (move) => getRemainingMoves(moveTree[move],moves.slice(1)));
+	    } else {
+	        return isAnyMoveOptionANode(moveTree, moves, (move) => {return moveTree[move]});
+	    } 
+	}	   
 }
 
 const convertMoveTypes = (typeIn) => {
@@ -94,6 +115,28 @@ const convertMoveTypes = (typeIn) => {
 		return [...colorsArray, ...[colorWild]];
 	} else {
 		return typeIn;
+	}
+}
+
+export function getUnusedCards(moveTree) {
+	if (typeof moveTree === "object" && moveTree !=  null){
+		let nums = moveTree.cardNum ?  
+		Object.keys(moveTree.cardNum) : [];
+		return Object.entries(moveTree).reduce((unusedCards,[move,submoves]) => {
+			//only add id the value is unique
+			return [...unusedCards,...getUnusedCards(submoves).filter(cardNum => !unusedCards.includes(cardNum))];  
+		},nums)
+	} else {
+		return [];
+	}
+}
+
+
+export function getRemainingMoveTree(moveTree,moveHistory){
+	if(moveHistory.length > 0){
+		return getRemainingMoveTree(moveTree[moveHistory[0].moveType],moveHistory.slice(1));
+	} else {
+		return moveTree[moveHistory[0].moveType];
 	}
 }
 

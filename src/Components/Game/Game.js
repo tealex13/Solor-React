@@ -122,22 +122,25 @@ function Game (props){
 	}
 
 	const generateMoveTree = (cardState) => {
-
 		const drawnCardsData = getIndexOfCardsToDisplay().map(index => cardData.current[index]);
-
-
+		const drawnCardsState = mergeObjects(drawnCardsData.map((card,index) => ({...card.data,...{cardNum: index}})),drawPile);
 		const topFirst = (card,remainingCards,recurs) => {
-			return {[card.data.colors[0]] :{[card.data.weightDir]: {[card.data.colors[1]]:recurs(remainingCards)}, ...recurs(remainingCards)}};
+			return {[card.colors[0]] :{
+				[card.weightDir]: {[card.colors[1]]:recurs(remainingCards), cardNum: {[card.cardNum]:null}}, 
+				...recurs(remainingCards),
+				cardNum: {[card.cardNum]:null}
+				}};
 		}
 		const bottomFirst = (card,remainingCards,recurs) => {
-			return {[card.data.colors[1]]:{[bc.getOppositeDir(card.data.weightDir)]: {[card.data.colors[0]]:recurs(remainingCards)}, ...recurs(remainingCards)}};
+			return {[card.colors[1]]:{
+				[bc.getOppositeDir(card.weightDir)]: {[card.colors[0]]:recurs(remainingCards), cardNum: {[card.cardNum]:null}}, 
+				...recurs(remainingCards),
+				cardNum: {[card.cardNum]:null}
+				}};
 		}
 
 		const createFrontOfCardPerm = (curVal,tempArray,recurs) => {
-			let tempAcc = {}
-			tempAcc = topFirst(curVal,tempArray,recurs);
-			tempAcc = mergeObjects(tempAcc, bottomFirst(curVal,tempArray,recurs));
-			return tempAcc;
+			return mergeObjects(topFirst(curVal,tempArray,recurs), bottomFirst(curVal,tempArray,recurs));
 		}
 
 		const createWildSideCardPerm = (curVal, tempArray, recurs) => {
@@ -157,9 +160,16 @@ function Game (props){
 				return mergeObjects(acc,tempAcc);
 			},{});
 		}
-
-		return generateMoveOptions(drawnCardsData);
+		return generateMoveOptions(drawnCardsState);
 	}
+
+	const getRemainingMoves = (drawPile) => {
+		let moveTree = generateMoveTree(drawPile);
+		delete moveTree.cardNum;
+		return bc.getRemainingMoves(moveTree,moveHistory.current);
+	}
+	console.log(getRemainingMoves(drawPile));
+	console.log(bc.getUnusedCards(getRemainingMoves(drawPile)));
 
 	const limbHandleClick = (limb) => {
 		//if the limb is not wieght, but shares the same space as weight, it cannot be selected
@@ -360,7 +370,7 @@ function Game (props){
 
 	}
 
-	
+	const unusedCards = bc.getUnusedCards(getRemainingMoves(drawPile));
 	const tilesData = generateTilesData(props.nRows, props.nCols);
 	const indexOfCardsToDisplay = getIndexOfCardsToDisplay();
 	const limbsAtStart = generateLimbsAtStart();
@@ -390,7 +400,11 @@ function Game (props){
 			<div className = "playerControls">
 				<div className ="cardDisplay">
 					{indexOfCardsToDisplay.map((cardNum,index) => {
-						return(<Card key = {cardData.current[index].ID} data = {cardData.current[cardNum].data} state = {drawPile[index]} handleClick = {cardHandleClick(index,drawPile)}/>)
+						return(<Card key = {cardData.current[index].ID}
+						data = {cardData.current[cardNum].data} 
+						state = {drawPile[index]} 
+						handleClick = {cardHandleClick(index,drawPile)}
+						useStatus = {unusedCards.includes(index.toString())?"usable":"used"}/>)
 					})
 					}
 				</div>
@@ -417,8 +431,8 @@ Game.defaultProps = {
 	nRows: 10,
 	nCols: 6,
 	boardSeed: 1235,
-	cardSeed: 4322,
-	nCardDraw: 2,
+	cardSeed: 4321,
+	nCardDraw: 3,
 	maxMoveDist: 1,
 	maxGroupDist: 3
 };

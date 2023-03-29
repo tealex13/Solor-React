@@ -1,5 +1,4 @@
 .card{
-	background-color: white;
 	margin: 5px;
 	padding: 5px;
 	display: grid;
@@ -7,6 +6,14 @@
 	justify-items: center;
 	grid-template-columns: [first-col] 30px [second-col] 60px[third-col] 30px [last-col];
   	grid-template-rows: [first-row] 20px [second-row] 80px [third-row] 50px [fourth-row] 80px [fifth-row] 20px [last-row];
+}
+
+.usable{
+	background-color: white;
+}
+
+.used{
+	background-color: lightgray;
 }
 
 .cardColor{

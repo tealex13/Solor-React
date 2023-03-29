@@ -206,3 +206,10 @@ it("Multiple valid branches returns true", () => {
   const moveHistory = [{moveType: ["orange"]},{moveType: ["green","yellow"]},{moveType:["red","left"]},{moveType: ["right"]}];
   expect(bc.areMovesOnTree(moveTree,moveHistory)).toBe(true);
 })
+
+//get unused cards
+
+it("Empty move tree returns an empty array", () =>{
+  const moveTree = {};
+  expect(bc.getUnusedCards(moveTree)).toBe([]);
+})
