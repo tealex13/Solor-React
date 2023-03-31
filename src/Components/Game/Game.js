@@ -123,7 +123,8 @@ function Game (props){
 
 	const generateMoveTree = (cardState) => {
 		const drawnCardsData = getIndexOfCardsToDisplay().map(index => cardData.current[index]);
-		const drawnCardsState = mergeObjects(drawnCardsData.map((card,index) => ({...card.data,...{cardNum: index}})),drawPile);
+		const drawnCardsState = mergeObjects(drawnCardsData.map((card,index) => ({...card.data,...{cardNum: index}})),cardState);
+		console.log("card state:",drawnCardsState);
 		const topFirst = (card,remainingCards,recurs) => {
 			return {[card.colors[0]] :{
 				[card.weightDir]: {[card.colors[1]]:recurs(remainingCards), cardNum: {[card.cardNum]:null}}, 
@@ -154,7 +155,7 @@ function Game (props){
 				tempArray.splice(index,1); //remove element from array
 
 				if (array.length > 0){
-					tempAcc = cardState[index].wild ? createWildSideCardPerm(curVal,tempArray,generateMoveOptions) : createFrontOfCardPerm(curVal,tempArray,generateMoveOptions);
+					tempAcc = curVal.wild ? createWildSideCardPerm(curVal,tempArray,generateMoveOptions) : createFrontOfCardPerm(curVal,tempArray,generateMoveOptions);
 				} else{
 				}
 				return mergeObjects(acc,tempAcc);
@@ -168,8 +169,8 @@ function Game (props){
 		delete moveTree.cardNum;
 		return bc.getRemainingMoves(moveTree,moveHistory.current);
 	}
-	console.log(getRemainingMoves(drawPile));
-	console.log(bc.getUnusedCards(getRemainingMoves(drawPile)));
+	// console.log(getRemainingMoves(drawPile));
+	// console.log(bc.getUnusedCards(getRemainingMoves(drawPile)));
 
 	const limbHandleClick = (limb) => {
 		//if the limb is not wieght, but shares the same space as weight, it cannot be selected

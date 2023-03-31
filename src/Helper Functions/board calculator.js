@@ -1,4 +1,5 @@
 import {mergeObjects} from "./Generic Helpers"
+import isEqual from "lodash/isEqual";
 
 export function calcRowLen(nCols, rowNumber){
 		return (nCols - rowNumber % 2);
@@ -68,21 +69,9 @@ export const getOppositeDir = (direction) => {
 }
 
 export function areMovesOnTree(moveTree, moves) {
-	if (moves.length === 0){
-		return true;
-	} 
-	if (moveTree === undefined){
-		return false;
-	} else {
-		const isAnyMoveOptionANode = (moveTree, moves, validationMethod) => {
-		return convertMoveTypes(moves[0].moveType).reduce((valid,move) => {return valid || validationMethod(move)},false);
-		};
-	    if (moves.length > 1){
-	    	return isAnyMoveOptionANode(moveTree, moves, (move) => areMovesOnTree(moveTree[move],moves.slice(1)));
-	    } else {
-	        return isAnyMoveOptionANode(moveTree, moves, (move) => moveTree[move] ? true : false);
-	    } 
-	}	   
+	console.log(moveTree);
+	console.log ((getRemainingMoves(moveTree, moves)));
+	return completeMoveTypes.reduce((valid,moveType) => {return valid || Object.keys(getRemainingMoves(moveTree, moves)).includes(moveType)},false);   
 }
 
 export function getRemainingMoves(moveTree, moves) {
@@ -92,55 +81,67 @@ export function getRemainingMoves(moveTree, moves) {
 	if (moveTree === undefined){
 		return {};
 	} else {
-		const isAnyMoveOptionANode = (moveTree, moves, validationMethod) => {
+		const walkDownTree = (moveTree, moves, validationMethod) => {
 			return convertMoveTypes(moves[0].moveType)
 			.filter(move => Object.keys(moveTree).includes(move))
 			.reduce((valid,move) => {return mergeObjects(valid, validationMethod(move))},{});
 		};
+		const getAllLast = (moveTree, moves, validationMethod) => {
+			const convertedMoveTypes = convertMoveTypes(moves[0].moveType);
+			const moveTypesToDelete = completeMoveTypes.filter(moveType => !convertedMoveTypes.includes(moveType));
+			moveTypesToDelete.forEach(moveType => delete moveTree[moveType]);
+			return moveTree;
+		};
 	    if (moves.length > 1){
-	    	return isAnyMoveOptionANode(moveTree, moves, (move) => getRemainingMoves(moveTree[move],moves.slice(1)));
+	    	return walkDownTree(moveTree, moves, (move) => getRemainingMoves(moveTree[move],moves.slice(1)));
 	    } else {
-	        return isAnyMoveOptionANode(moveTree, moves, (move) => {return moveTree[move]});
+	        return getAllLast(moveTree, moves, (move) => {return moveTree[move]});
 	    } 
 	}	   
 }
 
-const convertMoveTypes = (typeIn) => {
-
+export const convertMoveTypes = (typeIn) => {
 	if (typeIn.includes(dirWild)){
-		return [dirs.left, dirs.right, dirs.center, dirWild];
+		return completeDirs;
 	} else if(Object.values(dirs).reduce((includes,dir) => includes || typeIn.includes(dir),false)){
-		return [...typeIn, ...[dirWild]];
+		return [...typeIn, dirWild];
 	} else if(typeIn.includes(colorWild)){
-		return [...colorsArray, ...[colorWild]];
+		return [...colorsArray, colorWild];
 	} else {
 		return typeIn;
 	}
 }
 
-export function getUnusedCards(moveTree) {
-	if (typeof moveTree === "object" && moveTree !=  null){
-		let nums = moveTree.cardNum ?  
-		Object.keys(moveTree.cardNum) : [];
-		return Object.entries(moveTree).reduce((unusedCards,[move,submoves]) => {
-			//only add id the value is unique
-			return [...unusedCards,...getUnusedCards(submoves).filter(cardNum => !unusedCards.includes(cardNum))];  
-		},nums)
-	} else {
-		return [];
+export function getUnusedCards(moveTree) {	
+	const recursThrough = (moveTree) => {
+		if (typeof moveTree === "object" && moveTree !=  null){
+			let nums = moveTree.cardNum ?  
+			Object.keys(moveTree.cardNum) : [];
+			return Object.entries(moveTree).reduce((unusedCards,[move,submoves]) => {
+				//only add id the value is unique
+				return [...unusedCards,...recursThrough(submoves).filter(cardNum => !unusedCards.includes(cardNum))];  
+			},nums)
+		} else {
+			return [];
+		}
 	}
+	delete moveTree.cardNum;
+	return(recursThrough(moveTree));
 }
 
 
-export function getRemainingMoveTree(moveTree,moveHistory){
-	if(moveHistory.length > 0){
-		return getRemainingMoveTree(moveTree[moveHistory[0].moveType],moveHistory.slice(1));
-	} else {
-		return moveTree[moveHistory[0].moveType];
-	}
-}
+// export function getRemainingMoveTree(moveTree,moveHistory){
+// 	if(moveHistory.length > 0){
+// 		return getRemainingMoveTree(moveTree[moveHistory[0].moveType],moveHistory.slice(1));
+// 	} else {
+// 		return moveTree[moveHistory[0].moveType];
+// 	}
+// }
 
 export const colorsArray = ["white","orange","green","purple","black","red"];
 export const dirs = {left: "left", right: "right", center: "center"};
 export const dirWild = "dirWild";
 export const colorWild = "colorWild";
+const completeColors = [...colorsArray, colorWild];
+const completeDirs = [...Object.values(dirs), dirWild];
+const completeMoveTypes = [...completeDirs,...completeColors];

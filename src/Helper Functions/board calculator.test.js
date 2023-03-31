@@ -211,5 +211,75 @@ it("Multiple valid branches returns true", () => {
 
 it("Empty move tree returns an empty array", () =>{
   const moveTree = {};
-  expect(bc.getUnusedCards(moveTree)).toBe([]);
+  expect(bc.getUnusedCards(moveTree)).toMatchObject({});
 })
+
+//Remaining moves
+it("Empty object returned if the move is not found", () => {
+  const moveTree = {"orange":"white"};
+  const moveHistory = [{moveType:["white"]}];
+  expect(bc.getRemainingMoves(moveTree,moveHistory)).toMatchObject({});
+})
+
+it("Contents returned if the move is not", () => {
+  const moveTree = {"orange":"white"};
+  const moveHistory = [{moveType:["orange"]}];
+  expect(bc.getRemainingMoves(moveTree,moveHistory)).toMatchObject({"orange":"white"});
+})
+
+it("Only contents that match are returned if the move is not", () => {
+  const moveTree = {"orange":"white", "pink":"green"};
+  const moveHistory = [{moveType:["orange"]}];
+  expect(bc.getRemainingMoves(moveTree,moveHistory)).toMatchObject({"orange":"white"});
+})
+
+it("The function is recursive", () => {
+const moveTree = {"orange":{"white":"yellow"},"green":"orange"};
+const moveHistory = [{moveType:["orange"]},{moveType:["white"]}];
+  expect(bc.getRemainingMoves(moveTree,moveHistory)).toMatchObject({"white":"yellow"});
+})
+
+it("The returns all matches for multiple move types", () => {
+const moveTree = {"orange":"white","green":"orange"};
+const moveHistory = [{moveType:["orange","green"]}];
+  expect(bc.getRemainingMoves(moveTree,moveHistory)).toMatchObject({"orange":"white","green":"orange"});
+})
+
+it("The returns only one match for one valid multiple matches", () => {
+const moveTree = {"orange":"white","green":"orange"};
+const moveHistory = [{moveType:["orange","yellow"]}];
+  expect(bc.getRemainingMoves(moveTree,moveHistory)).toMatchObject({"orange":"white"});
+})
+
+it("Does not return a branch that is a partial match", () => {
+const moveTree = {"orange":{"white":"yellow"},"green":{"orange":"blue"}};
+const moveHistory = [{moveType:["orange","green"]},{moveType:["white","green"]}];
+  expect(bc.getRemainingMoves(moveTree,moveHistory)).toMatchObject({"white":"yellow"});
+})
+
+it("Returns multiple branch that is a partial match multiple depths", () => {
+const moveTree = {"orange":{"white":{"yellow":{}}},"green":{"white":{"blue":{}}}};
+const moveHistory = [{moveType:["orange","green"]},{moveType:["white"]}];
+  expect(bc.getRemainingMoves(moveTree,moveHistory)).toMatchObject({"white":{"yellow":{},"blue":{}}});
+})
+
+it("Returns multiple branch that is a partial match multiple depths", () => {
+const moveTree = {"orange":{"white":{"yellow":{}}},"green":{"red":{"blue":{}}}};
+const moveHistory = [{moveType:["orange","green"]},{moveType:["white","red"]}];
+  expect(bc.getRemainingMoves(moveTree,moveHistory)).toMatchObject({"white":{"yellow":{}},"red":{"blue":{}}});
+})
+
+it("Test dirWild as a moveType", () => {
+const moveTree = {"orange":{"white":{"yellow":{}}},"left":{"red":{"blue":{}}}};
+const moveHistory = [{moveType:["dirWild"]},{moveType:["white","red"]}];
+  expect(bc.getRemainingMoves(moveTree,moveHistory)).toMatchObject({"red":{"blue":{}}});
+})
+
+//Convert movetype
+
+it("Contains dirWild returns all directions", () => {
+const moveTypes = [bc.dirWild,"red"];
+  expect(bc.convertMoveTypes(moveTypes)).toMatchObject([bc.dirs.left,bc.dirs.right,bc.dirs.center,bc.dirWild]);
+})
+
+

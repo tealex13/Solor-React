@@ -126,10 +126,12 @@ Extras
 	-make the limbs images
 
 Mark Used Cards:
-	Cards are marked as unusable if all future moves in the tree do not include that card
+	-Cards are marked as unusable if all future moves in the tree do not include that card
 	Colors are marked as unusable if all future moved do not include that (card AND color) combo 
 		This works for directions as well
 	
+Bug:
+	have three cards, make the second one wildmove, use it, the remaining cards report as the first two cards
 	
 Display History
 
