@@ -69,8 +69,6 @@ export const getOppositeDir = (direction) => {
 }
 
 export function areMovesOnTree(moveTree, moves) {
-	console.log(moveTree);
-	console.log ((getRemainingMoves(moveTree, moves)));
 	return completeMoveTypes.reduce((valid,moveType) => {return valid || Object.keys(getRemainingMoves(moveTree, moves)).includes(moveType)},false);   
 }
 
@@ -112,13 +110,13 @@ export const convertMoveTypes = (typeIn) => {
 	}
 }
 
-export function getUnusedCards(moveTree) {	
+export function flattenCards(moveTree) {	
 	const recursThrough = (moveTree) => {
 		if (typeof moveTree === "object" && moveTree !=  null){
 			let nums = moveTree.cardNum ?  
 			Object.keys(moveTree.cardNum) : [];
 			return Object.entries(moveTree).reduce((unusedCards,[move,submoves]) => {
-				//only add id the value is unique
+				//only add if the value is unique
 				return [...unusedCards,...recursThrough(submoves).filter(cardNum => !unusedCards.includes(cardNum))];  
 			},nums)
 		} else {
@@ -130,13 +128,28 @@ export function getUnusedCards(moveTree) {
 }
 
 
-// export function getRemainingMoveTree(moveTree,moveHistory){
-// 	if(moveHistory.length > 0){
-// 		return getRemainingMoveTree(moveTree[moveHistory[0].moveType],moveHistory.slice(1));
-// 	} else {
-// 		return moveTree[moveHistory[0].moveType];
-// 	}
-// }
+export function flattenMoves(moveTree) {	
+	const recursThrough = (moveTree) => {
+		if (typeof moveTree === "object" && moveTree !=  null){
+			const moves = Object.entries(moveTree)
+				.filter(([move,submoves]) => {return completeMoveTypes.includes(move)});
+				// .filter(move => completeMoveTypes.includes(move));
+			const submoves = moves.map(([currentMoves,submoves]) => submoves);
+			const currentMoves = moves.map(([currentMoves,submoves]) => currentMoves);
+			if (!isEqual(submoves,[{}])){
+				return submoves.reduce((unusedMoves,submoves) => {
+				//only add if the value is unique
+				return [...unusedMoves,...recursThrough(submoves).filter(cardNum => !unusedMoves.includes(cardNum))];  
+				},currentMoves)
+			} else {
+				return currentMoves;
+			}		
+		} else {
+			return [];
+		}
+	}
+	return(recursThrough(moveTree));
+}
 
 export const colorsArray = ["white","orange","green","purple","black","red"];
 export const dirs = {left: "left", right: "right", center: "center"};

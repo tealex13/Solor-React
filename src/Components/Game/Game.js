@@ -170,7 +170,7 @@ function Game (props){
 		return bc.getRemainingMoves(moveTree,moveHistory.current);
 	}
 	// console.log(getRemainingMoves(drawPile));
-	// console.log(bc.getUnusedCards(getRemainingMoves(drawPile)));
+	console.log(bc.flattenMoves(getRemainingMoves(drawPile)));
 
 	const limbHandleClick = (limb) => {
 		//if the limb is not wieght, but shares the same space as weight, it cannot be selected
@@ -371,7 +371,8 @@ function Game (props){
 
 	}
 
-	const unusedCards = bc.getUnusedCards(getRemainingMoves(drawPile));
+	const unusedCards = bc.flattenCards(getRemainingMoves(drawPile));
+	const unusedMoves = bc.flattenMoves(getRemainingMoves(drawPile));
 	const tilesData = generateTilesData(props.nRows, props.nCols);
 	const indexOfCardsToDisplay = getIndexOfCardsToDisplay();
 	const limbsAtStart = generateLimbsAtStart();
@@ -433,7 +434,7 @@ Game.defaultProps = {
 	nCols: 6,
 	boardSeed: 1235,
 	cardSeed: 4321,
-	nCardDraw: 3,
+	nCardDraw: 2,
 	maxMoveDist: 1,
 	maxGroupDist: 3
 };

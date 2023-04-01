@@ -275,11 +275,31 @@ const moveHistory = [{moveType:["dirWild"]},{moveType:["white","red"]}];
   expect(bc.getRemainingMoves(moveTree,moveHistory)).toMatchObject({"red":{"blue":{}}});
 })
 
-//Convert movetype
+//Convert movetypes
 
 it("Contains dirWild returns all directions", () => {
 const moveTypes = [bc.dirWild,"red"];
   expect(bc.convertMoveTypes(moveTypes)).toMatchObject([bc.dirs.left,bc.dirs.right,bc.dirs.center,bc.dirWild]);
 })
 
+//flattenMoves
+it("Returns moves at the lowest level", () => {
+const moveTree = {"orange":{}};
+  expect(bc.flattenMoves(moveTree)).toMatchObject(["orange"]);
+})
+
+it("Returns moves at the multiple levels", () => {
+const moveTree = {"orange":{"green":{}}};
+  expect(bc.flattenMoves(moveTree)).toMatchObject(["orange","green"]);
+})
+
+it("Moves only appears once if at multiple levels", () => {
+const moveTree = {"orange":{"orange":{}}};
+  expect(bc.flattenMoves(moveTree)).toMatchObject(["orange"]);
+})
+
+it("Only valid moves are included", () => {
+const moveTree = {"orange":{},"notAmove":{"green":{}}};
+  expect(bc.flattenMoves(moveTree)).toMatchObject(["orange"]);
+})
 
