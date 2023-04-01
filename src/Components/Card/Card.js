@@ -6,7 +6,9 @@ export function Card(props) {
 	
 	const displayColor = (index) => {
 		const pipLocation = (index === 0) ? "topPip" : "bottomPip";
-		return (<div  style={{background: props.data.colors[index]}} className = {"cardColor " + pipLocation}>
+		const backgroundColor = props.unusedMoves.includes(props.data.colors[index]) && !(props.useStatus === "used") ?
+			props.data.colors[index]: "grey";
+		return (<div  style={{background: backgroundColor}} className = {"cardColor " + pipLocation}>
 				</div>);
 	}
 	return(

@@ -370,7 +370,6 @@ function Game (props){
 		moveHistory.current = tempHistory;
 
 	}
-
 	const unusedCards = bc.flattenCards(getRemainingMoves(drawPile));
 	const unusedMoves = bc.flattenMoves(getRemainingMoves(drawPile));
 	const tilesData = generateTilesData(props.nRows, props.nCols);
@@ -406,7 +405,8 @@ function Game (props){
 						data = {cardData.current[cardNum].data} 
 						state = {drawPile[index]} 
 						handleClick = {cardHandleClick(index,drawPile)}
-						useStatus = {unusedCards.includes(index.toString())?"usable":"used"}/>)
+						useStatus = {unusedCards.includes(index.toString())?"usable":"used"}
+						unusedMoves = {unusedMoves}/>)
 					})
 					}
 				</div>

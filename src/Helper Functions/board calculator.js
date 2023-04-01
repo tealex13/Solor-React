@@ -110,7 +110,8 @@ export const convertMoveTypes = (typeIn) => {
 	}
 }
 
-export function flattenCards(moveTree) {	
+export function flattenCards(moveTree) {
+
 	const recursThrough = (moveTree) => {
 		if (typeof moveTree === "object" && moveTree !=  null){
 			let nums = moveTree.cardNum ?  
@@ -148,7 +149,9 @@ export function flattenMoves(moveTree) {
 			return [];
 		}
 	}
-	return(recursThrough(moveTree));
+	return Object.values(moveTree)
+		.reduce((unusedMoves,submoves) => {return ([...unusedMoves, ...recursThrough(submoves)])},[]);
+	// return(recursThrough(moveTree));
 }
 
 export const colorsArray = ["white","orange","green","purple","black","red"];
