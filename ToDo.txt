@@ -132,7 +132,7 @@ Mark Used Cards:
 	
 Bug:
 	-Have three cards, make the second one wildmove, use it, the remaining cards report as the first two cards
-	On the last round something crashes
+	-On the last round something crashes
 
 Usability
 	Show the number of cards left
