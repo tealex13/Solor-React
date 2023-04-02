@@ -127,24 +127,36 @@ Extras
 
 Mark Used Cards:
 	-Cards are marked as unusable if all future moves in the tree do not include that card
-	Colors are marked as unusable if all future moved do not include that (card AND color) combo 
+	-Colors are marked as unusable if all future moved do not include that (card AND color) combo 
 		This works for directions as well
 	
 Bug:
-	have three cards, make the second one wildmove, use it, the remaining cards report as the first two cards
+	-Have three cards, make the second one wildmove, use it, the remaining cards report as the first two cards
+	On the last round something crashes
+
+Usability
+	Show the number of cards left
 	
-Display History
-
-Player is informed what rule/s are getting violated
-
-Implement Redux in Game first
-
-Migrate using game 
+Rules:
+	Hands can move to the second row from start
 
 clean up
-	validate move returns a boolean
-	change group check to validate all groups instead of just the one that got moved
-	create seperate components for user controls
+	-Consolidate topFirst and topOnly functions in generate move tree
+	Refactor game into sub components:
+		User controls
+		Board
+	Validate move returns a boolean
+	
+Game play:
+	Make the game more difficult:
+		No moving limbs directly below weight (test in game)
+		Foot only, hand only holds (test in game)
+	Special powers on holds 
+		Bumping through foot holds
+		Moving a limb to a hold allows a bonus move of another limb (could be same direction, increase value of side ways movement)
+		Moving to a hold allow bonus movement of weight
+	Using all 4 lets you peak at the next card in the following round
+		
 
 Less important rules	
 	-Only one limb per hold:
@@ -158,6 +170,15 @@ Edge Cases:
 	
 Cleanup Round 2
 	Seperate tile generation from hold mapping
-	Consolidate topFirst and topOnly functions in generate move tree
+	Change group check to validate all groups instead of just the one that got moved
+	Implement Redux in Game first
+	
+Usability Round 2
+	Save game somehow
+	Display History
+	Add redo ability
+	Flip the cards around to show the way the arrow is going
+	
+	
 	
 

@@ -123,8 +123,8 @@ function Game (props){
 
 	const generateMoveTree = (cardState) => {
 		const drawnCardsData = getIndexOfCardsToDisplay().map(index => cardData.current[index]);
-		const drawnCardsState = mergeObjects(drawnCardsData.map((card,index) => ({...card.data,...{cardNum: index}})),cardState);
-		console.log("card state:",drawnCardsState);
+		const cardDataWithNumber = drawnCardsData.map((card,index) => ({...card.data,...{cardNum: index}}));
+		const drawnCardsState = mergeObjects(cardDataWithNumber,cardState.slice(0,cardDataWithNumber.length));
 		const topFirst = (card,remainingCards,recurs) => {
 			return {[card.colors[0]] :{
 				[card.weightDir]: {[card.colors[1]]:recurs(remainingCards), cardNum: {[card.cardNum]:null}}, 
@@ -433,7 +433,7 @@ Game.defaultProps = {
 	nRows: 10,
 	nCols: 6,
 	boardSeed: 1235,
-	cardSeed: 4321,
+	cardSeed: 4329,
 	nCardDraw: 2,
 	maxMoveDist: 1,
 	maxGroupDist: 3
