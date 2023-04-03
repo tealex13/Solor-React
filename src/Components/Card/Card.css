@@ -4,7 +4,7 @@
 	display: grid;
 	align-items: center;
 	justify-items: center;
-	grid-template-columns: [first-col] 30px [second-col] 60px[third-col] 30px [last-col];
+	grid-template-columns: [first-col] 30px [second-col] 20px[third-col] 30px [last-col];
   	grid-template-rows: [first-row] 20px [second-row] 40px [third-row] 50px [fourth-row] 40px [fifth-row] 20px [last-row];
 }
 
@@ -19,7 +19,7 @@
 .cardColor{
 	margin: 5px;
 	border: solid 2px black;
-	width: 100px;
+	width: 60px;
 	height: 60px;
 	margin: 10px;
 }

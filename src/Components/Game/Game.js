@@ -37,11 +37,11 @@ function Game (props){
 	const [drawPile,setDrawPile] = useState(generateCardsState); //move to useRef
 	const [displayDraw,setDisplayDraw] = useState(true);
 	const [limbsData,setLimbsData] = useState(
-		{leftHand: {coords: [-1,0], selected: false, group: [groupType.left,groupType.hand]},
-		rightHand: {coords: [-1,1], selected: false, group: [groupType.right,groupType.hand]},
-		leftFoot: {coords: [-1,2], selected: false, group: [groupType.left,groupType.foot]},
-		rightFoot: {coords: [-1,3], selected: false, group: [groupType.right,groupType.foot]},
-		weight: {coords: [-1,4], selected: false, group:[]}}
+		{leftHand: {coords: [-1,-5], selected: false, group: [groupType.left,groupType.hand]},
+		rightHand: {coords: [-1,-4], selected: false, group: [groupType.right,groupType.hand]},
+		leftFoot: {coords: [-1,-3], selected: false, group: [groupType.left,groupType.foot]},
+		rightFoot: {coords: [-1,-2], selected: false, group: [groupType.right,groupType.foot]},
+		weight: {coords: [-1,-6], selected: false, group:[]}}
 		);
 	const [historyIndex,setHistoryIndex] = useState(0);
 
@@ -173,18 +173,33 @@ function Game (props){
 	console.log(bc.flattenMoves(getRemainingMoves(drawPile)));
 
 	const limbHandleClick = (limb) => {
-		//if the limb is not wieght, but shares the same space as weight, it cannot be selected
-		if((limb !== limbType.weight)
-			&& isEqual(limbsData[limb].coords,limbsData[limbType.weight].coords)){
-			const  alertMessage = "The " + limbsData[limb].group[0]+" "+limbsData[limb].group[1]+ " cannot be selected because it share a space with weight."
-			alert(alertMessage);
-		} else {
+		const performSelection = () => {
 			let tempLimbState = deselectAllLimbs({...limbsData});
 			if(!limbsData[limb].selected){
 				tempLimbState = selectLimb(tempLimbState,limb);
 			} else {
 			}
 			setLimbsData(tempLimbState);
+		}
+
+		//if the limb is not wieght, but shares the same space as weight, it cannot be selected
+		
+		if(limb !== limbType.weight){
+			// if limb is on weight it cannot be moved
+			if (isEqual(limbsData[limb].coords,limbsData[limbType.weight].coords)) {
+				const  alertMessage = "The " + limbsData[limb].group[0]+" "+limbsData[limb].group[1]+ " cannot be selected because it share a space with weight."
+				alert(alertMessage);
+			} 
+			// if the limb is right below weight it cannot be moved
+			else if (bc.dist(limbsData[limb].coords,limbsData[limbType.weight].coords) === 1 && limbsData[limb].coords[0] < limbsData[limbType.weight].coords[0]){
+	
+				const  alertMessage = "The " + limbsData[limb].group[0]+" "+limbsData[limb].group[1]+ " cannot be selected because it is one space below the weight."
+				alert(alertMessage);
+			} else {
+				performSelection();
+			}
+		} else {
+			performSelection();
 		}
 		
 	}
@@ -223,7 +238,7 @@ function Game (props){
 
 	const validateMove = (selectedLimbs,newCoords) => {
 		//Tests that require previous state
-		//weight cannot be moves a the same time as other limbs
+		//weight cannot be moves at the same time as other limbs
 		selectedLimbs = selectedLimbs.includes(limbType.weight) & (selectedLimbs.filter(limb => limb !== limbType.weight).length > 0) ?
 			[] : selectedLimbs;
 
@@ -432,8 +447,8 @@ function Game (props){
 Game.defaultProps = {
 	nRows: 10,
 	nCols: 6,
-	boardSeed: 1235,
-	cardSeed: 4329,
+	boardSeed: 1237,
+	cardSeed: 4330,
 	nCardDraw: 2,
 	maxMoveDist: 1,
 	maxGroupDist: 3
