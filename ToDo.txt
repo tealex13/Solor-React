@@ -135,7 +135,7 @@ Bug:
 	-On the last round something crashes
 
 Usability
-	Show the number of cards left
+	-Show the number of cards left
 	
 Rules:
 	Hands can move to the second row from start

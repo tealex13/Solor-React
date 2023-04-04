@@ -169,8 +169,6 @@ function Game (props){
 		delete moveTree.cardNum;
 		return bc.getRemainingMoves(moveTree,moveHistory.current);
 	}
-	// console.log(getRemainingMoves(drawPile));
-	console.log(bc.flattenMoves(getRemainingMoves(drawPile)));
 
 	const limbHandleClick = (limb) => {
 		const performSelection = () => {
@@ -245,10 +243,13 @@ function Game (props){
 		//Same hold as starting hold not allowed
 		selectedLimbs = selectedLimbs.filter((limb) => !isEqual(limbsData[limb].coords, newCoords));
 
-		//Only allow movement within a range of starting hold
+		//Only allow movement within a range of origin
 		selectedLimbs = selectedLimbs.filter((limb) => {
 		const tempLimbCoords = isAtStart(limbsData[limb].coords) ? [limbsData[limb].coords[0],newCoords[1]] : limbsData[limb].coords;
-		return(props.maxMoveDist >= bc.dist(tempLimbCoords,newCoords))
+		console.log("includes:",limbsData[limb].group.includes(groupType.hand), limbType.hand);
+		const allowedDistance = isAtStart(limbsData[limb].coords) && limbsData[limb].group.includes(groupType.hand) ? 
+			props.handStartMoveDist : props.maxMoveDist;
+		return(allowedDistance >= bc.dist(tempLimbCoords,newCoords))
 		}); 
 
 		//Limbs follow a valid sequence along move tree;
@@ -431,9 +432,12 @@ function Game (props){
 						Undo
 					</button>
 				{displayDraw ?
-					<button onClick = {drawCards}> 
-						End Round
-					</button>
+					<>
+						<button onClick = {drawCards}> 
+							End Round
+						</button>
+						<h4> Cards Left: {cardData.current.length - drawIndex - props.nCardDraw} </h4>
+					</>
 					: null}	
 				</div>					
 			</div>	
@@ -451,6 +455,7 @@ Game.defaultProps = {
 	cardSeed: 4330,
 	nCardDraw: 2,
 	maxMoveDist: 1,
-	maxGroupDist: 3
+	maxGroupDist: 3,
+	handStartMoveDist: 2
 };
 export default Game;
