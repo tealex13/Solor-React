@@ -1,27 +1,3 @@
-.hold{
-}
-
-.limbRow{
-	display: flex;
-	justify-content: space-between;
-	position: relative;
-	z-index: 2;
-}
-
-.topRow{
-	top:20px; 
-    left:0px; 
-}
-
-.bottomRow{
-	top:-20px; 
-    left:0px; 
-}
-
-.left{
-
-}
-
 .holdColor{
 	margin-left: 10px;
 	margin-right: 10px;
@@ -29,3 +5,18 @@
 	z-index: 1;
 }
 
+
+.hold > button {
+	display: flex;
+	justify-items: center;
+	align-items: center;
+	width: auto;
+	height: auto;
+	border: none;
+	background: none;
+	padding: 0;
+	margin: 0;
+	text-decoration: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
