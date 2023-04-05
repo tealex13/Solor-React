@@ -74,14 +74,30 @@ function Game (props){
 	}
 
 	const generateHoldData = () => {
-		let holdData = [];
 		const nTotalTiles =  bc.calculateTotalHolds(props.nRows, props.nCols);
+
+		//Create hold group limits
+		const numFootHolds = Math.floor(nTotalTiles * props.footOnlyPercent);
+		const numHandHolds = Math.floor(nTotalTiles * props.handOnlyPercent);
+
+		const allowedGroupTypes = [...[...Array(numFootHolds)].map(() => [groupType.foot]),
+			...[...Array(numHandHolds)].map(() => [groupType.hand]),
+			...[...Array(nTotalTiles - (numHandHolds + numFootHolds))].map(() => [groupType.foot,groupType.hand])];
+		shuffleArray(allowedGroupTypes,props.boardSeed);
+
+		//Create hold color data
+		let holdColors = [];
 		const iterNum = Math.ceil(nTotalTiles/bc.colorsArray.length);
 		for (var i = 0; i < iterNum; i++) {
-			holdData = holdData.concat(bc.colorsArray.map((color) =>({color: color})));
+			holdColors = holdColors.concat(bc.colorsArray.map((color) =>(color)));
 		}
-		shuffleArray(holdData,props.boardSeed);
+		shuffleArray(holdColors,props.boardSeed);
+
+
+		let holdData = allowedGroupTypes.map((val,index) => ({color: holdColors[index], allowedGroupTypes: val})) ;
+		
 		holdData = holdData.slice(0,nTotalTiles);
+
 		return holdData;
 	}
 
@@ -456,6 +472,8 @@ Game.defaultProps = {
 	nCardDraw: 2,
 	maxMoveDist: 1,
 	maxGroupDist: 3,
-	handStartMoveDist: 2
+	handStartMoveDist: 2,
+	handOnlyPercent : 0.15,
+	footOnlyPercent : 0.15
 };
 export default Game;
