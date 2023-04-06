@@ -14,7 +14,8 @@ export const groupType = {
 	hand: "hand",
 	foot: "foot",
 	left: "left",
-	right: "right"
+	right: "right",
+	weight: "weight"
 }
 
 export function Tile(props){

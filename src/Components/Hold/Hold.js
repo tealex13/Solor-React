@@ -2,7 +2,6 @@ import React from 'react';
 import './Hold.css'
 
 export default function Hold(props){
-	console.log(props.holdData);
 	const selectHoldImage = () => {
 		if (props.holdData.allowedGroupTypes){
 			if (props.holdData.allowedGroupTypes.includes("hand") && props.holdData.allowedGroupTypes.includes("foot")){

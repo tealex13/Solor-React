@@ -41,7 +41,7 @@ function Game (props){
 		rightHand: {coords: [-1,-4], selected: false, group: [groupType.right,groupType.hand]},
 		leftFoot: {coords: [-1,-3], selected: false, group: [groupType.left,groupType.foot]},
 		rightFoot: {coords: [-1,-2], selected: false, group: [groupType.right,groupType.foot]},
-		weight: {coords: [-1,-6], selected: false, group:[]}}
+		weight: {coords: [-1,-6], selected: false, group:[groupType.weight]}}
 		);
 	const [historyIndex,setHistoryIndex] = useState(0);
 
@@ -80,9 +80,9 @@ function Game (props){
 		const numFootHolds = Math.floor(nTotalTiles * props.footOnlyPercent);
 		const numHandHolds = Math.floor(nTotalTiles * props.handOnlyPercent);
 
-		const allowedGroupTypes = [...[...Array(numFootHolds)].map(() => [groupType.foot]),
-			...[...Array(numHandHolds)].map(() => [groupType.hand]),
-			...[...Array(nTotalTiles - (numHandHolds + numFootHolds))].map(() => [groupType.foot,groupType.hand])];
+		const allowedGroupTypes = [...[...Array(numFootHolds)].map(() => [groupType.foot,groupType.weight]),
+			...[...Array(numHandHolds)].map(() => [groupType.hand,groupType.weight]),
+			...[...Array(nTotalTiles - (numHandHolds + numFootHolds))].map(() => [groupType.foot,groupType.hand,groupType.weight])];
 		shuffleArray(allowedGroupTypes,props.boardSeed);
 
 		//Create hold color data
@@ -293,10 +293,17 @@ function Game (props){
 
 		//Only one non-weight limb allowed per hold
 		const nonWeightLimbs = Object.entries(tempLimbsState).filter(([limb,data]) => limb !== limbType.weight);
-		selectedLimbs = nonWeightLimbs.slice(0,-1).reduce((invalid,[limb1,data1],index) => {
+		selectedLimbs = nonWeightLimbs.slice(0,-1).reduce((invalid,[limb1,data1],index) => { //skipping the last limb because it will be compared to every other limb already
 				return invalid || 
-				nonWeightLimbs.slice(index+1).reduce((invalid,[limb2,data2]) => invalid || isEqual(data1.coords,data2.coords),false)
+					nonWeightLimbs.slice(index+1).reduce((invalid,[limb2,data2]) => invalid || isEqual(data1.coords,data2.coords),false)
 			},false) ? [] : selectedLimbs;
+
+		//Group types must match hold allowed group type
+		const holdData = generateHoldData();
+		const limbsToTest = Object.entries(tempLimbsState).filter(([limb,data]) => !isAtStart(data.coords));
+		selectedLimbs = limbsToTest.reduce((valid,[limb,limbData]) => {return valid && holdData[bc.mapFromBoard(limbData.coords[0],limbData.coords[1],props.nCols)].allowedGroupTypes
+							.reduce((valid,groupType) =>  {return valid || limbData.group.includes(groupType)},false)
+						},true) ? selectedLimbs : [];
 
 		return selectedLimbs;
 	}
@@ -469,7 +476,7 @@ Game.defaultProps = {
 	nCols: 6,
 	boardSeed: 1237,
 	cardSeed: 4330,
-	nCardDraw: 2,
+	nCardDraw: 3,
 	maxMoveDist: 1,
 	maxGroupDist: 3,
 	handStartMoveDist: 2,

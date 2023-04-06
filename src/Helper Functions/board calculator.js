@@ -154,7 +154,7 @@ export function flattenMoves(moveTree) {
 	// return(recursThrough(moveTree));
 }
 
-export const colorsArray = ["white","orange","green","purple","black","red","blue"];
+export const colorsArray = ["white","orange","green","purple","black","red"];
 export const dirs = {left: "left", right: "right", center: "center"};
 export const dirWild = "dirWild";
 export const colorWild = "colorWild";
