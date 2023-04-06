@@ -1,20 +1,13 @@
 import React from 'react';
 import {Limb} from "../Limb/Limb";
 import "./Tile.css"
+import * as st from "../../Helper Functions/Shared Types";
 
 export const limbType = {
 	leftHand: "leftHand",
 	rightHand: "rightHand",
 	leftFoot: "leftFoot",
 	rightFoot: "rightFoot",
-	weight: "weight"
-}
-
-export const groupType = {
-	hand: "hand",
-	foot: "foot",
-	left: "left",
-	right: "right",
 	weight: "weight"
 }
 

@@ -4,10 +4,11 @@ import {shuffleArray, mergeObjects} from "../../Helper Functions/Generic Helpers
 import Hold from "../Hold/Hold.js";
 import uuid from 'react-uuid';
 import {Card} from "../Card/Card.js";
-import {Tile, limbType, groupType} from "../Tile/Tile.js";
+import {Tile, limbType} from "../Tile/Tile.js";
 import {Limb} from "../Limb/Limb.js";
 import isEqual from "lodash/isEqual";
 import './Game.css';
+import * as st from "../../Helper Functions/Shared Types";
 
 
 function Game (props){
@@ -37,11 +38,11 @@ function Game (props){
 	const [drawPile,setDrawPile] = useState(generateCardsState); //move to useRef
 	const [displayDraw,setDisplayDraw] = useState(true);
 	const [limbsData,setLimbsData] = useState(
-		{leftHand: {coords: [-1,-5], selected: false, group: [groupType.left,groupType.hand]},
-		rightHand: {coords: [-1,-4], selected: false, group: [groupType.right,groupType.hand]},
-		leftFoot: {coords: [-1,-3], selected: false, group: [groupType.left,groupType.foot]},
-		rightFoot: {coords: [-1,-2], selected: false, group: [groupType.right,groupType.foot]},
-		weight: {coords: [-1,-6], selected: false, group:[groupType.weight]}}
+		{leftHand: {coords: [-1,-5], selected: false, group: [st.groupType.left,st.groupType.hand]},
+		rightHand: {coords: [-1,-4], selected: false, group: [st.groupType.right,st.groupType.hand]},
+		leftFoot: {coords: [-1,-3], selected: false, group: [st.groupType.left,st.groupType.foot]},
+		rightFoot: {coords: [-1,-2], selected: false, group: [st.groupType.right,st.groupType.foot]},
+		weight: {coords: [-1,-6], selected: false, group:[st.groupType.weight]}}
 		);
 	const [historyIndex,setHistoryIndex] = useState(0);
 
@@ -80,9 +81,9 @@ function Game (props){
 		const numFootHolds = Math.floor(nTotalTiles * props.footOnlyPercent);
 		const numHandHolds = Math.floor(nTotalTiles * props.handOnlyPercent);
 
-		const allowedGroupTypes = [...[...Array(numFootHolds)].map(() => [groupType.foot,groupType.weight]),
-			...[...Array(numHandHolds)].map(() => [groupType.hand,groupType.weight]),
-			...[...Array(nTotalTiles - (numHandHolds + numFootHolds))].map(() => [groupType.foot,groupType.hand,groupType.weight])];
+		const allowedGroupTypes = [...[...Array(numFootHolds)].map(() => [st.groupType.foot,st.groupType.weight]),
+			...[...Array(numHandHolds)].map(() => [st.groupType.hand,st.groupType.weight]),
+			...[...Array(nTotalTiles - (numHandHolds + numFootHolds))].map(() => [st.groupType.foot,st.groupType.hand,st.groupType.weight])];
 		shuffleArray(allowedGroupTypes,props.boardSeed);
 
 		//Create hold color data
@@ -262,8 +263,8 @@ function Game (props){
 		//Only allow movement within a range of origin
 		selectedLimbs = selectedLimbs.filter((limb) => {
 		const tempLimbCoords = isAtStart(limbsData[limb].coords) ? [limbsData[limb].coords[0],newCoords[1]] : limbsData[limb].coords;
-		console.log("includes:",limbsData[limb].group.includes(groupType.hand), limbType.hand);
-		const allowedDistance = isAtStart(limbsData[limb].coords) && limbsData[limb].group.includes(groupType.hand) ? 
+		console.log("includes:",limbsData[limb].group.includes(st.groupType.hand), limbType.hand);
+		const allowedDistance = isAtStart(limbsData[limb].coords) && limbsData[limb].group.includes(st.groupType.hand) ? 
 			props.handStartMoveDist : props.maxMoveDist;
 		return(allowedDistance >= bc.dist(tempLimbCoords,newCoords))
 		}); 
@@ -310,10 +311,10 @@ function Game (props){
 
 	const checkWeightInRange = (limbsState) => {
 		return (
-			Object.values(limbsState).filter(limb => limb.group.includes(groupType.hand))
+			Object.values(limbsState).filter(limb => limb.group.includes(st.groupType.hand))
 				.reduce((valid,limb) => valid || (limb.coords[0] + 1) >= limbsState[limbType.weight].coords[0],false)
 			&&
-			Object.values(limbsState).filter(limb => limb.group.includes(groupType.foot))
+			Object.values(limbsState).filter(limb => limb.group.includes(st.groupType.foot))
 				.reduce((valid,limb) => valid || (limb.coords[0] - 1) <= limbsState[limbType.weight].coords[0],false)
 		)
 	}

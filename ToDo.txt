@@ -147,6 +147,7 @@ clean up
 		Board
 	Validate move returns a boolean
 	Correct flatten moves to not include duplicates
+	Add documentation
 	
 Game play:
 	Make the game more difficult:
@@ -154,14 +155,34 @@ Game play:
 		Foot only, hand only holds (test in game)
 			-Add foot only, hand only to hold data
 			-Display the holds different
-			Refactor: 
-				Use groupTypes in hold
-			Check for group type match during validate step
-	Special powers on holds 
-		Bumping through foot holds
-		Moving a limb to specific holds allows a bonus move of another limb (could be same direction, increase value of side ways movement)
-		Moving to a hold allow bonus movement of weight
-	Using all 4 lets you peak at the next card in the following round
+			-Check for group type match during validate step
+			-Refactor: 
+				-Use groupTypes in hold
+		Holds can't support weight
+			Add weight limits to holds
+			Display holds with weight limits (black streaks on holds)
+			Check that weight is not in range of a limb on the weight limited holds
+		Use hand then foot or foot then hand if you want to use both parts of a card
+		You only get one wild per time the weight and limb share a space
+		Weight shifts when a wild is used
+	
+	Special powers ideas:
+		Power up ideas
+			Bumping through foot holds
+			Extra limb movement
+			See one of the colors of the next card
+			Use foot hold as a hand hold and vis versa
+			One limb can be plus 1 away
+			Bonus weigh move
+			Extra wilds when wild and limb share a space
+			Ignore wieght rule for a hold
+		Earn power ups
+			Using all parts of a card
+			Moving limbs sideways
+			Getting to specific holds
+			Performing a move (heel hook,Dynamo)
+	Other Ideas:
+		Flagging a foot means that neither of your feet can move, weight moves towards the foot that was flagged. It takes up a move color to perform (color needs to match the color the foot was on?)
 		
 
 Less important rules	
