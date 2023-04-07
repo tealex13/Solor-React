@@ -142,6 +142,8 @@ Rules:
 
 clean up
 	-Consolidate topFirst and topOnly functions in generate move tree
+	Move hold generation up a level
+	Move card Generation up a level
 	Refactor game into sub components:
 		User controls
 		Board

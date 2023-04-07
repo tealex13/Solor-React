@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import Game from "./Components/Game/Game.js";
+import GameHandler from "./Components/GameHandler/GameHandler";
 import Tester from "./tester";
 
 
@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Game/>
+        <GameHandler/>
         {/*<Tester/>*/}
       </header>
     </div>
