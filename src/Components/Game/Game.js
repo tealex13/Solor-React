@@ -19,7 +19,7 @@ function Game (props){
 			tempCardState.push({wild: false});
 		}
 	return tempCardState;
-	}
+	};
 
 	const [drawIndex,setDrawIndex] = useState(0);
 	const [drawPile,setDrawPile] = useState(generateCardsState);
@@ -43,7 +43,7 @@ function Game (props){
 		} else {
 			alert("The card you want to change to a wild has already been used.")
 		}		
-	}
+	};
 
 	const generateTilesData = () =>{
 		
@@ -78,19 +78,16 @@ function Game (props){
 		let tiles = mapHoldsToTiles(holdData);	
 		mapLimbsToTiles(tiles);
 		return tiles;
-	}
+	};
 	
-
 	const isAtStart = (coords) => {
 		return coords[0] === -1;
-	}
-
-	
+	};
 
 	const getIndexOfCardsToDisplay = () => {
 		const lastCardInDisplay = (drawIndex + props.nCardDraw) > props.cardData.length ? props.cardData.length : drawIndex + props.nCardDraw;
 		return props.drawOrder.slice(drawIndex,lastCardInDisplay);
-	}
+	};
 
 	const generateMoveTree = (cardState) => {
 		const drawnCardsData = getIndexOfCardsToDisplay().map(index => props.cardData[index]);
@@ -133,16 +130,20 @@ function Game (props){
 			},{});
 		}
 		return generateMoveOptions(drawnCardsState);
-	}
+	};
 
 	const getRemainingMoves = (drawPile) => {
 		let moveTree = generateMoveTree(drawPile);
 		delete moveTree.cardNum;
 		return bc.getRemainingMoves(moveTree,moveHistory.current);
-	}
+	};
 
 	const limbHandleClick = (limb) => {
 		const performSelection = () => {
+			const selectLimb = (limbsState,limb) => {
+				return {...limbsState, ...{[limb] : {...limbsState[limb], ...{selected:true}}}};
+			}
+
 			let tempLimbState = deselectAllLimbs({...limbsData});
 			if(!limbsData[limb].selected){
 				tempLimbState = selectLimb(tempLimbState,limb);
@@ -171,20 +172,20 @@ function Game (props){
 			performSelection();
 		}
 		
-	}
-
-
-	const selectLimb = (limbsState,limb) => {
-		return {...limbsState, ...{[limb] : {...limbsState[limb], ...{selected:true}}}};
-		
-		}
+	};
 
 	const deselectAllLimbs = (limbsState) => {
 		return Object.fromEntries(Object.entries(limbsState).map(([key,value]) => [key, value = {...value, ...{selected: false}}]));
-	}
+	};
 
 	const holdHandleClick = (coords) => () => {
 		let selectedLimbs = Object.entries(limbsData).filter(([key,value]) => (value.selected)).map(([key,value]) => (key));
+
+		const moveLimbs = (selectedLimbs, coords) => {
+			let tempLimbsState = applyNewCoords({...limbsData},selectedLimbs,coords);
+			tempLimbsState = deselectAllLimbs(tempLimbsState);
+			setLimbsData(tempLimbsState);
+		}
 
 		selectedLimbs = validateMove(selectedLimbs,coords);
 		if (selectedLimbs.length > 0){
@@ -192,9 +193,52 @@ function Game (props){
 			moveHistory.current = addMoveToHistory(selectedLimbs,coords);
 			setHistoryIndex(historyIndex+1);
 		}	
-	} 
+	} ;
 
 	const addMoveToHistory = (selectedLimbs,newCoords) => {
+		const getWeightMoveType = (limb, coords) => {
+			if (isAtStart(limb.coords)){
+				return bc.dirWild;
+			} else {
+				return bc.moveDir(limb.coords, coords);
+			}
+		}
+
+		const getMoveType = (selectedLimbs, coords) => {
+			const getColorMoveType = (limbsState,limb,coords) => {
+				let oppositeLimb = false;
+				switch (limb){
+				case limbType.leftHand:
+					oppositeLimb = limbType.rightHand;
+					break;
+				case limbType.rightHand:
+					oppositeLimb = limbType.leftHand;
+					break;
+				case limbType.leftFoot:
+					oppositeLimb = limbType.rightFoot;
+					break;
+				case limbType.rightFoot:
+					oppositeLimb = limbType.leftFoot;
+					break;
+				}
+
+				if ((oppositeLimb) && 
+					(isEqual(limbsState[limbType.weight].coords,limbsState[oppositeLimb].coords))){
+					return bc.colorWild;
+				}
+				else {
+					return props.boardData.holds[bc.mapFromBoard(coords[0],coords[1],props.boardData.nCols)].color;
+				}
+			}
+
+			const moveTypes = selectedLimbs.map(limb => 
+				limb === limbType.weight ? 
+					getWeightMoveType(limbsData[limb], coords) :
+					getColorMoveType(limbsData,limb,coords)
+			);
+			return moveTypes.every(moveType => moveType === moveTypes[0]) ? moveTypes[0] : "";
+		}
+
 
 		const tempHistory = [...moveHistory.current];
 		const moveState = {moveType: [getMoveType(selectedLimbs,newCoords)], 
@@ -203,7 +247,7 @@ function Game (props){
 			};
 		tempHistory.push(moveState);
 		return tempHistory;
-	}
+	};
 
 	const validateMove = (selectedLimbs,newCoords) => {
 		//Tests that require previous state
@@ -244,6 +288,16 @@ function Game (props){
 			);
 
 		//Weight is not 1 or higher than hands and 1 or lower than the feet
+		const checkWeightInRange = (limbsState) => {
+			return (
+				Object.values(limbsState).filter(limb => limb.group.includes(st.groupType.hand))
+					.reduce((valid,limb) => valid || (limb.coords[0] + 1) >= limbsState[limbType.weight].coords[0],false)
+				&&
+				Object.values(limbsState).filter(limb => limb.group.includes(st.groupType.foot))
+					.reduce((valid,limb) => valid || (limb.coords[0] - 1) <= limbsState[limbType.weight].coords[0],false)
+			)
+		}
+
 		selectedLimbs = checkWeightInRange(tempLimbsState) ? selectedLimbs : [];
 
 		//Only one non-weight limb allowed per hold
@@ -261,80 +315,19 @@ function Game (props){
 						},true) ? selectedLimbs : [];
 
 		return selectedLimbs;
-	}
-
-	const checkWeightInRange = (limbsState) => {
-		return (
-			Object.values(limbsState).filter(limb => limb.group.includes(st.groupType.hand))
-				.reduce((valid,limb) => valid || (limb.coords[0] + 1) >= limbsState[limbType.weight].coords[0],false)
-			&&
-			Object.values(limbsState).filter(limb => limb.group.includes(st.groupType.foot))
-				.reduce((valid,limb) => valid || (limb.coords[0] - 1) <= limbsState[limbType.weight].coords[0],false)
-		)
-	}
-
-	const getMoveType = (selectedLimbs, coords) => {
-		const moveTypes = selectedLimbs.map(limb => 
-			limb === limbType.weight ? 
-				getWeightMoveType(limbsData[limb], coords) :
-				getColorMoveType(limbsData,limb,coords)
-		);
-		return moveTypes.every(moveType => moveType === moveTypes[0]) ? moveTypes[0] : "";
-	}
-
-	const getWeightMoveType = (limb, coords) => {
-		if (isAtStart(limb.coords)){
-			return bc.dirWild;
-		} else {
-			return bc.moveDir(limb.coords, coords);
-		}
-	}
-
-	const getColorMoveType = (limbsState,limb,coords) => {
-		let oppositeLimb = false;
-		switch (limb){
-		case limbType.leftHand:
-			oppositeLimb = limbType.rightHand;
-			break;
-		case limbType.rightHand:
-			oppositeLimb = limbType.leftHand;
-			break;
-		case limbType.leftFoot:
-			oppositeLimb = limbType.rightFoot;
-			break;
-		case limbType.rightFoot:
-			oppositeLimb = limbType.leftFoot;
-			break;
-		}
-
-		if ((oppositeLimb) && 
-			(isEqual(limbsState[limbType.weight].coords,limbsState[oppositeLimb].coords))){
-			return bc.colorWild;
-		}
-		else {
-			return props.boardData.holds[bc.mapFromBoard(coords[0],coords[1],props.boardData.nCols)].color;
-		}
-	}
-	console.log(bc.mapFromBoard(0,3,props.boardData.nCols));
+	};
 	
-	console.log(props.boardData.holds[bc.mapFromBoard(0,3,props.boardData.nCols)]);
 	const applyNewCoords = (limbsState, selectedLimbs, newCoords) => {
 		let tempLimbsState = {...limbsData};
 		selectedLimbs.forEach((limb) => {
 			tempLimbsState = {...tempLimbsState, ...{[limb] : {...tempLimbsState[limb], ...{coords: newCoords}}}};
 			})
 		return tempLimbsState;
-	}
-
-	const moveLimbs = (selectedLimbs, coords) => {
-		let tempLimbsState = applyNewCoords({...limbsData},selectedLimbs,coords);
-		tempLimbsState = deselectAllLimbs(tempLimbsState);
-		setLimbsData(tempLimbsState);
-		}
+	};
 
 	const formatLimbsForTile = (key,value) => {
 		return{[key]: {selected: value.selected, handleClick: limbHandleClick}};
-	}
+	};
 
 	const drawCards = () => {
 		const newDrawIndex = drawIndex + props.nCardDraw;
@@ -352,7 +345,7 @@ function Game (props){
 			limbsAtStart = {...limbsAtStart, ...formatLimbsForTile(key,value)}
 			));
 		return	limbsAtStart;
-	}
+	};
 
 	const handleUndo = () => {
 		const tempHistory = [...moveHistory.current];
@@ -363,7 +356,7 @@ function Game (props){
 		setHistoryIndex(historyIndex - 1);
 		moveHistory.current = tempHistory;
 
-	}
+	};
 	const unusedCards = bc.flattenCards(getRemainingMoves(drawPile));
 	const unusedMoves = bc.flattenMoves(getRemainingMoves(drawPile));
 	const tilesData = generateTilesData();
@@ -436,7 +429,5 @@ Game.defaultProps = {
 	maxMoveDist: 1,
 	maxGroupDist: 3,
 	handStartMoveDist: 2,
-	handOnlyPercent : 0.15,
-	footOnlyPercent : 0.15
 };
 export default Game;
