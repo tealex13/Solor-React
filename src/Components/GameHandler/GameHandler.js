@@ -61,8 +61,9 @@ export default GameHandler;
 GameHandler.defaultProps = {
 	nRows: 10,
 	nCols: 6,
-	boardSeed: 1237,
-	cardSeed: 4330,
-	handOnlyPercent : 0.15,
-	footOnlyPercent : 0.15
+	boardSeed: 1232,
+	cardSeed: 4356,
+	handOnlyPercent : 0.20,
+	footOnlyPercent : 0.20,
+	slipperyHoldsPercent : 0.20
 };

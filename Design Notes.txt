@@ -1,0 +1,104 @@
+Notes:
+	Need more options, difficulty that ramps as the game progresses, and abilities that improve as the game progresses
+	
+	[Concept: Levels of goodness
+	Problem:
+		Right now there are four levels of move goodness: 
+			-no move
+			-sideways move that enables another up move
+			-up
+			-up move that enables a future up move
+		A moves goodness is usually pretty clear/an optimal goodness for a set of inputs can usually be calculated pretty easily
+	
+	Solutions:
+		Compressing the levels of goodness
+			Add another necessary resource that is orthagonal to the primary objective, moving limbs up the wall, and assign those to lower levels of goodness
+			Ideas for orthogonal resources:
+				-Overall Stamina
+				-Arms get pumped
+				-Gain knowlege
+					-What colors will be on the next card
+				-Increase your options
+					-Upgrades
+					-card draw
+					-Situational advantage
+						-Setting yourself up for next turn (you don't know if it will enable an up move but it could)
+						-Ability to use cards in new ways (weight on limb)
+			Ideas for less optimal actions
+				-Spend movement in a way that does not directly contribute to the end objective
+					-Simple Movements
+						-sidways moves
+						-downwards move
+						-No move (discard a card)
+					-Perform a specific move/ limb arrangement
+						-Heel hook
+						-Match feet or hands
+						-Dynamo
+						-Bumping
+					-discard a card
+			Increase the cost of performing the optimal move
+				-limbs become immovable
+					-over extended limbs
+					-limbs that block eachother
+					-weight on limb
+				-Lose abilities
+					-Weight can't be placed on the same space
+				-Move weight in an undesireable direction
+					-Add constraints how the card must be used
+						-always top to bottom, 
+						-or hand does top, foot does bottom
+						-negociable for a price
+				
+		
+		Increase move permutations (less obvious optimal solutions)
+			Increase Options:
+				-more cards
+				-less colors
+				-more ways to use cards
+				-multiple color options per hold
+	]
+	
+	[Problem: Weight on limbs is overpowered
+		
+	Solutions:
+		-Only allows performing a move that is a level of difficulty higher (not a wild)
+		-Restrict motion of nearby limbs (not just the limb with the weight)
+		-Make it more difficult to achieve
+			-Some Holds cannot support weight
+			-Can't move to weight from below
+	]
+	
+	[Problem: The bearing on this round has low knowable impact on future rounds (no long term thinking is encouraged)
+	
+	Solutions:
+		-Make the impact of this round on future rounds more "knowable"
+			-Gain knowlege about next rounds cards
+				-You can see the cards that you have used and the cards you haven't drawn yet
+				-See the backs of the cards
+				-see limited information about the fronts of the cards
+				-Add cards back into the draw pile
+			-Certain paths are more difficult than others
+				-Forked paths forcing players to choose one side or another
+		-Upgrade (encourages long term stategy)
+		
+	
+	
+	Concreate Ideas:
+		Fewer colors but levels of difficulty
+		Stamina or technique points for:
+			Sideways moves 
+			Downward moves
+			Tranfering weight from one limb directly to another
+			Having two limbs on spaces that are very far apart
+		The wild side of card is not just a weight move (Increases the value of the next card)
+			
+	Ideas for upgrades that do not overpower:
+		Perform a move that is a level more difficult once each round (could earn one color at a time, "mastery" of a color type)
+		See the back of the next card (I really like this one because it gives you incomplete information, if there is red on the back then the front is not a red, but you probably won't use the back if you can help it)
+		See the front of the next card	
+		Allow a hold to support weight
+		Draw a card
+		Save a card or move for next round
+		Switch a card from the discard with a card in the draw pile
+		Move a card from the top of the pile to the bottom
+		

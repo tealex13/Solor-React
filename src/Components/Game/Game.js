@@ -376,7 +376,7 @@ function Game (props){
 						<div key = {row.ID} className = "row">
 							{row.data.map((tile) => {
 								return (<Tile key = {tile.ID} limbsData = {tile.limbsData}>
-									<Hold holdData = {tile.holdData} key = {tile.ID} />
+									<Hold holdData = {tile.holdData}/>
 									</Tile>)
 							})}
 						</div>
@@ -425,7 +425,7 @@ function Game (props){
 
 Game.defaultProps = {
 
-	nCardDraw: 3,
+	nCardDraw: 2,
 	maxMoveDist: 1,
 	maxGroupDist: 3,
 	handStartMoveDist: 2,
