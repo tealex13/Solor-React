@@ -29,6 +29,11 @@ function GameHandler (props){
 			...[...Array(nTotalTiles - (numHandHolds + numFootHolds))].map(() => [st.groupType.foot,st.groupType.hand,st.groupType.weight])];
 		shuffleArray(allowedGroupTypes,props.boardSeed);
 
+		//give holds weight limits
+		const numHoldsWithWeightLimits = Math.floor(nTotalTiles * props.holdsWithWeightLimitsPercent);
+		const holdWeightLimits = [...Array(numHoldsWithWeightLimits).fill(1),...Array(nTotalTiles - numHoldsWithWeightLimits).fill(0)];
+		shuffleArray(holdWeightLimits,props.boardSeed);
+
 		//Create hold color data
 		let holdColors = [];
 		const iterNum = Math.ceil(nTotalTiles/bc.colorsArray.length);
@@ -38,7 +43,7 @@ function GameHandler (props){
 		shuffleArray(holdColors,props.boardSeed);
 
 
-		let holdData = allowedGroupTypes.map((val,index) => ({color: holdColors[index], allowedGroupTypes: val})) ;
+		let holdData = allowedGroupTypes.map((val,index) => ({weightLimit: holdWeightLimits[index], color: holdColors[index], allowedGroupTypes: val})) ;
 		
 		holdData = holdData.slice(0,nTotalTiles);
 
@@ -65,5 +70,5 @@ GameHandler.defaultProps = {
 	cardSeed: 4356,
 	handOnlyPercent : 0.20,
 	footOnlyPercent : 0.20,
-	slipperyHoldsPercent : 0.20
+	holdsWithWeightLimitsPercent : 0.20
 };
