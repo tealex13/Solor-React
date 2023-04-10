@@ -309,10 +309,17 @@ function Game (props){
 
 		//Group types must match hold allowed group type
 		const holdData = props.boardData.holds;
-		const limbsToTest = Object.entries(tempLimbsState).filter(([limb,data]) => !isAtStart(data.coords));
+		let limbsToTest = Object.entries(tempLimbsState).filter(([limb,data]) => !isAtStart(data.coords));
 		selectedLimbs = limbsToTest.reduce((valid,[limb,limbData]) => {return valid && holdData[bc.mapFromBoard(limbData.coords[0],limbData.coords[1],props.boardData.nCols)].allowedGroupTypes
 							.reduce((valid,groupType) =>  {return valid || limbData.group.includes(groupType)},false)
 						},true) ? selectedLimbs : [];
+
+		//A limb is not within range of a weight limit
+		limbsToTest = nonWeightLimbs.filter(([limb,data]) => !isAtStart(data.coords));
+		selectedLimbs = limbsToTest.reduce((valid,[limb,data]) =>{return valid && holdData[bc.mapFromBoard(data.coords[0],data.coords[1],props.boardData.nCols)] 
+			.weightLimit <= bc.dist(tempLimbsState[limbType.weight].coords,data.coords)},true)? selectedLimbs: [];
+
+
 
 		return selectedLimbs;
 	};
