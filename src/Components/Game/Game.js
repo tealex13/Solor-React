@@ -160,12 +160,6 @@ function Game (props){
 			if (isEqual(limbsData[limb].coords,limbsData[limbType.weight].coords)) {
 				const  alertMessage = "The " + limbsData[limb].group[0]+" "+limbsData[limb].group[1]+ " cannot be selected because it share a space with weight."
 				alert(alertMessage);
-			// } 
-			// // if the limb is right below weight it cannot be moved
-			// else if (bc.dist(limbsData[limb].coords,limbsData[limbType.weight].coords) === 1 && limbsData[limb].coords[0] < limbsData[limbType.weight].coords[0]){
-	
-			// 	const  alertMessage = "The " + limbsData[limb].group[0]+" "+limbsData[limb].group[1]+ " cannot be selected because it is one space below the weight."
-			// 	alert(alertMessage);
 			} else {
 				performSelection();
 			}
@@ -327,6 +321,18 @@ function Game (props){
 		limbsToTest = nonWeightLimbs.filter(([limb,data]) => !isAtStart(data.coords));
 		selectedLimbs = limbsToTest.reduce((valid,[limb,data]) =>{return valid && holdData[bc.mapFromBoard(data.coords[0],data.coords[1],props.boardData.nCols)] 
 			.weightLimit <= bc.dist(tempLimbsState[limbType.weight].coords,data.coords)},true)? selectedLimbs: [];
+
+		//Feet cannot be above hand in the same group
+		//For each limb that is a foot it is not above hands in the same side group
+		const nonFootLimbs = (Object.values(tempLimbsState).filter((data) => !data.group.includes(st.groupType.foot)));
+		const footLimbs = (Object.values(tempLimbsState).filter((data) => data.group.includes(st.groupType.foot)));
+		selectedLimbs = (footLimbs.reduce((invalid,footData) => {
+			const limbsInFootsGroup = nonFootLimbs.filter(data2 => {
+				console.log(data2);
+				return footData.group.reduce((contains,groupType) => {return contains || data2.group.includes(groupType)},false)
+			}) 
+			return invalid || limbsInFootsGroup.reduce((invalid,data2) => {return invalid || data2.coords[0] < footData.coords[0]},false);		
+		},false)) ? [] : selectedLimbs;
 
 
 
