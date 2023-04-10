@@ -162,7 +162,7 @@ Game play:
 			-Refactor: 
 				-Use groupTypes in hold
 		Holds can't support weight
-			Add weight limits to holds
+			-Add weight limits to holds
 			Display holds with weight limits (black streaks on holds)
 			Check that weight is not in range of a limb on the weight limited holds
 		Use hand then foot or foot then hand if you want to use both parts of a card

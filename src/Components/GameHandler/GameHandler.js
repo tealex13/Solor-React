@@ -32,7 +32,7 @@ function GameHandler (props){
 		//give holds weight limits
 		const numHoldsWithWeightLimits = Math.floor(nTotalTiles * props.holdsWithWeightLimitsPercent);
 		const holdWeightLimits = [...Array(numHoldsWithWeightLimits).fill(1),...Array(nTotalTiles - numHoldsWithWeightLimits).fill(0)];
-		shuffleArray(holdWeightLimits,props.boardSeed);
+		shuffleArray(holdWeightLimits,props.wieghtSeed);
 
 		//Create hold color data
 		let holdColors = [];
@@ -68,7 +68,8 @@ GameHandler.defaultProps = {
 	nCols: 6,
 	boardSeed: 1232,
 	cardSeed: 4356,
+	wieghtSeed: 3213,
 	handOnlyPercent : 0.20,
 	footOnlyPercent : 0.20,
-	holdsWithWeightLimitsPercent : 0.20
+	holdsWithWeightLimitsPercent : 0.30
 };

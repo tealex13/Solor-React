@@ -1,8 +1,13 @@
-.holdColor{
-	margin-left: 10px;
-	margin-right: 10px;
-	position: relative;
-	z-index: 1;
+.holdCenter{
+	display: grid;
+	grid-template-columns: [first-col] auto [last-col];
+  	grid-template-rows: [first-row] auto [last-row];
+  	align-items: center;
+	justify-items: center;
+}
+
+.holdimage{
+	z-index: 10;
 }
 
 
@@ -20,3 +25,24 @@
 	-webkit-appearance: none;
 	-moz-appearance: none;
 }
+
+.centered{
+	grid-row-start: first-row;
+	grid-row-end: last-row;
+	grid-column-start: first-col;
+	grid-column-end : last-col;
+}
+
+.weightLimitContainer{
+	z-index: 100;
+}
+
+.weightLimit{
+	color: red;
+	    text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;  
+}
+

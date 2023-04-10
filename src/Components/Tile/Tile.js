@@ -11,6 +11,7 @@ export const limbType = {
 	weight: "weight"
 }
 
+
 export function Tile(props){
 
 		const handleClick = (limb) => () => {

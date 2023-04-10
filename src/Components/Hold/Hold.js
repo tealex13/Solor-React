@@ -18,14 +18,19 @@ export default function Hold(props){
 
 	return(
 		<div className = "hold">
-			<button className = {"holdColor"}
-				onClick = {props.holdData.handleClick}
-			>
-				<svg version="1.1" viewBox="0 0 116 84" xmlns="http://www.w3.org/2000/svg" width = "110">
-				 <g transform="translate(-.058099 -3.0408)">
-				  <path d={getHoldGroup().image} fill={props.holdData.color} stroke="#000" strokeWidth="6.7238"/>
-				 </g>
-				</svg>
+			<button onClick = {props.holdData.handleClick}>
+				<div className = "holdCenter">	
+					<div className = "holdimage centered">
+						<svg version="1.1" viewBox="0 0 116 84" xmlns="http://www.w3.org/2000/svg" width = "110">
+						 <g transform="translate(-.058099 -3.0408)">
+						  <path d={getHoldGroup().image} fill={props.holdData.color} stroke="#000" strokeWidth="6.7238"/>
+						 </g>
+						</svg>
+					</div>
+					<div className = "centered weightLimitContainer">
+						<h1 className = "weightLimit"> {props.holdData.weightLimit > 0? props.holdData.weightLimit: ""} </h1>
+					</div>
+				</div>
 			</button>			
 		</div>
 	)
@@ -33,4 +38,5 @@ export default function Hold(props){
 
 Hold.defaultProps = {
 	holdData: {limbsToDisplay: []}
+
 }
