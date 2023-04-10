@@ -102,3 +102,8 @@ Notes:
 		Switch a card from the discard with a card in the draw pile
 		Move a card from the top of the pile to the bottom
 		
+		
+Random Notes:
+	Other Ideas:
+		Flagging a foot means that neither of your feet can move, weight moves towards the foot that was flagged. It takes up a move color to perform (color needs to match the color the foot was on?)
+		

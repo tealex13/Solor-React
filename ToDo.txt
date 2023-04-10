@@ -148,9 +148,8 @@ clean up
 	Refactor game into sub components:
 		User controls
 		Board
-	Validate move returns a boolean
+	Each test in validate returns a list of invalids (limbs)
 	Correct flatten moves to not include duplicates
-	Add documentation
 	
 Game play:
 	Make the game more difficult:
@@ -163,29 +162,12 @@ Game play:
 				-Use groupTypes in hold
 		Holds can't support weight
 			-Add weight limits to holds
-			Display holds with weight limits (black streaks on holds)
-			Check that weight is not in range of a limb on the weight limited holds
-		Use hand then foot or foot then hand if you want to use both parts of a card
-		You only get one wild per time the weight and limb share a space
-		Weight shifts when a wild is used
+			-Display holds with weight limits
+			-Check that weight is not in range of a limb on the weight limited holds
 	
-	Special powers ideas:
-		Power up ideas
-			Bumping through foot holds
-			Extra limb movement
-			See one of the colors of the next card
-			Use foot hold as a hand hold and vis versa
-			One limb can be plus 1 away
-			Bonus weigh move
-			Extra wilds when wild and limb share a space
-			Ignore wieght rule for a hold
-		Earn power ups
-			Using all parts of a card
-			Moving limbs sideways
-			Getting to specific holds
-			Performing a move (heel hook,Dynamo)
-	Other Ideas:
-		Flagging a foot means that neither of your feet can move, weight moves towards the foot that was flagged. It takes up a move color to perform (color needs to match the color the foot was on?)
+	Limbs under weight can move horizontally or down
+		
+	
 		
 
 Less important rules	

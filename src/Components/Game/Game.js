@@ -12,6 +12,7 @@ import * as st from "../../Helper Functions/Shared Types";
 
 
 function Game (props){
+	const weightShadowDist = 1;
 
 	const generateCardsState = () => { //refactor using array.fill()
 		const tempCardState = [];
@@ -159,12 +160,12 @@ function Game (props){
 			if (isEqual(limbsData[limb].coords,limbsData[limbType.weight].coords)) {
 				const  alertMessage = "The " + limbsData[limb].group[0]+" "+limbsData[limb].group[1]+ " cannot be selected because it share a space with weight."
 				alert(alertMessage);
-			} 
-			// if the limb is right below weight it cannot be moved
-			else if (bc.dist(limbsData[limb].coords,limbsData[limbType.weight].coords) === 1 && limbsData[limb].coords[0] < limbsData[limbType.weight].coords[0]){
+			// } 
+			// // if the limb is right below weight it cannot be moved
+			// else if (bc.dist(limbsData[limb].coords,limbsData[limbType.weight].coords) === 1 && limbsData[limb].coords[0] < limbsData[limbType.weight].coords[0]){
 	
-				const  alertMessage = "The " + limbsData[limb].group[0]+" "+limbsData[limb].group[1]+ " cannot be selected because it is one space below the weight."
-				alert(alertMessage);
+			// 	const  alertMessage = "The " + limbsData[limb].group[0]+" "+limbsData[limb].group[1]+ " cannot be selected because it is one space below the weight."
+			// 	alert(alertMessage);
 			} else {
 				performSelection();
 			}
@@ -261,7 +262,6 @@ function Game (props){
 		//Only allow movement within a range of origin
 		selectedLimbs = selectedLimbs.filter((limb) => {
 		const tempLimbCoords = isAtStart(limbsData[limb].coords) ? [limbsData[limb].coords[0],newCoords[1]] : limbsData[limb].coords;
-		console.log("includes:",limbsData[limb].group.includes(st.groupType.hand), limbType.hand);
 		const allowedDistance = isAtStart(limbsData[limb].coords) && limbsData[limb].group.includes(st.groupType.hand) ? 
 			props.handStartMoveDist : props.maxMoveDist;
 		return(allowedDistance >= bc.dist(tempLimbCoords,newCoords))
@@ -270,6 +270,15 @@ function Game (props){
 		//Limbs follow a valid sequence along move tree;
 		selectedLimbs = selectedLimbs.filter(selectedLimb => 
 			bc.areMovesOnTree(generateMoveTree(drawPile),addMoveToHistory(selectedLimbs,newCoords)));
+
+		//A limb that starts directly under weight cannot move up
+		selectedLimbs = selectedLimbs.reduce((invalid,limb) => {
+			return ( invalid ||
+			bc.dist(limbsData[limb].coords,limbsData[limbType.weight].coords) <= weightShadowDist &&
+			limbsData[limb].coords[0] < limbsData[limbType.weight].coords[0] &&
+			newCoords[0] > limbsData[limb].coords[0]);
+			},false)? [] : selectedLimbs;
+		;
 
 
 		//Current state tests
